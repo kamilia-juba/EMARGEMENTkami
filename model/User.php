@@ -38,4 +38,22 @@ class User extends Model {
         }
         return $results;
     }
+
+    public function persist() : User {
+        if(self::get_user_by_id($this->pseudo))
+            self::execute("UPDATE Users SET  mail=:mail, hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban, WHERE id=:id ", 
+                            [ "mail"=>$this->mail,
+                                "hashed_password"=>$this->hashed_password,
+                                "full_name"=>$this->full_name,
+                                "role"=>$this->role,
+                                "iban"=>$this->iban]);
+        else
+            self::execute("INSERT INTO Users(mail,hashed_password,full_name,role,iban) VALUES(:mail,:hashed_password,:full_name,:role,:iban)", 
+                            [ "mail"=>$this->mail,
+                            "hashed_password"=>$this->hashed_password,
+                            "full_name"=>$this->full_name,
+                            "role"=>$this->role,
+                            "iban"=>$this->iban]);
+        return $this;
+    }
 }
