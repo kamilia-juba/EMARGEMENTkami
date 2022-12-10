@@ -39,7 +39,7 @@ class User extends Model {
         return $results;
     }
 
-    public function persist() : User {
+        public function persist() : User {
         if(self::get_user_by_id($this->pseudo))
             self::execute("UPDATE Users SET  mail=:mail, hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban, WHERE id=:id ", 
                             [ "mail"=>$this->mail,
@@ -56,4 +56,22 @@ class User extends Model {
                             "iban"=>$this->iban]);
         return $this;
     }
+
+    public static function validate_login(string $mail, string $password) : array {
+        $errors = [];
+        $user = User::get_user_by_mail($mail);
+        if ($user) {
+            if (!self::check_password($password, $user->hashed_password)) {
+                $errors[] = "Wrong password. Please try again.";
+            }
+        } else {
+            $errors[] = "Can't find a member with the mail '$mail'. Please sign up.";
+        }
+        return $errors;
+    }
+
+    private static function check_password(string $clear_password, string $hash) : bool {
+        return $hash === Tools::my_hash($clear_password);
+    }
+
 }
