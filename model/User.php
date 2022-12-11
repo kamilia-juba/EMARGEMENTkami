@@ -20,7 +20,7 @@ class User extends Model {
     }
 
     public static function get_user_by_mail(String $mail) : User|false {
-        $query = self::execute("SELECT * FROM Users where id = :id", ["mail"=>$mail]);
+        $query = self::execute("SELECT * FROM Users where mail = :mail", ["mail"=>$mail]);
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
