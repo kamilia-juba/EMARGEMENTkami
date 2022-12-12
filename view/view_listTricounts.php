@@ -12,11 +12,19 @@
         </div>
         <div class="tricounts">
             <ul>
-                <?php 
-                    foreach($tricounts as $tricount){
-                        echo "<li>".$tricount->$title."</li>";
-                    }
-                ?>
+                <?php foreach($tricounts as $tricount){ ?>
+                        <li>
+                            <h1><?=$tricount->title;?></h1>
+                            <li><?php if($tricount->description=="NULL" or $tricount->description==""){
+                                        echo "NO DESCRIPTION";
+                                    } else {
+                                        echo $tricount->description;
+                                    }
+                                ?>
+                            </li>
+                        </li>
+                <?php } ?>
+                
                 
             </ul>
 

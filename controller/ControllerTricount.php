@@ -1,6 +1,7 @@
 <?php 
 
 require_once 'model/User.php';
+require_once 'model/Tricount.php';
 require_once 'controller/MyController.php';
 
 

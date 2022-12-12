@@ -1,6 +1,7 @@
 <?php
 
 require_once "framework/Model.php";
+require_once "model/Tricount.php";
 
 class User extends Model {
 
@@ -76,11 +77,11 @@ class User extends Model {
 
     public function get_user_tricounts() : array {
         $query = self::execute("select * from tricounts where tricounts.creator = (select id from users where mail = :userMail)", 
-            ["userMail",$this->mail]);
+            ["userMail" => $this->mail]);
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row){
-            $results[] = new Tricount($row["id"], $row["title"], $row["description"], $row["created_at"], $row["creator"] );
+            $results[] = new Tricount($row["title"], $row["created_at"], $row["creator"],$row["id"], $row["description"]);
         }
 
         return $results;
