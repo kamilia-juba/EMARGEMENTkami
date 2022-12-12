@@ -8,15 +8,10 @@ class Tricount extends Model{
         
     }
 
-    public static function get_user_tricounts(User $user) : array {
-        $query = self::execute("select * from tricounts where creator = :userId", ["userId"=>$user->$id]);
-        $data = $query->fetchAll();
-        $results = [];
-        foreach ($data as $row){
-            $results[] = new Tricount($row["id"], $row["title"], $row["description"], $row["created_at"], $row["creator"] );
-        }
-
-        return $results;
+    public function nbParticipantsTricount(): int {
+        $query = self::execute("select count(*) from participations where tricount = :tricountID", ["tricountID",$this->id]);
+        $data = $query->fetch();
+        return $data -1;
     }
 }
 

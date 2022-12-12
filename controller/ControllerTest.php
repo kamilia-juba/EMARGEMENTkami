@@ -1,7 +1,8 @@
 <?php
-require_once "framework/Controller.php";
+require_once 'controller/MyController.php';
 
-class ControllerTest extends Controller {
+
+class ControllerTest extends MyController {
     public function index() : void {
         echo "<h1>Hey !</h1>";
     }
