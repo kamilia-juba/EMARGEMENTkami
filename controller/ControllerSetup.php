@@ -1,9 +1,9 @@
 <?php
-require_once "framework/Controller.php";
+require_once 'controller/MyController.php';
 require_once "framework/Configuration.php";
 require_once "framework/Tools.php";
 
-class ControllerSetup extends Controller {
+class ControllerSetup extends MyController {
     public function index() : void {
         $this->install();
     }
