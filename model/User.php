@@ -74,4 +74,16 @@ class User extends Model {
         return $hash === Tools::my_hash($clear_password);
     }
 
+    public function get_user_tricounts() : array {
+        $query = self::execute("select * from tricounts where tricounts.creator = (select id from users where mail = :userMail)", 
+            ["userMail",$this->mail]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach ($data as $row){
+            $results[] = new Tricount($row["id"], $row["title"], $row["description"], $row["created_at"], $row["creator"] );
+        }
+
+        return $results;
+    }
+
 }

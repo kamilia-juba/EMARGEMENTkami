@@ -2,14 +2,14 @@
 
 require_once 'model/User.php';
 require_once 'framework/View.php';
-require_once 'framework/Controller.php';
+require_once 'controller/MyController.php';
 
-class ControllerMain extends Controller {
+class ControllerMain extends MyController {
         //si l'utilisateur est connecté, redirige vers son profil.
     //sinon, produit la vue d'accueil.
     public function index() : void {
         if ($this->user_logged()) {
-            $this->redirect("user", "list_tricount");
+            $this->redirect("Tricount");
         } else {
             (new View("login"))->show(["mail" => "", "password" => "", "errors" => $errors = []]);
         }
