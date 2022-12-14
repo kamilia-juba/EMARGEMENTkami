@@ -9,9 +9,9 @@ class Tricount extends Model{
     }
 
     public function nbParticipantsTricount(): int {
-        $query = self::execute("select count(*) from participations where tricount = :tricountID", ["tricountID",$this->id]);
+        $query = self::execute("select count(*) from subscriptions where tricount = :tricountID", ["tricountID" => $this->id]);
         $data = $query->fetch();
-        return $data -1;
+        return $data[0];
     }
 }
 
