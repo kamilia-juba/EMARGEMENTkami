@@ -32,4 +32,14 @@ class ControllerMain extends MyController {
         (new View("login"))->show(["mail" => $mail, "password" => $password, "errors" => $errors]);
     }
 
+    public function settings() : void {
+        if (!$this->user_logged()) {
+            $this->redirect("Main");
+        } else {
+            $user = $this->get_user_or_redirect();
+
+            (new View("settings"))->show(["user" => $user]);
+        }
+    }
+
 }
