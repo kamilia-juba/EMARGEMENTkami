@@ -29,5 +29,6 @@
             </ul>
 
         </div>
+        <a href = "main/settings/"> <img src ="ressources/images/engr.png" style="width:50px;height:50px;"> </a>
     </body>
 </html>
