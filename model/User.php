@@ -92,7 +92,7 @@ class User extends Model {
             $errors[] = "feull_name is required.";
         } if ((strlen($this->full_name) < 3 && strlen($this->full_name)> 16)) {
             $errors[] = "full_name length must be between 3 and 16.";
-        } if (!(preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
+        } if ((preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
             $errors[] = "full_name must start by a letter and must contain only letters and numbers.";
         }
         return $errors;
@@ -152,17 +152,7 @@ class User extends Model {
         return $errors;
     }
 
-  /*  public static function get_member_by_pseudo(string $full_name) : User|false {
-        $query = self::execute("SELECT * FROM User where full_name = :full_name", ["full_name"=>$full_name]);
-        $data = $query->fetch(); // un seul résultat au maximum
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            // je sais pas ce que je vais recupere
-            return new User($data["full_name"], $data["password"], $data["profile"], $data["picture_path"]);
-        }
-    }*/
-
+  
     private static function validate_password(string $password) : array {
         $errors = [];
         if (strlen($password) < 8 || strlen($password) > 16) {
