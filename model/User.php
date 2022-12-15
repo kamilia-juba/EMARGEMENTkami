@@ -77,11 +77,11 @@ class User extends Model {
     public function validate_full_name() : array {
         $errors = [];
         if (!strlen($this->full_name) > 0) {
-            $errors[] = "Pseudo is required.";
+            $errors[] = "feull_name is required.";
         } if (!(strlen($this->full_name) >= 3 && strlen($this->full_name) <= 16)) {
-            $errors[] = "Pseudo length must be between 3 and 16.";
-        } if (!(preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
-            $errors[] = "Pseudo must start by a letter and must contain only letters and numbers.";
+            $errors[] = "full_name length must be between 3 and 16.";
+        } if ((preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
+            $errors[] = "full_name must start by a letter and must contain only letters and numbers.";
         }
         return $errors;
 }
@@ -93,7 +93,7 @@ class User extends Model {
         return $errors;
     }
 
-  /*  public function validate_IBAN(string $IBAN) : array {
+   public function validate_IBAN(string $IBAN) : array {
         $errors = [];
         $Countries = array(
             'al'=>28,'ad'=>24,'at'=>20,'az'=>28,'bh'=>22,'be'=>16,'ba'=>20,'br'=>29,'bg'=>22,'cr'=>21,'hr'=>21,'cy'=>28,'cz'=>24,
@@ -108,7 +108,7 @@ class User extends Model {
         
             // Vérifier que le code IBAN a la bonne longueur
             if (strlen($IBAN) < 15 || strlen($IBAN) > 34) {
-            $errors = " la taille de l'iban n'est pas correct ";
+            $errors[] = " la taille de l'iban n'est pas correct ";
             }
         
             // Extraire les deux premiers caractères (qui représentent le code du pays)
@@ -116,16 +116,16 @@ class User extends Model {
         
             // Vérifier que les deux premiers caractères sont des lettres et que le pays est reconnu
             if (!ctype_alpha($pays)) {
-            $errors = "les 2 premier caractere  ne sont pas des lettre  ";
+            $errors[] = "les 2 premier caractere  ne sont pas des lettre  ";
             } 
             if(!in_array($pays, $Countries)){
-                $errors = "le pays n'est pas connue";
+                $errors[] = "le pays n'est pas connue";
             }
         
         return $errors;
         
         
-    }*/
+    }
 
     public static function validate_unicity(string $mail) : array {
         $errors = [];
@@ -136,16 +136,16 @@ class User extends Model {
         return $errors;
     }
 
-    public static function get_member_by_pseudo(string $full_name) : User|false {
+  /*  public static function get_member_by_pseudo(string $full_name) : User|false {
         $query = self::execute("SELECT * FROM User where full_name = :full_name", ["full_name"=>$full_name]);
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
         } else {
             // je sais pas ce que je vais recupere
-            return new User($data["pseudo"], $data["password"], $data["profile"], $data["picture_path"]);
+            return new User($data["full_name"], $data["password"], $data["profile"], $data["picture_path"]);
         }
-    }
+    }*/
 
     private static function validate_password(string $password) : array {
         $errors = [];

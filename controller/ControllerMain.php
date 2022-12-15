@@ -17,7 +17,7 @@ class ControllerMain extends Controller {
 
     //gestion de la connexion d'un utilisateur
     public function login() : void {
-        $pseudo = '';
+       // $pseudo = '';
         $password = '';
         $errors = [];
         if (isset($_POST['mail']) && isset($_POST['password'])) { //note : pourraient contenir des chaînes vides
@@ -53,7 +53,7 @@ class ControllerMain extends Controller {
             $errors = User::validate_unicity($mail);
             $errors = array_merge($errors, $user->validate_full_name());
             $errors = array_merge($errors, $user->validate_mail($mail));
-           // $errors = array_merge($errors, $user->validate_IBAN($IBAN));
+            $errors = array_merge($errors, $user->validate_IBAN($IBAN));
             $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
 
             if (count($errors) == 0) { 
