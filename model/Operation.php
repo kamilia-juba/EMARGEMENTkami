@@ -10,6 +10,26 @@ class Operation extends Model {
       
     }
 
+    public function validate() : array {
+        $errors = [];
+        date_default_timezone_set('UTC');
+        $today = date("Y-m-d H:i:s");
+
+    
+        if(($this->operation_date)>$this->$today){
+            $errors[] = "operation_date cannot be greater than the current date";
+        }
+
+        if(strlen($this->title)==0){
+            $errors[] = "Body must be filled";
+        }
+    
+        if((($this->amount) <0)){
+            $errors[] = "the amount must be greater than zero";
+        }
+        return $errors;
+    }
+
     public static function get_operations_by_tricountid(Tricount $tricount) : array{
 
         $query = self::execute("select * from operations where tricount = :tricountId order by created_at DESC", ["tricounId"=> $tricount->id]);
