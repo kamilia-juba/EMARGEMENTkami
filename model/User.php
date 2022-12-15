@@ -90,7 +90,7 @@ class User extends Model {
         $errors = [];
         if (!strlen($this->full_name) > 0) {
             $errors[] = "feull_name is required.";
-        } if (!(strlen($this->full_name) >= 3 && strlen($this->full_name) <= 16)) {
+        } if ((strlen($this->full_name) < 3 && strlen($this->full_name)> 16)) {
             $errors[] = "full_name length must be between 3 and 16.";
         } if ((preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
             $errors[] = "full_name must start by a letter and must contain only letters and numbers.";
