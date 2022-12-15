@@ -9,7 +9,7 @@ class ControllerMain extends MyController {
     //sinon, produit la vue d'accueil.
     public function index() : void {
         if ($this->user_logged()) {
-            $this->redirect("Tricount");
+            $this->redirect("Tricount","yourTricounts");
         } else {
             (new View("login"))->show(["mail" => "", "password" => "", "errors" => $errors = []]);
         }
