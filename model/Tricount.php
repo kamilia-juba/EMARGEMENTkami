@@ -4,7 +4,7 @@ require_once "framework/Model.php";
 
 class Tricount extends Model{
 
-    public function __construct(public string $title, public string $created_at, public int $creator, public int $id, public ?string $description){
+    public function __construct(public string $title, public string $created_at, public int $creator, public ?int $id, public ?string $description){
         
     }
 
@@ -12,8 +12,9 @@ class Tricount extends Model{
         $query = self::execute("select count(*) from subscriptions where tricount = :tricountID", ["tricountID" => $this->id]);
         $data = $query->fetch();
         return $data[0];
+    }
 
-   /* public static function get_tricount_by_id(int $id) : Tricount|false {
+    public static function get_tricount_by_id(int $id) : Tricount|false {
         $query = self::execute("SELECT * FROM Tricount where id = :id", ["id"=>$id]);
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
@@ -24,16 +25,16 @@ class Tricount extends Model{
     }
     public function persist() : Tricount {
         if(self::get_tricount_by_id($this->id))
-            self::execute("UPDATE Tricount SET  id=:id, title=:title, description=:description, created_at=:created_at,
+            self::execute("UPDATE tricounts SET   title=:title, description=:description, created_at=:created_at,
                          creator=:creator , WHERE id=:id ", 
-                            [ "id"=>$this->id,
+                            [ 
                                 "title"=>$this->title,
                                 "description"=>$this->description,
                                 "created_at"=>$this->created_at,
                                 "creator"=>$this->creator]);
         else
-            self::execute("INSERT INTO Users(id,title,description,created_at,creator) VALUES(:id,:title,:description,:created_at,:creator)", 
-                            [ "id"=>$this->id,
+            self::execute("INSERT INTO tricounts(title,description,created_at,creator) VALUES(:title,:description,:created_at,:creator)", 
+                            [ 
                                 "title"=>$this->title,
                                 "description"=>$this->description,
                                 "created_at"=>$this->created_at,
@@ -49,11 +50,11 @@ class Tricount extends Model{
         return $errors;
 
     }
-    */
+    
 
 
 
-   }
+   
 }
 
 ?>
