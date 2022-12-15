@@ -49,7 +49,7 @@ class ControllerMain extends MyController {
             $password = $_POST['password'];
             $password_confirm = $_POST['password_confirm'];
 
-            $user = new User($mail , $full_name , $IBAN , Tools::my_hash($password));
+            $user = new User($mail ,Tools::my_hash($password), $full_name , "user" ,$IBAN );
             $errors = User::validate_unicity($mail);
             $errors = array_merge($errors, $user->validate_full_name());
             $errors = array_merge($errors, $user->validate_mail($mail));

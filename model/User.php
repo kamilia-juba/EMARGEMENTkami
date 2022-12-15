@@ -92,7 +92,7 @@ class User extends Model {
             $errors[] = "feull_name is required.";
         } if ((strlen($this->full_name) < 3 && strlen($this->full_name)> 16)) {
             $errors[] = "full_name length must be between 3 and 16.";
-        } if ((preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
+        } if (!(preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
             $errors[] = "full_name must start by a letter and must contain only letters and numbers.";
         }
         return $errors;
@@ -115,6 +115,7 @@ class User extends Model {
             'ro'=>24,'sm'=>27,'sa'=>24,'rs'=>22,'sk'=>24,'si'=>19,'es'=>24,'se'=>24,'ch'=>21,'tn'=>24,'tr'=>26,'ae'=>23,'gb'=>22,'vg'=>24
         );
         
+        
             // Enlever tous les caractères qui ne sont pas des chiffres ou des lettres
             $IBAN = preg_replace('/[^a-zA-Z0-9]/', '', $IBAN);
         
@@ -124,15 +125,18 @@ class User extends Model {
             }
         
             // Extraire les deux premiers caractères (qui représentent le code du pays)
-            $pays = substr($IBAN, 0, 2);
+            $pays = substr($IBAN,0, 2);
         
             // Vérifier que les deux premiers caractères sont des lettres et que le pays est reconnu
             if (!ctype_alpha($pays)) {
             $errors[] = "les 2 premier caractere  ne sont pas des lettre  ";
             } 
-            if(!in_array($pays, $Countries)){
-                $errors[] = "le pays n'est pas connue";
+
+            if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
+            {
+                $errors[] = " invalide iban";
             }
+           
         
         return $errors;
         
