@@ -1,12 +1,13 @@
 <?php
 
 require_once "framework/Model.php";
+require_once "model/Tricount.php";
 
 
 class Operation extends Model {
 
     public function __construct(public string $title, public int $tricount,public int $amount,
-                                 public ?string $operation_date=null, public int $initiator, public ?string $created_at=null  ){
+                                  public int $initiator, public ?string $created_at=null,public ?string $operation_date=null, public ?int $id){
       
     }
 
@@ -30,15 +31,23 @@ class Operation extends Model {
         return $errors;
     }
 
-    public static function get_operations_by_tricountid(Tricount $tricount) : array{
+    public static function get_operations_by_tricountid(int $tricountId) : array{
 
-        $query = self::execute("select * from operations where tricount = :tricountId order by created_at DESC", ["tricounId"=> $tricount->id]);
+        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId order by created_at DESC", ["tricountId" => $tricountId]);
         $data = $query->fetchAll();
         $operations = [];
         foreach ($data as $row) {
-            $operations[] = new Operation(($row['title']),($row['tricount']), $row['amount'], $row['operation_date'], $row['initiator'], $row['created_at']);
+            $operations[] = new Operation($row['title'],$row['tricount'], $row['amount'], $row['initiator'], $row['created_at'], $row['operation_date'],$row['id']);
         }
         return $operations;
 
     }
+
+    public function get_payer(): User{
+        $query = self::execute("SELECT * from Users where id = (SELECT initiator FROM operations WHERE id=:id)",["id"=>$this->id]);
+        $data = $query->fetch();
+        return new User($data["mail"],$data["hashed_password"],$data["full_name"],$data["role"],$data["iban"], $data["id"]);
+    }
 }
+
+?>

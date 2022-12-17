@@ -1,6 +1,7 @@
 <?php 
 
 require_once "framework/Model.php";
+require_once "model/Operation.php";
 
 class Tricount extends Model{
 
@@ -50,10 +51,25 @@ class Tricount extends Model{
 
     }
     */
-
-
-
    }
+
+   public static function getTricountById(int $id, String $mail): Tricount{
+        $query = self::execute("SELECT * FROM tricounts WHERE id = :id and creator = (SELECT id from users WHERE mail = :mail)", ["id"=>$id, "mail"=>$mail]);
+        $data = $query->fetch();
+        return new Tricount($data["title"],$data["created_at"],$data["creator"],$data["id"],$data["description"]);
+   }
+
+   public function get_logged_user_total(int $id): float {
+        $query = self::execute("SELECT sum(amount) total from operations where initiator=:id and operations.tricount=:tricountId", ["id"=>$id,"tricountId"=>$this->id]);
+        $data = $query->fetch();
+        return round($data["total"],2);
+    }
+
+    public function get_total_expenses(): float{
+        $query = self::execute("SELECT sum(amount) total FROM operations where tricount = :tricountId",["tricountId"=>$this->id]);
+        $data = $query->fetch();
+        return round($data["total"],2);
+    }
 }
 
 ?>
