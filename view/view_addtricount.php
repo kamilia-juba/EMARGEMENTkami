@@ -7,9 +7,9 @@
     </head>
     <body>
         <div class="titlebar">
-            <button type="button" style"float: left" name="buttonAdd">Cancel</button>
+            <input type="submit" style"float: left" name="buttonCancel" value ="Cancel">
              Tricount->add
-            <button type="button" style"float: right" name="buttonAdd">Add</button>
+            <input type="submit" style"float: right" name="buttonAdd" value="save">
         </div>
         
 

@@ -80,7 +80,7 @@ class User extends Model {
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row){
-            $results[] = new Tricount($row["title"], $row["created_at"], $row["creator"],$row["id"], $row["description"]);
+            $results[] = new Tricount($row["title"], $row["created_at"], $row["creator"], $row["description"],$row["id"]);
         }
 
         return $results;

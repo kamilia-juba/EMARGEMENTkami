@@ -4,7 +4,7 @@ require_once "framework/Model.php";
 
 class Tricount extends Model{
 
-    public function __construct(public string $title, public string $created_at, public int $creator, public ?int $id, public ?string $description){
+    public function __construct(public string $title, public string $created_at, public int $creator, public ?string $description, public ?int $id=null){
         
     }
 
@@ -23,22 +23,26 @@ class Tricount extends Model{
             return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"]);
         }
     }
-    public function persist() : Tricount {
+    public function persist(int $id) : Tricount {
+        $T = time((date_default_timezone_get()));
+        $D = date("y-m-d h:m:s", $T);
+       
         if(self::get_tricount_by_id($this->id))
-            self::execute("UPDATE tricounts SET   title=:title, description=:description, created_at=:created_at,
-                         creator=:creator , WHERE id=:id ", 
+            self::execute("UPDATE tricounts SET   title=:title, description=:description 
+                           WHERE id=:id ", 
                             [ 
                                 "title"=>$this->title,
+                                "id"=>$id,
                                 "description"=>$this->description,
                                 "created_at"=>$this->created_at,
-                                "creator"=>$this->creator]);
+                               ]);
         else
             self::execute("INSERT INTO tricounts(title,description,created_at,creator) VALUES(:title,:description,:created_at,:creator)", 
                             [ 
                                 "title"=>$this->title,
                                 "description"=>$this->description,
-                                "created_at"=>$this->created_at,
-                                "creator"=>$this->creator]);
+                                "created_at"=>$D,
+                                "creator"=>$id]);
         return $this;
     }
 

@@ -20,15 +20,19 @@ class ControllerTricount extends MyController{
             $this->redirect("Main");
         }
     }
-    public static function addtricount () : void {
+    public function addtricount () : void {
 
         $title='';
         $description='';
-        $id='';
-        $created_at='';
-        $creator='';
-        $errors= [];
         
+        $created_at='';
+        $creator= '';
+        
+        $errors= [];
+        if ($this->user_logged()) {
+            $user = $this->get_user_or_redirect();
+            $tricounts = $user->get_user_tricounts();
+            (new View("listTricounts"))->show(["tricounts" => $tricounts]);
 
         var_dump($_POST);
         if(isset($_POST['title']) && isset($_POST['description'])){
@@ -39,15 +43,18 @@ class ControllerTricount extends MyController{
 
             $tricount = new Tricount($title,$created_at,$creator,$description);
             $errors = $tricount->valide_title($title);
-
+            if (count($errors) == 0) { 
+                $tricount->persist($user->id); //sauve le tricount
+               
+            }
 
         }
-        if (count($errors) == 0) { 
-            $tricount->persist(); //sauve le tricount
-           // $this->log_user($user);
+        
+        (new View("addtricount"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
         }
-        (new View("addtricount"))->show(["title"=>$title,"description"=>$description,"tricount"=>$tricount, "errors" => $errors]);
-
+        else {
+            $this->redirect("Main");
+        }
     }
 
 }
