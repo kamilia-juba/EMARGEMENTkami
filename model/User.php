@@ -42,7 +42,7 @@ class User extends Model {
 
         public function persist() : User {
         if(self::get_user_by_mail($this->mail))
-            self::execute("UPDATE Users SET  mail=:mail, hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban, WHERE id=:id ", 
+            self::execute("UPDATE Users SET  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE mail=:mail ", 
                             [ "mail"=>$this->mail,
                                 "hashed_password"=>Tools::my_hash($this->hashed_password),
                                 "full_name"=>$this->full_name,
