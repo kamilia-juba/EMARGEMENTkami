@@ -42,6 +42,12 @@ class Operation extends Model {
         return $operations;
 
     }
+
+    public function get_payer(): User{
+        $query = self::execute("SELECT * from Users where id = (SELECT initiator FROM operations WHERE id=:id)",["id"=>$this->id]);
+        $data = $query->fetch();
+        return new User($data["mail"],$data["hashed_password"],$data["full_name"],$data["role"],$data["iban"]);
+    }
 }
 
 ?>
