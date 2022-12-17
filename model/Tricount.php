@@ -1,6 +1,7 @@
 <?php 
 
 require_once "framework/Model.php";
+require_once "model/Operation.php";
 
 class Tricount extends Model{
 

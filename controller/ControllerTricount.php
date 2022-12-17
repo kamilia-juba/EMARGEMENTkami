@@ -3,7 +3,7 @@
 require_once 'model/User.php';
 require_once 'model/Tricount.php';
 require_once 'controller/MyController.php';
-
+require_once 'model/Operation.php';
 
 
 class ControllerTricount extends MyController{
@@ -26,8 +26,9 @@ class ControllerTricount extends MyController{
             $user = $this->get_user_or_redirect();
             if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
                 $tricount = Tricount::getTricountByTitle($_GET["param1"], $user->mail);
+                $operations = Operation::get_operations_by_tricountid($tricount->id);
             }
-            (new View("tricount"))->show(["tricount" => $tricount]);
+            (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations]);
         }else{
             $this->redirect("Main");
         }

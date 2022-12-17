@@ -23,14 +23,13 @@
                                 } else {
                                     echo "With ".$tricount->nbParticipantsTricount()." friends";
                                 }
-                                ?></div>
-                            <li><?php if($tricount->description=="NULL" or $tricount->description==""){
+                                ?></div><br>
+                                <?php if($tricount->description=="NULL" or $tricount->description==""){
                                         echo "NO DESCRIPTION";
                                     } else {
                                         echo $tricount->description;
                                     }
                                 ?>
-                            </li>
                         </a></li>
                 <?php } ?>
                 

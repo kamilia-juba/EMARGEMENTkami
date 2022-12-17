@@ -6,8 +6,16 @@
     <title><?=$tricount->title?></title>
 </head>
 <body>
-    <button type="button" name = "buttonBack">Back</button>
-    <?=$tricount->title?> &#8594 Expenses
-    <button type="button" name = "buttonEdit">Edit</button>
+    <div class="titlebar">
+        <button type="button" name = "buttonBack">Back</button>
+        <?=$tricount->title?> &#8594 Expenses
+        <button type="button" name = "buttonEdit">Edit</button>
+    </div>
+    <button type="button" name = "buttonViewBalance">&#8644 View balance</button>
+    <ul>
+       <?php foreach($operations as $operation){ ?>
+                <li><?=$operation->title;?></li>
+       <?php } ?>
+    </ul>
 </body>
 </html>
