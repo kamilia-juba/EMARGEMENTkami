@@ -13,6 +13,7 @@
         <div class="text"> I know your email address is <?= $user->mail?>. </div>
         <br><br>
         <button onclick="location.href = 'user/logout';" id="myButton" class="float-left submit-button" >Logout</button>
+        <button onclick="location.href = 'user/edit_profile';" id="myButton" class="float-left submit-button" >Edit Profile</button>
         <br><br>
     </body>
 </html>
