@@ -7,7 +7,7 @@ require_once "model/Operation.php";
 class User extends Model {
 
 
-    public function __construct(public string $mail, public string $hashed_password, public string $full_name, public string $role, public ?string $iban = null){
+    public function __construct(public string $mail, public string $hashed_password, public string $full_name, public string $role, public ?string $iban = null, public ?int $id){
         
     }
 
@@ -17,7 +17,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"]);
+            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"], $data["id"]);
         }
     }
 
@@ -27,7 +27,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"]);
+            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"], $data["id"]);
         }
     }
 
@@ -36,7 +36,7 @@ class User extends Model {
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row) {
-            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"]);
+            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"], $data["id"]);
         }
         return $results;
     }

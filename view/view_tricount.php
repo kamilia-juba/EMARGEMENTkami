@@ -20,5 +20,16 @@
                 </li>
        <?php } ?>
     </ul>
+    <section id="bottomBar">
+        <section id="myTotal">
+            My total<br>
+            <?=$tricount->get_logged_user_total($user->id)?> €
+        </section>
+        <button name="plusButton">+</button>
+        <section id="totalExpenses">
+            Total expenses<br>
+            <?=$tricount->get_total_expenses();?> €
+        </section>
+    </section>
 </body>
 </html>

@@ -28,7 +28,7 @@ class ControllerTricount extends MyController{
                 $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
                 $operations = Operation::get_operations_by_tricountid($tricount->id);
             }
-            (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations]);
+            (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations,"user"=>$user]);
         }else{
             $this->redirect("Main");
         }
