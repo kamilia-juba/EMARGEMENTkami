@@ -21,6 +21,18 @@ class ControllerTricount extends MyController{
         }
     }
 
+    public function showTricount(): void{
+        if($this->user_logged()){
+            $user = $this->get_user_or_redirect();
+            if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
+                $tricount = Tricount::getTricountByTitle($_GET["param1"]);
+            }
+            (new View("tricount"))->show(["tricount" => $tricount]);
+        }else{
+            $this->redirect("Main");
+        }
+    }
+
 }
 
 

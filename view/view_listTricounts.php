@@ -13,7 +13,7 @@
         <div class="tricounts">
             <ul>
                 <?php foreach($tricounts as $tricount){ ?>
-                        <li>
+                        <li><a href="Tricount/showTricount/<?= $tricount->title?>">
                             <h1><?=$tricount->title;?></h1>
                             <div class="nbparticipants">
                                 <?php if($tricount->nbParticipantsTricount()==0){
@@ -31,7 +31,7 @@
                                     }
                                 ?>
                             </li>
-                        </li>
+                        </a></li>
                 <?php } ?>
                 
                 
