@@ -7,7 +7,7 @@ require_once "model/Operation.php";
 class User extends Model {
 
 
-    public function __construct(public string $mail, public string $hashed_password, public string $full_name, public string $role, public ?string $iban = null, public ?int $id){
+    public function __construct(public string $mail, public string $hashed_password, public string $full_name, public string $role, public ?string $iban = null, public ?int $id=null){
         
     }
 
