@@ -62,12 +62,18 @@ class Tricount extends Model{
    public function get_logged_user_total(int $id): float|null {
         $query = self::execute("SELECT sum(amount) total from operations where initiator=:id and operations.tricount=:tricountId", ["id"=>$id,"tricountId"=>$this->id]);
         $data = $query->fetch();
+        if($data["total"]==null || $data["total"]==0){
+            return 0;
+        }
         return round($data["total"],2);
     }
 
     public function get_total_expenses(): float|null{
         $query = self::execute("SELECT sum(amount) total FROM operations where tricount = :tricountId",["tricountId"=>$this->id]);
         $data = $query->fetch();
+        if($data["total"]==null || $data["total"]==0){
+            return 0;
+        }
         return round($data["total"],2);
     }
 }
