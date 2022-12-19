@@ -6,6 +6,7 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <a href = "user/settings"> Back </a>
     </head>
     <body>
         <div class="title">Edit Profile</div>

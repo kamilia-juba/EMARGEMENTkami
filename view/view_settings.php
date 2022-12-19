@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <a href = "tricount/yourTricounts"> Back </a>
         <meta charset="UTF-8">
         <title>Settings</title>
         <base href="<?= $web_root ?>"/>
