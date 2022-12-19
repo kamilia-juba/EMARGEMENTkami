@@ -12,7 +12,8 @@
         <br><br>
         <div class="text"> I know your email address is <?= $user->mail?>. </div>
         <br><br>
-        <button onclick="location.href = 'user/logout';" id="myButton" class="float-left submit-button" >Logout</button>
+        <a href = "user/logout"> Logout </a>
+        <a href = "user/edit_profile"> Edit Profile </a>
         <br><br>
     </body>
 </html>
