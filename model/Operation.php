@@ -6,8 +6,8 @@ require_once "model/Tricount.php";
 
 class Operation extends Model {
 
-    public function __construct(public string $title, public int $tricount,public int $amount,
-                                  public int $initiator, public ?string $created_at=null,public ?string $operation_date=null, public ?int $id){
+    public function __construct(public string $title, public int $tricount,public float $amount,
+                                  public int $initiator, public ?string $created_at=null,public ?string $operation_date=null, public ?int $id=null){
       
     }
 
@@ -37,7 +37,7 @@ class Operation extends Model {
         $data = $query->fetchAll();
         $operations = [];
         foreach ($data as $row) {
-            $operations[] = new Operation($row['title'],$row['tricount'], $row['amount'], $row['initiator'], $row['created_at'], $row['operation_date'],$row['id']);
+            $operations[] = new Operation($row['title'],$row['tricount'], round($row['amount'],2), $row['initiator'], $row['created_at'], $row['operation_date'],$row['id']);
         }
         return $operations;
 

@@ -7,7 +7,7 @@ require_once "model/Operation.php";
 class User extends Model {
 
 
-    public function __construct(public string $mail, public string $hashed_password, public string $full_name, public string $role, public ?string $iban = null, public ?int $id){
+    public function __construct(public string $mail, public string $hashed_password, public string $full_name, public string $role, public ?string $iban = null, public ?int $id=null){
         
     }
 
@@ -36,7 +36,7 @@ class User extends Model {
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row) {
-            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"], $data["id"]);
+            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"], $row["id"]);
         }
         return $results;
     }
