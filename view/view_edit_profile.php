@@ -17,7 +17,7 @@
             <form id="changeProfileForm" action="user/edit_profile" method="post">
                 <table>
                     <tr>
-                        <td>full_name:</td>
+                        <td>Full name:</td>
                         <td><input id="full_name" name="full_name" type="text" size="16" value="<?= $full_name ?>"></td>
                     </tr>
                     <tr>
@@ -25,7 +25,7 @@
                         <td><input id="iban" name="iban" type="text" size="40" value="<?= $iban ?>"></td>
                     </tr>
                     </table>
-                <input type="submit" value="Sign Up">
+                <input type="submit" value="Save">
             </form>
             <?php if (count($errors) != 0): ?>
                 <div class='errors'>
