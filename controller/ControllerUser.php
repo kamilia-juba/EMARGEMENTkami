@@ -54,7 +54,7 @@ class ControllerUser extends MyController {
     public function change_password() : void {
         $user = $this->get_user_or_redirect();
         $errors = [];
-        $success = "";
+        $success = "Password updated succefully";
         
         $password = '';
         $password_confirm = '';
@@ -67,7 +67,7 @@ class ControllerUser extends MyController {
             $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
 
             if (count($errors) == 0) { 
-                $user->hashed_password = Tools::my_hash($password);
+                $user->hashed_password =$password;
                 $user->persist(); //sauve l'utilisateur
             }
         }
