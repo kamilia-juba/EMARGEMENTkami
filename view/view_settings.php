@@ -14,6 +14,7 @@
         <br><br>
         <a href = "user/logout"> Logout </a>
         <a href = "user/edit_profile"> Edit Profile </a>
+        <a href = "user/change_password"> Change Password </a>
         <br><br>
     </body>
 </html>
