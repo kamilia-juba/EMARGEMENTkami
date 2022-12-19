@@ -19,10 +19,6 @@ class ControllerUser extends MyController {
 
         //gestion de l'édition du profil
     public function edit_profile() : void {
-        if (!$this->user_logged()) {
-            $this->redirect("Main");
-        }
-        else{
             $user = $this->get_user_or_redirect();
             $errors = [];
             $success = "";
@@ -33,7 +29,13 @@ class ControllerUser extends MyController {
                 $iban = $_POST['iban'];
                 $user->full_name = $full_name;
                 $user->iban = $iban;
-                $user->persist();
+                $errors = array_merge($errors, $user->validate_IBAN($iban));
+                $errors = array_merge($errors, $user->validate_full_name());
+
+                if (count($errors) == 0) { 
+                    $user->persist(); //sauve l'utilisateur
+                    
+                }
             }
             
             // si on est en POST et sans erreurs, on redirige avec un paramètre 'ok'
@@ -49,7 +51,7 @@ class ControllerUser extends MyController {
             (new View("edit_profile"))->show(["iban" => $user->iban, "full_name" => $user->full_name , "errors" => $errors, "success" => $success]);
         }
     }
-}
+
 
 
 ?>
