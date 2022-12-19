@@ -12,9 +12,11 @@
         <br><br>
         <div class="text"> I know your email address is <?= $user->mail?>. </div>
         <br><br>
-        <a href = "user/logout"> Logout </a>
         <a href = "user/edit_profile"> Edit Profile </a>
+        <br><br>
         <a href = "user/change_password"> Change Password </a>
+        <br><br>
+        <a href = "user/logout"> Logout </a>
         <br><br>
     </body>
 </html>
