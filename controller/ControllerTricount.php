@@ -34,6 +34,14 @@ class ControllerTricount extends MyController{
         }
     }
 
+    public function showBalance(): void{
+        $user=$this->get_user_or_redirect();
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
+            $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
+        }
+        (new View("balance"))->show(["tricount"=>$tricount]);
+    }
+
 }
 
 
