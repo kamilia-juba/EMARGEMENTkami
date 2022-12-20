@@ -119,11 +119,6 @@ class User extends Model {
             // Enlever tous les caractères qui ne sont pas des chiffres ou des lettres
             $IBAN = preg_replace('/[^a-zA-Z0-9]/', '', $IBAN);
         
-            // Vérifier que le code IBAN a la bonne longueur
-            if (strlen($IBAN) < 15 || strlen($IBAN) > 34) {
-            $errors[] = "Wrong IBAN size";
-            }
-        
             // Extraire les deux premiers caractères (qui représentent le code du pays)
             $pays = substr($IBAN,0, 2);
         
@@ -134,7 +129,7 @@ class User extends Model {
 
             if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
             {
-                $errors[] = "This country doesn't exist";
+                $errors[] = "Wrong IBAN size or unknown country";
             }
            
         
