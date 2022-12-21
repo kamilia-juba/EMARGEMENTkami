@@ -54,7 +54,7 @@ class ControllerUser extends MyController {
     public function change_password() : void {
         $user = $this->get_user_or_redirect();
         $errors = [];
-        $success = "Password updated succefully";
+        $success = "";
         
         $password = '';
         $password_confirm = '';
@@ -69,6 +69,7 @@ class ControllerUser extends MyController {
             if (count($errors) == 0) { 
                 $user->hashed_password =$password;
                 $user->persist(); //sauve l'utilisateur
+                $success = "Password updated succefully";
             }
         }
         (new View("change_password"))->show([ "errors" => $errors, "success" => $success]);
