@@ -43,7 +43,7 @@ class User extends Model {
 
         public function persist() : User {
         if(self::get_user_by_mail($this->mail))
-            self::execute("UPDATE Users SET  mail=:mail, hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban, WHERE id=:id ", 
+            self::execute("UPDATE Users SET  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE mail=:mail ", 
                             [ "mail"=>$this->mail,
                                 "hashed_password"=>Tools::my_hash($this->hashed_password),
                                 "full_name"=>$this->full_name,
@@ -90,11 +90,11 @@ class User extends Model {
     public function validate_full_name() : array {
         $errors = [];
         if (!strlen($this->full_name) > 0) {
-            $errors[] = "feull_name is required.";
+            $errors[] = "A full name is required.";
         } if ((strlen($this->full_name) < 3 && strlen($this->full_name)> 16)) {
-            $errors[] = "full_name length must be between 3 and 16.";
+            $errors[] = "Full name length must be between 3 and 16.";
         } if (!(preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
-            $errors[] = "full_name must start by a letter and must contain only letters and numbers.";
+            $errors[] = "Full name must start by a letter and must contain only letters and numbers.";
         }
         return $errors;
 }
@@ -120,22 +120,17 @@ class User extends Model {
             // Enlever tous les caractères qui ne sont pas des chiffres ou des lettres
             $IBAN = preg_replace('/[^a-zA-Z0-9]/', '', $IBAN);
         
-            // Vérifier que le code IBAN a la bonne longueur
-            if (strlen($IBAN) < 15 || strlen($IBAN) > 34) {
-            $errors[] = " la taille de l'iban n'est pas correct ";
-            }
-        
             // Extraire les deux premiers caractères (qui représentent le code du pays)
             $pays = substr($IBAN,0, 2);
         
             // Vérifier que les deux premiers caractères sont des lettres et que le pays est reconnu
             if (!ctype_alpha($pays)) {
-            $errors[] = "les 2 premier caractere  ne sont pas des lettre  ";
+            $errors[] = "2 first characters are not letters";
             } 
 
             if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
             {
-                $errors[] = " invalide iban";
+                $errors[] = "Wrong IBAN size or unknown country";
             }
            
         
