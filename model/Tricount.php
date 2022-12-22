@@ -4,7 +4,7 @@ require_once "framework/Model.php";
 
 class Tricount extends Model{
 
-    public function __construct(public string $title, public string $created_at, public int $creator, public int $id, public ?string $description){
+    public function __construct(public string $title, public string $created_at, public int $creator, public ?string $description, public ?int $id=null){
         
     }
 
@@ -12,48 +12,52 @@ class Tricount extends Model{
         $query = self::execute("select count(*) from subscriptions where tricount = :tricountID", ["tricountID" => $this->id]);
         $data = $query->fetch();
         return $data[0];
+    }
 
-   /* public static function get_tricount_by_id(int $id) : Tricount|false {
-        $query = self::execute("SELECT * FROM Tricount where id = :id", ["id"=>$id]);
+    public function get_tricount_by_id() : Tricount|false {
+        $query = self::execute("SELECT * FROM tricounts where id = :id", ["id"=>$this->id]);
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"]);
+            return new Tricount($data["title"], $data["created_at"], $data["creator"], $data["description"], $data["id"]);
         }
     }
-    public function persist() : Tricount {
-        if(self::get_tricount_by_id($this->id))
-            self::execute("UPDATE Tricount SET  id=:id, title=:title, description=:description, created_at=:created_at,
-                         creator=:creator , WHERE id=:id ", 
-                            [ "id"=>$this->id,
+    public function persist(int $id) : Tricount {
+        $T = time();
+        $D = date("y-m-d h:m:s", $T);
+       
+       if(self::get_tricount_by_id())
+            self::execute("UPDATE tricounts SET   title=:title, description=:description 
+                           WHERE id=:id ", 
+                            [ 
                                 "title"=>$this->title,
-                                "description"=>$this->description,
-                                "created_at"=>$this->created_at,
-                                "creator"=>$this->creator]);
+                                "description"=>$this->description
+                              
+                               ]);
         else
-            self::execute("INSERT INTO Users(id,title,description,created_at,creator) VALUES(:id,:title,:description,:created_at,:creator)", 
-                            [ "id"=>$this->id,
+            self::execute("INSERT INTO tricounts(title,description,created_at,creator) VALUES(:title,:description,:created_at,:creator)", 
+                            [ 
                                 "title"=>$this->title,
                                 "description"=>$this->description,
-                                "created_at"=>$this->created_at,
-                                "creator"=>$this->creator]);
+                                "created_at"=>$D,
+                                "creator"=>$id]);
         return $this;
     }
 
     public  function  valide_title( ) : array{
-        $errors[]='';
+        $errors =[];
         if(strlen($this->title)==0){
-            $errors = 'title cant be empty';
+            $errors[] = 'title cant be empty';
         }
         return $errors;
 
     }
-    */
+    
 
 
 
-   }
+   
 }
 
 ?>

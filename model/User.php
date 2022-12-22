@@ -6,7 +6,13 @@ require_once "model/Tricount.php";
 class User extends Model {
 
 
-    public function __construct(public string $mail, public string $hashed_password, public string $full_name, public string $role, public ?string $iban = null){
+    public function __construct(
+        public string $mail, 
+        public string $hashed_password, 
+        public string $full_name, 
+        public string $role, 
+        public ?string $iban = null,
+        public ?string $id = null){
         
     }
 
@@ -26,7 +32,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"]);
+            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"],$data["id"]);
         }
     }
 
@@ -35,7 +41,7 @@ class User extends Model {
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row) {
-            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"]);
+            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"],$row["id"]);
         }
         return $results;
     }
@@ -80,7 +86,7 @@ class User extends Model {
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row){
-            $results[] = new Tricount($row["title"], $row["created_at"], $row["creator"],$row["id"], $row["description"]);
+            $results[] = new Tricount($row["title"], $row["created_at"], $row["creator"], $row["description"],$row["id"]);
         }
 
         return $results;
@@ -92,7 +98,7 @@ class User extends Model {
             $errors[] = "feull_name is required.";
         } if ((strlen($this->full_name) < 3 && strlen($this->full_name)> 16)) {
             $errors[] = "full_name length must be between 3 and 16.";
-        } if (!(preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
+        } if ((preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
             $errors[] = "full_name must start by a letter and must contain only letters and numbers.";
         }
         return $errors;
@@ -152,17 +158,7 @@ class User extends Model {
         return $errors;
     }
 
-  /*  public static function get_member_by_pseudo(string $full_name) : User|false {
-        $query = self::execute("SELECT * FROM User where full_name = :full_name", ["full_name"=>$full_name]);
-        $data = $query->fetch(); // un seul résultat au maximum
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            // je sais pas ce que je vais recupere
-            return new User($data["full_name"], $data["password"], $data["profile"], $data["picture_path"]);
-        }
-    }*/
-
+  
     private static function validate_password(string $password) : array {
         $errors = [];
         if (strlen($password) < 8 || strlen($password) > 16) {
