@@ -13,7 +13,7 @@
         <div class="tricounts">
             <ul>
                 <?php foreach($tricounts as $tricount){ ?>
-                        <li>
+                        <li><a href="Tricount/showTricount/<?= $tricount->id?>">
                             <h1><?=$tricount->title;?></h1>
                             <div class="nbparticipants">
                                 <?php if($tricount->nbParticipantsTricount()==0){
@@ -23,15 +23,14 @@
                                 } else {
                                     echo "With ".$tricount->nbParticipantsTricount()." friends";
                                 }
-                                ?></div>
-                            <li><?php if($tricount->description=="NULL" or $tricount->description==""){
+                                ?></div><br>
+                                <?php if($tricount->description=="NULL" or $tricount->description==""){
                                         echo "NO DESCRIPTION";
                                     } else {
                                         echo $tricount->description;
                                     }
                                 ?>
-                            </li>
-                        </li>
+                        </a></li>
                 <?php } ?>
                 
                 
