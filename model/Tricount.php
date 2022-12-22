@@ -14,27 +14,26 @@ class Tricount extends Model{
         return $data[0];
     }
 
-    public static function get_tricount_by_id(int $id) : Tricount|false {
-        $query = self::execute("SELECT * FROM Tricount where id = :id", ["id"=>$id]);
+    public function get_tricount_by_id() : Tricount|false {
+        $query = self::execute("SELECT * FROM tricounts where id = :id", ["id"=>$this->id]);
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"]);
+            return new Tricount($data["title"], $data["created_at"], $data["creator"], $data["description"], $data["id"]);
         }
     }
     public function persist(int $id) : Tricount {
-        $T = time((date_default_timezone_get()));
+        $T = time();
         $D = date("y-m-d h:m:s", $T);
        
-        if(self::get_tricount_by_id($this->id))
+       if(self::get_tricount_by_id())
             self::execute("UPDATE tricounts SET   title=:title, description=:description 
                            WHERE id=:id ", 
                             [ 
                                 "title"=>$this->title,
-                                "id"=>$id,
-                                "description"=>$this->description,
-                                "created_at"=>$this->created_at,
+                                "description"=>$this->description
+                              
                                ]);
         else
             self::execute("INSERT INTO tricounts(title,description,created_at,creator) VALUES(:title,:description,:created_at,:creator)", 
@@ -47,9 +46,9 @@ class Tricount extends Model{
     }
 
     public  function  valide_title( ) : array{
-        $errors[]='';
+        $errors =[];
         if(strlen($this->title)==0){
-            $errors = 'title cant be empty';
+            $errors[] = 'title cant be empty';
         }
         return $errors;
 
