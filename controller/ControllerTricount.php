@@ -8,8 +8,7 @@ require_once 'controller/MyController.php';
 
 class ControllerTricount extends MyController{
 
-    public function index() : void {
-    }
+    
 
     public function yourTricounts(): void {
         if ($this->user_logged()) {
@@ -20,44 +19,56 @@ class ControllerTricount extends MyController{
             $this->redirect("Main");
         }
     }
+    
+    
     public function addtricount () : void {
-
+        $user = $this->get_user_or_redirect();
         $title='';
         $description='';
         
-        $created_at='';
-        $creator= '';
+        $created_at='55';
+        $creator=$user->id;
         
         $errors= [];
-        if ($this->user_logged()) {
-            $user = $this->get_user_or_redirect();
-            $tricounts = $user->get_user_tricounts();
-            (new View("listTricounts"))->show(["tricounts" => $tricounts]);
+       
+          
+          
+         
 
         var_dump($_POST);
-        if(isset($_POST['title']) && isset($_POST['description'])){
+        if(isset($_POST['title']) ){
             $title = trim($_POST['title']);
 
             $description = trim($_POST['description']);
-           
 
             $tricount = new Tricount($title,$created_at,$creator,$description);
             $errors = $tricount->valide_title($title);
+            
             if (count($errors) == 0) { 
-                $tricount->persist($user->id); //sauve le tricount
+                $tricount->persist($creator); //sauve le tricount
+                (new View("addFreinds"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
+
                
             }
+            else{
+            (new View("addtricount"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
 
-        }
-        
-        (new View("addtricount"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
+            }
+            
+            
         }
         else {
-            $this->redirect("Main");
-        }
-    }
 
+        (new View("addtricount"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
+        }
+        
+        
+    }
+    public function index() : void {
+          }
 }
+
+
 
 
 
