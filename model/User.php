@@ -100,19 +100,21 @@ class User extends Model {
         $errors = [];
         if (!strlen($this->full_name) > 0) {
             $errors[] = "A full name is required.";
-        } if ((strlen($this->full_name) < 3 && strlen($this->full_name)> 16)) {
+        } if ((strlen($this->full_name) < 3 || strlen($this->full_name)> 256)) {
 
-            $errors[] = "full_name length must be between 3 and 16.";
-        } if ((preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
+            $errors[] = "Full name length must be at least 3.";
+        } 
+        
+        /*if ((preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
             $errors[] = "full_name must start by a letter and must contain only letters and numbers.";
 
-        }
+        }*/
         return $errors;
 }
     public function validate_mail(string $mail) : array {
         $errors = [];
         if (!preg_match("/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/",$mail)) {
-            $errors[] = "this mail is not valide";
+            $errors[] = "This mail is not valide";
         }
         return $errors;
     }
