@@ -48,6 +48,29 @@ class Operation extends Model {
         $data = $query->fetch();
         return new User($data["mail"],$data["hashed_password"],$data["full_name"],$data["role"],$data["iban"], $data["id"]);
     }
+
+    public static function get_total_weights(int $id): int{
+        $query = self::execute("SELECT sum(weight) total from repartitions WHERE operation=:operationId",["operationId" => $id]);
+        $data = $query->fetch();
+        return $data["total"];
+    }
+
+    public function get_weight(int $userId): int {
+        $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId and user = :userId",["operationId" => $this->id, "userId" => $userId]);
+        $data = $query->fetch();
+        return $data["weight"];
+    }
+
+    public function user_participates(int $userId):bool{
+        $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId",["operationId" => $this->id]);
+        $data = $query->fetchAll();
+        foreach($data as $row){
+            if($row["user"]==$userId){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 ?>

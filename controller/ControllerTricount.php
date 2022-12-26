@@ -30,12 +30,6 @@ class ControllerTricount extends MyController{
         $creator=$user->id;
         
         $errors= [];
-       
-          
-          
-         
-
-
         var_dump($_POST);
         if(isset($_POST['title']) ){
             $title = trim($_POST['title']);
@@ -55,8 +49,6 @@ class ControllerTricount extends MyController{
             (new View("addtricount"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
 
             }
-            
-            
         }
         else {
 
@@ -80,12 +72,13 @@ class ControllerTricount extends MyController{
             $this->redirect("Main");
         }
     }
-
-
+    
+    public function showBalance(): void{
+        $user=$this->get_user_or_redirect();
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
+            $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
+        }
+        (new View("balance"))->show(["tricount"=>$tricount]);
+    }
 }
-
-
-
-
-
 ?>
