@@ -58,7 +58,18 @@ class Operation extends Model {
     public function get_weight(int $userId): int {
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId and user = :userId",["operationId" => $this->id, "userId" => $userId]);
         $data = $query->fetch();
-        return (int)$data[0];
+        return $data["weight"];
+    }
+
+    public function user_participates(int $userId):bool{
+        $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId",["operationId" => $this->id]);
+        $data = $query->fetchAll();
+        foreach($data as $row){
+            if($row["user"]==$userId){
+                return true;
+            }
+        }
+        return false;
     }
 }
 

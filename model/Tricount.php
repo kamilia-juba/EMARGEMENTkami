@@ -89,15 +89,17 @@ class Tricount extends Model{
     }
 
 
-    private function get_balance(int $initiator,array $operations):float{
+    private function get_balance(int $userId,array $operations):float{
         $total = 0;
         foreach ($operations as $operation){
-            if($operation->initiator==$initiator){
+            if($operation->initiator==$userId){
                 $total+=$operation->amount;
             }else{
-                $weights = Operation::get_total_weights($operation->id);
-                $weight = $operation->get_weight($initiator);
-                $total = $total - (($operation->amount/$weights)*$weight);
+                if($operation->user_participates($userId)){
+                    $weights = Operation::get_total_weights($operation->id);
+                    $weight = $operation->get_weight($userId);
+                    $total = $total - (($operation->amount/$weights)*$weight);
+                } 
             }
         }
         return round($total,2);
