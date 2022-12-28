@@ -71,6 +71,20 @@ class Operation extends Model {
         }
         return false;
     }
+
+    public static function get_operation_byid(int $id):Operation{
+        $query = self::execute("SELECT * FROM operations WHERE id = :id",["id"=>$id]);
+        $data = $query->fetch();
+        return new Operation(
+            $data["title"],
+            $data["tricount"],
+            round($data["amount"],2),
+            $data["initiator"],
+            $data["created_at"],
+            $data["operation_date"],
+            $data["id"]
+        );
+    }
 }
 
 ?>

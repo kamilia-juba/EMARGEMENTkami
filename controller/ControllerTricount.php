@@ -22,16 +22,20 @@ class ControllerTricount extends MyController{
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
             $operations = Operation::get_operations_by_tricountid($tricount->id);
+            (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations,"user"=>$user]);
+        } else{
+            $this->redirect("Main");
         }
-        (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations,"user"=>$user]);
     }
 
     public function showBalance(): void{
         $user=$this->get_user_or_redirect();
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
+            (new View("balance"))->show(["tricount"=>$tricount]);
+        }else{
+            $this->redirect("Main");
         }
-        (new View("balance"))->show(["tricount"=>$tricount]);
     }
 
 }

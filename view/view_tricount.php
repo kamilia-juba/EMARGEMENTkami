@@ -15,10 +15,10 @@
     <a href="Tricount/showBalance/<?= $tricount->id?>"><button type="button" name = "buttonViewBalance">&#8644 View balance</button></a>
     <ul>
        <?php foreach($operations as $operation){ ?>
-                <li>
+                <li><a href="Operation/showOperation/<?=$operation->id?>">
                     <h1><?=$operation->title;?></h1><div class="amount"><h1><?=$operation->amount;?> €</h1></div><br>
                     Paid by <?=$operation->get_payer()->full_name;?><div class="dateOperation"><?=$operation->operation_date;?></div>
-                </li>
+                </a></li>
        <?php } ?>
     </ul>
     <section id="bottomBar">
