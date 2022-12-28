@@ -85,6 +85,16 @@ class Operation extends Model {
             $data["id"]
         );
     }
+
+    public function get_participants():array{
+        $query = self::execute("SELECT * FROM repartitions WHERE operation = :id",["id" => $this->id]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach($data as $row){
+            $results[] = $row["user"];
+        }
+        return $results;
+    }
 }
 
 ?>

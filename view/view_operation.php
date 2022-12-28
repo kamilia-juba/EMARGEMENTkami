@@ -16,7 +16,8 @@
         <h1><?=$operation->amount?> €</h1>
         <table>
         
-        <tr><td>Paid by <?= $user->id==$paidBy->id ? "me" : $paidBy->full_name; ?></td><td><?= $operation->operation_date?></td></tr>
+        <tr><td>Paid by <?= $user->id==$paidBy->id ? "<b>me</b>" : $paidBy->full_name; ?></td><td><?= $operation->operation_date?></td></tr>
+        <tr><td>For <?= sizeof($participants)==1 ? sizeof($participants)." participant" : sizeof($participants)." participants" ?><?= $user_participates ? ", including <b>me</b>" : ""?></td></tr>
 
         </table>
         

@@ -16,7 +16,14 @@ class ControllerOperation extends Mycontroller{
             $operation = Operation::get_operation_byid($_GET["param1"]);
             $tricount = Tricount::getTricountById($operation->tricount,$user->mail);
             $paidBy = User::get_user_by_id($operation->initiator);
-            (new View("operation"))->show(["user" => $user, "operation" => $operation, "tricount" => $tricount, "paidBy" => $paidBy]);
+            $participants = $operation->get_participants();
+            $user_participates = false;
+            foreach($participants as $participant){
+                if($participant==$user->id){
+                    $user_participates = true;
+                }
+            }
+            (new View("operation"))->show(["user" => $user, "operation" => $operation, "tricount" => $tricount, "paidBy" => $paidBy, "participants" => $participants ,"user_participates" => $user_participates]);
         }else{
             $this->redirect("Main");
         }
