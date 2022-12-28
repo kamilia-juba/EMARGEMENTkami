@@ -19,7 +19,7 @@
                         <td><input id="amount" name="amount" type="number" placeholder="Amount"></td>
                     </tr>
                     <tr>
-                        <td><input id="date" name="date" type="date" value="<?php date_default_timezone_set("Europe/Brussels"); echo date("d/M/Y")?>"></td>
+                        <td><input id="date" name="date" type="date" value="<?php $timezone = date_default_timezone_get(); echo date("Y-m-d")?>"></td>
                     </tr>
                     <tr>
                         <td><select name="paidBy" id="paidBy">
