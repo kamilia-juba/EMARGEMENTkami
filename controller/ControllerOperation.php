@@ -18,12 +18,24 @@ class ControllerOperation extends Mycontroller{
             $paidBy = User::get_user_by_id($operation->initiator);
             $participants = $operation->get_participants();
             $user_participates = false;
+            $users = [];
+            $amounts = [];
+            $total_weight = Operation::get_total_weights($operation->id);
             foreach($participants as $participant){
                 if($participant==$user->id){
                     $user_participates = true;
                 }
+                $weight = $operation->get_weight($participant);
+                $users[] = [User::get_user_by_id($participant),round(($operation->amount/$total_weight)*$weight,2)];
             }
-            (new View("operation"))->show(["user" => $user, "operation" => $operation, "tricount" => $tricount, "paidBy" => $paidBy, "participants" => $participants ,"user_participates" => $user_participates]);
+            (new View("operation"))->show(
+                                        ["user" => $user, 
+                                        "operation" => $operation, 
+                                        "tricount" => $tricount, 
+                                        "paidBy" => $paidBy, 
+                                        "users" => $users ,
+                                        "user_participates" => $user_participates]
+                                    );
         }else{
             $this->redirect("Main");
         }
