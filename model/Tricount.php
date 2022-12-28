@@ -76,6 +76,25 @@ class Tricount extends Model{
         }
         return round($data["total"],2);
     }
+
+    public function get_all_tricount_participants() : array{
+        $query = self:: execute("SELECT user from subscriptions where tricount = :tricountId",["tricountId"=>$this->id]);
+        $datas[]= $query->fetch();
+        $result[]="";
+
+        $user[] = User::get_users();
+        array_merge($result,$user);
+
+        /*foreach($datas as $data){
+            $user[] = User::get_users();
+            array_merge($result,$user);
+
+
+        }*/
+
+        return $user;
+    }
+
 }
 
 ?>
