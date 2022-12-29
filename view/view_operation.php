@@ -9,7 +9,7 @@
     </head>
     <body>
         <section id="titlebar">
-            <button name="buttonBack">Back</button>
+            <a href="Tricount/showTricount/<?=$tricount->id?>"><button name="buttonBack">Back</button></a>
             <?=$tricount->title?> &#8594 <?=$operation->title?>
             <button name="buttonEdit">Edit</button>
         </section>
