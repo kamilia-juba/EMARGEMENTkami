@@ -19,35 +19,37 @@ class ControllerOperation extends MyController{
         $amount = "";
         $date = "";
         $paidBy = "";
-        $errors[] = "";
-        $data[]= $tricount->get_all_tricount_participants();
+        $errorsTitle = [];
+        $errorsAmount = [];
+        $data= $tricount->get_all_tricount_participants();
+        $errors= [];
 
         if (isset($_POST['title']) && isset($_POST['amount']) && isset($_POST['date']) && 
         isset($_POST['paidBy'])) {
        
             $title = trim($_POST['title']);
-            $amount = trim($_POST['amount']);
+            $amount = floatval(trim($_POST['amount']));
             $date = trim($_POST['date']);
-            $paidBy = $_POST['paidBy'];
+            $paidBy = trim($_POST['paidBy']);
 
-            $operation = new Operation($title, $tricount->id, $amount, $paidBy, date("d/m/y","Europe/Brussels"), $date);
-            /*$errors = User::validate_unicity($mail);
-            $errors = array_merge($errors, $user->validate_full_name());
-            $errors = array_merge($errors, $user->validate_mail($mail));
-            $errors = array_merge($errors, $user->validate_IBAN($IBAN));
-            $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
+
+            $operation = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d"), $date);
+            $errors = array_merge($errors, $operation->validate_title());
+            $errors = array_merge($errors, $operation->validate_amount());
+            $errorsTitle = array_merge($errorsTitle, $operation->validate_title());
+            $errorsAmount = array_merge($errorsAmount, $operation->validate_amount());
+
 
             if (count($errors) == 0) { 
-                $user->persist(); //sauve l'utilisateur
+                $operation->persist(); //sauve l'utilisateur
                 $this->log_user($user);
-            }*/
-            $operation -> persist();
-            
-
+                (new View("add_operation"))->show(["title" => $title, 'amount'=> $amount,'date'=> $date, 
+                "errorsTitle" => $errorsTitle,"errorsAmount" => $errorsAmount, "tricount"=> $tricount, "datas" => $data]);
+            }
         }
 
         (new View("add_operation"))->show(["title" => $title, 'amount'=> $amount,'date'=> $date, 
-        "errors" => $errors, "tricount"=> $tricount, "data" => $data]);
+        "errorsTitle" => $errorsTitle,"errorsAmount" => $errorsAmount, "tricount"=> $tricount, "datas" => $data]);
         }  
     }
 }
