@@ -19,7 +19,13 @@ class ControllerOperation extends Mycontroller{
             $participants = $operation->get_participants();
             $user_participates = false;
             $users = [];
-            $amounts = [];
+            $operations = Operation::get_operations_by_tricountid($tricount->id);
+            $currentIndex = 0;
+            for($i=0;$i<sizeof($operations);++$i){
+                if($operations[$i]->id == $operation->id){
+                    $currentIndex = $i;
+                }
+            }
             $total_weight = Operation::get_total_weights($operation->id);
             foreach($participants as $participant){
                 if($participant==$user->id){
@@ -34,7 +40,9 @@ class ControllerOperation extends Mycontroller{
                                         "tricount" => $tricount, 
                                         "paidBy" => $paidBy, 
                                         "users" => $users ,
-                                        "user_participates" => $user_participates]
+                                        "user_participates" => $user_participates,
+                                        "currentIndex" => $currentIndex,
+                                        "operations" => $operations]
                                     );
         }else{
             $this->redirect("Main");
