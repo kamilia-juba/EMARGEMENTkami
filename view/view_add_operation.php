@@ -6,42 +6,45 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
-        <a href ="Tricount/showTricount/<?= $tricount->id?>"> Back </a>
+        <a href ="Tricount/showTricount/<?= $tricount->id?>"> Cancel </a>
+        
     </head>
     <body>
         <div class="main">
-            <form id="addOperationForm" action="operation/add_operation" method="post">
+            <form id="addOperationForm" action="Operation/add_operation/<?= $tricount->id?>" method="post">
+            <input type="submit" value="Save">
                 <table>
                     <tr>
-                        <td><input id="title" name="title" type="text" placeholder="Title"></td>
+                        <td><input id="title" name="title" type="text" value="<?= $title?>" placeholder="Title">
+                            <?php if (count($errorsTitle) != 0): ?>
+                            <div class='errorsTitle'>
+                                <?php foreach ($errorsTitle as $errors): ?>
+                                    <li><?= $errors ?></li>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?></td>
                     </tr>
                     <tr>
-                        <td><input id="amount" name="amount" type="number" placeholder="Amount"></td>
+                        <td><input id="amount" name="amount" type="number" value="<?= $amount?>" placeholder="Amount">
+                            <?php if (count($errorsAmount) != 0): ?>
+                                <div class='errorsAmount'>
+                                    <?php foreach ($errorsAmount as $errors): ?>
+                                        <li><?= $errors ?></li>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?></td>
                     </tr>
                     <tr>
                         <td><input id="date" name="date" type="date" value="<?php $timezone = date_default_timezone_get(); echo date("Y-m-d")?>"></td>
                     </tr>
                     <tr>
                         <td><select name="paidBy" id="paidBy">
-                            <?php foreach ($data as $data): ?>
-                            <option value=<?= $data->full_name ?>></option>
-                        <?php endforeach; ?> </select></td>
+                            <?php foreach ($datas as $data)
+                            echo '<option value="' . ($data->id) . '">' .$data->full_name . '</option>';
+                        ?> </select></td>
                     </tr>
                     </table>
-                <input type="submit" value="Save">
             </form>
-            <?php if (count($errors) != 0): ?>
-                <div class='errors'>
-                    <br><br><p>Please correct the following error(s) :</p>
-                    <ul>
-                        <?php foreach ($errors as $errors): ?>
-                            <li><?= $errors ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-                <?php elseif (strlen($success) != 0): ?>
-                <p><span class='success'><?= $success ?></span></p>
-            <?php endif; ?>
         </div>
     </body>
 </html>
