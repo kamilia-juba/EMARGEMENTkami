@@ -48,7 +48,9 @@ class ControllerOperation extends MyController{
 
         (new View("add_operation"))->show(["title" => $title, 'amount'=> $amount,'date'=> $date, 
         "errorsTitle" => $errorsTitle,"errorsAmount" => $errorsAmount, "tricount"=> $tricount, "datas" => $data]);
-        }  
+        }else{
+            $this->redirect("main");
+        }
     }
 }
 
