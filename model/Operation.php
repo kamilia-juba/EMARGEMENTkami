@@ -37,7 +37,7 @@ class Operation extends Model {
     }
 
     public static function get_operation_by_id(int $id) : Operation{
-        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId");
+        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId",["tricountId"=>$id]);
         $data = $query->fetch();
         return new Operation($data["mail"],$data["hashed_password"],$data["full_name"],$data["role"],$data["iban"], $data["id"]);
 
@@ -71,6 +71,24 @@ class Operation extends Model {
                         "initiator"=>$this->initiator,
                         "created_at"=>$this->created_at]);
         return $this;
+    }
+
+    public function validate_title() : array {
+        $errors = [];
+        if (strlen($this->title) == 0) {
+            $errors[] = "Title is mandatory";
+        } if ((strlen($this->title) < 3)) {
+            $errors[] = "Title must have at least 3 characters";
+        }
+        return $errors;
+    }
+
+    public function validate_amount() : array {
+        $errors = [];
+        if (($this->amount) <= 0 || ($this->amount)== "" ) {
+            $errors[] = "Amount must be positive";
+        }
+        return $errors;
     }
 }
 
