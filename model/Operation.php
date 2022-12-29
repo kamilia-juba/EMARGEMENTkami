@@ -70,6 +70,11 @@ class Operation extends Model {
                         "operation_date"=>$this->operation_date,
                         "initiator"=>$this->initiator,
                         "created_at"=>$this->created_at]);
+        $lastid= Model::lastInsertId();
+        self::execute("INSERT INTO repartitions(operation,user,weight) VALUES(:operation,:user,:weight)", 
+                        [ "weight"=>1,
+                        "operation"=>$lastid,
+                        "user"=>$this->initiator]);                
         return $this;
     }
 
