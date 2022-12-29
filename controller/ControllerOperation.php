@@ -33,7 +33,7 @@ class ControllerOperation extends MyController{
             $paidBy = trim($_POST['paidBy']);
 
 
-            $operation = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d"), $date);
+            $operation = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d H:i:s"), $date);
             $errors = array_merge($errors, $operation->validate_title());
             $errors = array_merge($errors, $operation->validate_amount());
             $errorsTitle = array_merge($errorsTitle, $operation->validate_title());
@@ -43,8 +43,6 @@ class ControllerOperation extends MyController{
             if (count($errors) == 0) { 
                 $operation->persist(); //sauve l'utilisateur
                 $this->log_user($user);
-                (new View("add_operation"))->show(["title" => $title, 'amount'=> $amount,'date'=> $date, 
-                "errorsTitle" => $errorsTitle,"errorsAmount" => $errorsAmount, "tricount"=> $tricount, "datas" => $data]);
             }
         }
 
