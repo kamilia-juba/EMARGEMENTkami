@@ -78,21 +78,15 @@ class Tricount extends Model{
     }
 
     public function get_all_tricount_participants() : array{
-        $query = self:: execute("SELECT user from subscriptions where tricount = :tricountId",["tricountId"=>$this->id]);
-        $datas[]= $query->fetch();
-        $result[]="";
+        $query = self::execute("SELECT * from users where id in (select user from subscriptions where tricount = :tricountId)",["tricountId"=>$this->id]);
+        $data= $query->fetchAll();
+        $results = [];
 
-        $user[] = User::get_users();
-        array_merge($result,$user);
-
-        /*foreach($datas as $data){
-            $user[] = User::get_users();
-            array_merge($result,$user);
-
-
-        }*/
-
-        return $user;
+        foreach ($data as $row) {
+            $user = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"], $row["id"]);
+            $results[]=$user;
+        }
+        return $results;
     }
 
 }
