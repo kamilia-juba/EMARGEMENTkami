@@ -8,7 +8,7 @@
     <body>
         <div class="titlebar">
             Your Tricounts
-            <button type="button" name="buttonAdd">Add</button>
+            <a href = "Tricount/addtricount/">  <button type="button" name="buttonAdd">Add</button></a>
         </div>
         <div class="tricounts">
             <ul>

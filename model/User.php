@@ -7,8 +7,13 @@ require_once "model/Operation.php";
 class User extends Model {
 
 
-    public function __construct(public string $mail, public string $hashed_password, public string $full_name, public string $role, public ?string $iban = null, public ?int $id=null){
-        
+    public function __construct(
+        public string $mail, 
+        public string $hashed_password, 
+        public string $full_name, 
+        public string $role, 
+        public ?string $iban = null,
+        public ?string $id = null){  
     }
 
     public static function get_user_by_id(int $id) : User|false {
@@ -27,23 +32,27 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"], $data["id"]);
+
+            return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"],$data["id"]);
+
         }
-    }
+    } 
 
     public static function get_users() : array {
         $query = self::execute("SELECT * FROM Users", []);
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row) {
-            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"], $row["id"]);
+
+            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"],$row["id"]);
+
         }
         return $results;
     }
 
         public function persist() : User {
         if(self::get_user_by_mail($this->mail))
-            self::execute("UPDATE Users SET  mail=:mail, hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban, WHERE id=:id ", 
+            self::execute("UPDATE Users SET  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE mail=:mail ", 
                             [ "mail"=>$this->mail,
                                 "hashed_password"=>Tools::my_hash($this->hashed_password),
                                 "full_name"=>$this->full_name,
@@ -81,7 +90,7 @@ class User extends Model {
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row){
-            $results[] = new Tricount($row["title"], $row["created_at"], $row["creator"],$row["id"], $row["description"]);
+            $results[] = new Tricount($row["title"], $row["created_at"], $row["creator"], $row["description"],$row["id"]);
         }
 
         return $results;
@@ -90,18 +99,22 @@ class User extends Model {
     public function validate_full_name() : array {
         $errors = [];
         if (!strlen($this->full_name) > 0) {
-            $errors[] = "feull_name is required.";
-        } if ((strlen($this->full_name) < 3 && strlen($this->full_name)> 16)) {
-            $errors[] = "full_name length must be between 3 and 16.";
-        } if (!(preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
+            $errors[] = "A full name is required.";
+        } if ((strlen($this->full_name) < 3 || strlen($this->full_name)> 256)) {
+
+            $errors[] = "Full name length must be at least 3.";
+        } 
+        
+        /*if ((preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $this->full_name))) {
             $errors[] = "full_name must start by a letter and must contain only letters and numbers.";
-        }
+
+        }*/
         return $errors;
 }
     public function validate_mail(string $mail) : array {
         $errors = [];
         if (!preg_match("/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/",$mail)) {
-            $errors[] = "this mail is not valide";
+            $errors[] = "This mail is not valide";
         }
         return $errors;
     }
@@ -120,22 +133,17 @@ class User extends Model {
             // Enlever tous les caractères qui ne sont pas des chiffres ou des lettres
             $IBAN = preg_replace('/[^a-zA-Z0-9]/', '', $IBAN);
         
-            // Vérifier que le code IBAN a la bonne longueur
-            if (strlen($IBAN) < 15 || strlen($IBAN) > 34) {
-            $errors[] = " la taille de l'iban n'est pas correct ";
-            }
-        
             // Extraire les deux premiers caractères (qui représentent le code du pays)
             $pays = substr($IBAN,0, 2);
         
             // Vérifier que les deux premiers caractères sont des lettres et que le pays est reconnu
             if (!ctype_alpha($pays)) {
-            $errors[] = "les 2 premier caractere  ne sont pas des lettre  ";
+            $errors[] = "2 first characters are not letters";
             } 
 
             if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
             {
-                $errors[] = " invalide iban";
+                $errors[] = "Wrong IBAN size or unknown country";
             }
            
         
@@ -153,17 +161,7 @@ class User extends Model {
         return $errors;
     }
 
-  /*  public static function get_member_by_pseudo(string $full_name) : User|false {
-        $query = self::execute("SELECT * FROM User where full_name = :full_name", ["full_name"=>$full_name]);
-        $data = $query->fetch(); // un seul résultat au maximum
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            // je sais pas ce que je vais recupere
-            return new User($data["full_name"], $data["password"], $data["profile"], $data["picture_path"]);
-        }
-    }*/
-
+  
     private static function validate_password(string $password) : array {
         $errors = [];
         if (strlen($password) < 8 || strlen($password) > 16) {

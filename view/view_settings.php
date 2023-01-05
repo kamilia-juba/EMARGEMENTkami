@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <a href = "tricount/yourTricounts"> Back </a>
         <meta charset="UTF-8">
         <title>Settings</title>
         <base href="<?= $web_root ?>"/>
@@ -12,7 +13,11 @@
         <br><br>
         <div class="text"> I know your email address is <?= $user->mail?>. </div>
         <br><br>
-        <button onclick="location.href = 'user/logout';" id="myButton" class="float-left submit-button" >Logout</button>
+        <a href = "user/edit_profile"> Edit Profile </a>
+        <br><br>
+        <a href = "user/change_password"> Change Password </a>
+        <br><br>
+        <a href = "user/logout"> Logout </a>
         <br><br>
     </body>
 </html>

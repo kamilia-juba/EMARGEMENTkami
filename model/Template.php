@@ -10,7 +10,7 @@
         }
 
         public function get_templates_by_tricount(Tricount $tricount): array{
-            $query = self::execute("select * from repartition_templates where tricount = :tricountId", ["tricountId"=>$tricount->$id]);
+            $query = self::execute("select * from repartition_templates where tricount = :tricountId", ["tricountId"=>$tricount->id]);
             $data = $query->fetchAll();
             $results = [];
             foreach($data as $row){
