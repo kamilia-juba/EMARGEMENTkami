@@ -48,5 +48,16 @@ class ControllerOperation extends Mycontroller{
             $this->redirect("Main");
         }
     }
+
+    public function editOperation(): void {
+        $user = $this->get_user_or_redirect();
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
+            $operation = Operation::get_operation_byid($_GET["param1"]);
+            $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
+            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount]);
+        } else{
+            $this->redirect("Main");
+        }
+    }
 }
 ?>

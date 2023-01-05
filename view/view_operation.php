@@ -11,7 +11,7 @@
         <section id="titlebar">
             <a href="Tricount/showTricount/<?=$tricount->id?>"><button name="buttonBack">Back</button></a>
             <?=$tricount->title?> &#8594 <?=$operation->title?>
-            <button name="buttonEdit">Edit</button>
+            <a href="Operation/editOperation/<?=$operation->id?>"><button name="buttonEdit">Edit</button></a>
         </section>
         <h1><?=$operation->amount?> €</h1>
         <table>
