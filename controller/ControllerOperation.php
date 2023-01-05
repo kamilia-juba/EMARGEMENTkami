@@ -54,7 +54,8 @@ class ControllerOperation extends Mycontroller{
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
             $operation = Operation::get_operation_byid($_GET["param1"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
-            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount]);
+            $participants = $tricount->get_participants();
+            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount,"participants" => $participants]);
         } else{
             $this->redirect("Main");
         }

@@ -11,5 +11,28 @@
         <?=$tricount->title?> &#8594 Edit Expense
         <button type="button" name="saveButton">Save</button>
     </section>
+    <form id="editOperationForm" action="" method="post">
+        <table>
+            <tr><td><input id="title" name="title" value="<?=$operation->title?>"></td></tr>
+            <tr>
+                <td><input id="amount" name ="amount" value="<?=$operation->amount?>"></td>
+                <td>EUR</td>
+            </tr>
+            <tr><td>Date</td></tr>
+            <tr><td><input id="date" name="date" type="date" value="<?=$operation->operation_date?>"></td></tr>
+            <tr><td>Paid by</td></tr>
+            <tr>
+                <td>
+                    <select name="paidBy">
+                        <?php
+                            foreach($participants as $participant){
+                                echo "<option>".$participant->full_name."</option>";
+                            }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </form>
 </body>
 </html>
