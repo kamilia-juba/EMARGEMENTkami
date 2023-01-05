@@ -55,7 +55,8 @@ class ControllerOperation extends Mycontroller{
             $operation = Operation::get_operation_byid($_GET["param1"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
-            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount,"participants" => $participants]);
+            $repartition_templates = $tricount->get_repartition_templates();
+            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount,"participants" => $participants,"repartition_templates"=>$repartition_templates]);
         } else{
             $this->redirect("Main");
         }

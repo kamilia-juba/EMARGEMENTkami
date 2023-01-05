@@ -32,7 +32,54 @@
                     </select>
                 </td>
             </tr>
+            <tr><td>Use repartition template (optional)</td></tr>
+            <tr>
+                <td>
+                    <select name="repartitionTemplates">
+                        <option>No, i'll use custom repartition</option>
+                        <?php
+                            foreach($repartition_templates as $repartition){
+                                echo "<option>".$repartition->title."</option>";
+                            }
+                        ?>
+                    </select>
+                </td>
+                <td><button type="button" name="refreshTemplates">&#10226</button></td>
+            </tr>
+            <tr><td>For whom ? (select at least one)</td></tr>
+            <?php
+                foreach($participants as $participant){ ?>
+                    <table>
+                        <tr>
+                            <td><input type='checkbox'></td>
+                            <td><?=$participant->full_name?></td>
+                            <td>
+                                <table>
+                                    <tr><td>Weight</td></tr>
+                                    <tr><td><input type="number"></td></tr>
+                                </table>
+                                
+                            </td>
+                        </tr>
+                    </table>
+            <?php } ?>
+            <tr><td>Add a new repartition template</td></tr>
+            <table>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>Save this template</td>
+                    <td>
+                        <table>
+                            <tr><td>Name</td></tr>
+                            <tr><td><input id="templateName" ></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
         </table>
     </form>
+
+    <button type="button" name="deleteOperation" id="deleteOperation">Delete this operation</button>
 </body>
 </html>

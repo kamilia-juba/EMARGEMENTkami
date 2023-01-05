@@ -2,6 +2,7 @@
 
 require_once "framework/Model.php";
 require_once "model/Operation.php";
+require_once "model/Template.php";
 
 class Tricount extends Model{
 
@@ -113,6 +114,16 @@ class Tricount extends Model{
         $results = [];
         foreach($data as $row){
             $results[] = new User($row["mail"],$row["hashed_password"],$row["full_name"],$row["role"],$row["iban"],$row["id"]);
+        }
+        return $results;
+    }
+
+    public function get_repartition_templates():array{
+        $query = self::execute("SELECT * FROM repartition_templates WHERE tricount = :tricountId",["tricountId" => $this->id]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach($data as $row){
+            $results[] = new Template($row["title"],$row["tricount"],$row["id"]);
         }
         return $results;
     }
