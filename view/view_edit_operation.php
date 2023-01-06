@@ -9,13 +9,13 @@
     <section id="titlebar">
         <a href="Operation/showOperation/<?=$operation->id?>"><button type="button" name="cancelButton">Cancel</button></a>
         <?=$tricount->title?> &#8594 Edit Expense
-        <button type="button" name="saveButton">Save</button>
+        <input type="submit" form="editOperationForm" name="saveButton" value="Save">
     </section>
-    <form id="editOperationForm" action="" method="post">
+    <form id="editOperationForm" action="Operation/editOperation/<?=$operation->id?>" method="post">
         <table>
             <tr><td><input id="title" name="title" value="<?=$operation->title?>"></td></tr>
             <tr>
-                <td><input id="amount" name ="amount" value="<?=$operation->amount?>"></td>
+                <td><input type="number" id="amount" name ="amount" value="<?=$operation->amount?>"></td>
                 <td>EUR</td>
             </tr>
             <tr><td>Date</td></tr>
@@ -79,7 +79,18 @@
 
         </table>
     </form>
-
+    <?php if (count($errors) != 0): ?>
+                <div class='errors'>
+                    <br><br><p>Please correct the following error(s) :</p>
+                    <ul>
+                        <?php foreach ($errors as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <?php elseif (strlen($success) != 0): ?>
+                <p><span class='success'><?= $success ?></span></p>
+            <?php endif; ?>
     <button type="button" name="deleteOperation" id="deleteOperation">Delete this operation</button>
 </body>
 </html>

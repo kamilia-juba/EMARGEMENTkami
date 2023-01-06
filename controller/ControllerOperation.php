@@ -51,12 +51,28 @@ class ControllerOperation extends Mycontroller{
 
     public function editOperation(): void {
         $user = $this->get_user_or_redirect();
+        $errors = [];
+        $success = "";
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
             $operation = Operation::get_operation_byid($_GET["param1"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
             $repartition_templates = $tricount->get_repartition_templates();
-            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount,"participants" => $participants,"repartition_templates"=>$repartition_templates]);
+
+            if(isset($_POST["title"]) && isset($_POST["amount"])){
+                $title = $_POST["title"];
+                $amount = $_POST["amount"];
+                $errors = array_merge($errors,$operation->validate_title($title));
+                $errors = array_merge($errors,$operation->validate_amount($amount));
+            }
+
+            if(count($_POST) > 0 && count($errors)==0){
+                $operation->title = $title;
+                $operation->amount = $amount;
+                $success = "Your operation has been successfully updated";
+            }
+
+            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount,"participants" => $participants,"repartition_templates"=>$repartition_templates,"errors" => $errors,"success" => $success]);
         } else{
             $this->redirect("Main");
         }

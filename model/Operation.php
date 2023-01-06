@@ -95,6 +95,22 @@ class Operation extends Model {
         }
         return $results;
     }
+
+    public function validate_title(String $title): array {
+        $errors = [];
+        if(strlen($title)<=0) {
+            $errors[] = "A title is required";
+        }
+        return $errors;
+    }
+
+    public function validate_amount(int $amount): array {
+        $errors = [];
+        if($amount<=0){
+            $errors[] = "Amount must be greater than 0";
+        }
+        return $errors;
+    }
 }
 
 ?>
