@@ -101,6 +101,9 @@ class Operation extends Model {
         if(strlen($title)<=0) {
             $errors[] = "A title is required";
         }
+        if(strlen($title)!=0 && strlen($title)<3){
+            $errors[] = "Title must have at least 3 characters";
+        }
         return $errors;
     }
 
@@ -110,6 +113,14 @@ class Operation extends Model {
             $errors[] = "Amount must be greater than 0";
         }
         return $errors;
+    }
+
+    public function persist(){
+        self::execute("UPDATE operations SET title=:title, amount=:amount, operation_date=:operation_date WHERE id=:id",
+                        ["id" => $this->id, 
+                        "title" => $this->title, 
+                        "amount" => $this->amount, 
+                        "operation_date" => $this->operation_date]);
     }
 }
 

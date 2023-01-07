@@ -57,11 +57,13 @@ class ControllerOperation extends Mycontroller{
             $operation = Operation::get_operation_byid($_GET["param1"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
+            $participants[] = $user;
             $repartition_templates = $tricount->get_repartition_templates();
 
-            if(isset($_POST["title"]) && isset($_POST["amount"])){
+            if(isset($_POST["title"]) && isset($_POST["amount"]) && isset($_POST["date"])){
                 $title = $_POST["title"];
                 $amount = $_POST["amount"];
+                $date = $_POST["date"];
                 $errors = array_merge($errors,$operation->validate_title($title));
                 $errors = array_merge($errors,$operation->validate_amount($amount));
             }
@@ -69,7 +71,9 @@ class ControllerOperation extends Mycontroller{
             if(count($_POST) > 0 && count($errors)==0){
                 $operation->title = $title;
                 $operation->amount = $amount;
+                $operation->operation_date = $date;
                 $success = "Your operation has been successfully updated";
+                $operation->persist();
             }
 
             (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount,"participants" => $participants,"repartition_templates"=>$repartition_templates,"errors" => $errors,"success" => $success]);
