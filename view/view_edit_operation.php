@@ -26,7 +26,7 @@
                     <select name="paidBy">
                         <?php
                             foreach($participants as $participant){
-                                echo "<option>".$participant->full_name."</option>";
+                                echo "<option value='".$participant->id."'>".$participant->full_name."</option>";
                             }
                         ?>
                     </select>

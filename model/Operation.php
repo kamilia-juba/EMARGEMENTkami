@@ -116,11 +116,12 @@ class Operation extends Model {
     }
 
     public function persist(){
-        self::execute("UPDATE operations SET title=:title, amount=:amount, operation_date=:operation_date WHERE id=:id",
+        self::execute("UPDATE operations SET title=:title, amount=:amount, operation_date=:operation_date, initiator=:initiator WHERE id=:id",
                         ["id" => $this->id, 
                         "title" => $this->title, 
                         "amount" => $this->amount, 
-                        "operation_date" => $this->operation_date]);
+                        "operation_date" => $this->operation_date,
+                        "initiator" => $this->initiator]);
     }
 }
 

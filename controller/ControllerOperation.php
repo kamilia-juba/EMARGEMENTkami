@@ -64,6 +64,7 @@ class ControllerOperation extends Mycontroller{
                 $title = $_POST["title"];
                 $amount = $_POST["amount"];
                 $date = $_POST["date"];
+                $paidBy = $_POST["paidBy"];
                 $errors = array_merge($errors,$operation->validate_title($title));
                 $errors = array_merge($errors,$operation->validate_amount($amount));
             }
@@ -72,6 +73,7 @@ class ControllerOperation extends Mycontroller{
                 $operation->title = $title;
                 $operation->amount = $amount;
                 $operation->operation_date = $date;
+                $operation->initiator = $paidBy;
                 $success = "Your operation has been successfully updated";
                 $operation->persist();
             }
