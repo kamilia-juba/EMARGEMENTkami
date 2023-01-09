@@ -25,8 +25,8 @@
                 <td>
                     <select name="paidBy">
                         <?php
-                            foreach($participants as $participant){
-                                echo "<option value='".$participant->id."'>".$participant->full_name."</option>";
+                            for($i = 0; $i<sizeof($participants_and_weights);++$i){
+                                echo "<option value='".$participants_and_weights[$i][0]->id."'>".$participants_and_weights[$i][0]->full_name."</option>";
                             }
                         ?>
                     </select>
@@ -36,10 +36,10 @@
             <tr>
                 <td>
                     <select name="repartitionTemplates">
-                        <option>No, i'll use custom repartition</option>
+                        <option value="customRepartition">No, i'll use custom repartition</option>
                         <?php
                             foreach($repartition_templates as $repartition){
-                                echo "<option>".$repartition->title."</option>";
+                                echo "<option value='".$repartition->id."'>".$repartition->title."</option>";
                             }
                         ?>
                     </select>
@@ -48,17 +48,16 @@
             </tr>
             <tr><td>For whom ? (select at least one)</td></tr>
             <?php
-                foreach($participants as $participant){ ?>
+                for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
                     <table>
                         <tr>
-                            <td><input type='checkbox'></td>
-                            <td><?=$participant->full_name?></td>
+                            <td><input type='checkbox' name='checkboxParticipants[]' value ='<?=$participants_and_weights[$i][0]->id?>'></td>
+                            <td><?=$participants_and_weights[$i][0]->full_name?></td>
                             <td>
                                 <table>
                                     <tr><td>Weight</td></tr>
-                                    <tr><td><input type="number"></td></tr>
+                                    <tr><td><input type="number" name="weight[]" value="<?=$participants_and_weights[$i][1]?>"></td></tr>
                                 </table>
-                                
                             </td>
                         </tr>
                     </table>

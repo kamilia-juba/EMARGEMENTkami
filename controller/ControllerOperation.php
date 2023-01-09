@@ -58,6 +58,10 @@ class ControllerOperation extends Mycontroller{
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
             $participants[] = $user;
+            $participants_and_weights = [];
+            foreach($participants as $participant){
+                $participants_and_weights[] = [$participant, $operation->get_weight($participant->id) == null ? 1 : $operation->get_weight($participant->id)];
+            }
             $repartition_templates = $tricount->get_repartition_templates();
 
             if(isset($_POST["title"]) && isset($_POST["amount"]) && isset($_POST["date"])){
@@ -65,6 +69,14 @@ class ControllerOperation extends Mycontroller{
                 $amount = $_POST["amount"];
                 $date = $_POST["date"];
                 $paidBy = $_POST["paidBy"];
+                if(isset($_POST["customRepartition"])){
+
+                    if(isset($_POST["checkboxParticipants"])){
+                        $postCheckParticipants = $_POST["checkboxParticipants"];
+                    }else{
+                        $errors [] = "You didn't select any participant";
+                    }
+                }
                 $errors = array_merge($errors,$operation->validate_title($title));
                 $errors = array_merge($errors,$operation->validate_amount($amount));
             }
@@ -78,7 +90,7 @@ class ControllerOperation extends Mycontroller{
                 $operation->persist();
             }
 
-            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount,"participants" => $participants,"repartition_templates"=>$repartition_templates,"errors" => $errors,"success" => $success]);
+            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount,"participants_and_weights" => $participants_and_weights,"repartition_templates"=>$repartition_templates,"errors" => $errors,"success" => $success]);
         } else{
             $this->redirect("Main");
         }
