@@ -32,19 +32,19 @@
                     </select>
                 </td>
             </tr>
+    </form>
+    <form id="applyTemplateForm" action="Operation/editOperation/<?=$operation->id?>" method="post">
             <tr><td>Use repartition template (optional)</td></tr>
             <tr>
                 <td>
                     <select name="repartitionTemplates">
                         <option value="customRepartition">No, i'll use custom repartition</option>
-                        <?php
-                            foreach($repartition_templates as $repartition){
-                                echo "<option value='".$repartition->id."'>".$repartition->title."</option>";
-                            }
-                        ?>
+                        <?php foreach($repartition_templates as $repartition){ ?>
+                                <option value="<?=$repartition->id?>"<?=$repartition->id==$selected_repartition ? "selected" : "" ?>><?=$repartition->title?></option>;
+                            <?php } ?>
                     </select>
                 </td>
-                <td><button type="button" name="refreshTemplates">&#10226</button></td>
+                <td><input type="submit" name="ApplyTemplate" value="&#10226"></td>
             </tr>
             <tr><td>For whom ? (select at least one)</td></tr>
             <?php
@@ -62,6 +62,8 @@
                         </tr>
                     </table>
             <?php } ?>
+    </form>
+    <form id="editOperationForm" action="Operation/editOperation/<?=$operation->id?>" method="post">
             <tr><td>Add a new repartition template</td></tr>
             <table>
                 <tr>
@@ -77,7 +79,6 @@
             </table>
 
         </table>
-    </form>
     <?php if (count($errors) != 0): ?>
                 <div class='errors'>
                     <br><br><p>Please correct the following error(s) :</p>
@@ -90,6 +91,7 @@
                 <?php elseif (strlen($success) != 0): ?>
                 <p><span class='success'><?= $success ?></span></p>
             <?php endif; ?>
+    </form>
     <button type="button" name="deleteOperation" id="deleteOperation">Delete this operation</button>
 </body>
 </html>

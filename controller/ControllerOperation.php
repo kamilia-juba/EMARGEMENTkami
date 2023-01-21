@@ -53,6 +53,7 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         $errors = [];
         $success = "";
+        $selected_repartition = 0;
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
             $operation = Operation::get_operation_byid($_GET["param1"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
@@ -64,33 +65,36 @@ class ControllerOperation extends Mycontroller{
             }
             $repartition_templates = $tricount->get_repartition_templates();
 
+            if(isset($_POST["repartitionTemplates"]) && $_POST["repartitionTemplates"] != "customRepartition"){
+                $selected_repartition = $_POST["repartitionTemplates"];
+            }
+
             if(isset($_POST["title"]) && isset($_POST["amount"]) && isset($_POST["date"])){
                 $title = $_POST["title"];
                 $amount = $_POST["amount"];
                 $date = $_POST["date"];
                 $paidBy = $_POST["paidBy"];
-                if(isset($_POST["customRepartition"])){
-
-                    if(isset($_POST["checkboxParticipants"])){
-                        $postCheckParticipants = $_POST["checkboxParticipants"];
-                    }else{
-                        $errors [] = "You didn't select any participant";
-                    }
-                }
                 $errors = array_merge($errors,$operation->validate_title($title));
                 $errors = array_merge($errors,$operation->validate_amount($amount));
+                if(count($errors)==0){
+                    $operation->title = $title;
+                    $operation->amount = $amount;
+                    $operation->operation_date = $date;
+                    $operation->initiator = $paidBy;
+                    $success = "Your operation has been successfully updated";
+                    $operation->persist();
+                }
             }
+            
 
-            if(count($_POST) > 0 && count($errors)==0){
-                $operation->title = $title;
-                $operation->amount = $amount;
-                $operation->operation_date = $date;
-                $operation->initiator = $paidBy;
-                $success = "Your operation has been successfully updated";
-                $operation->persist();
-            }
-
-            (new View("edit_operation"))->show(["operation" => $operation,"user"=>$user,"tricount" => $tricount,"participants_and_weights" => $participants_and_weights,"repartition_templates"=>$repartition_templates,"errors" => $errors,"success" => $success]);
+            (new View("edit_operation"))->show(["selected_repartition" => $selected_repartition,
+                                                 "operation" => $operation,
+                                                 "user"=>$user,"tricount" => $tricount,
+                                                 "participants_and_weights" => $participants_and_weights,
+                                                 "repartition_templates"=>$repartition_templates,
+                                                 "errors" => $errors,
+                                                 "success" => $success]
+            );
         } else{
             $this->redirect("Main");
         }
