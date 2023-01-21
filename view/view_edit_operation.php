@@ -51,7 +51,7 @@
                 for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
                     <table>
                         <tr>
-                            <td><input type='checkbox' name='checkboxParticipants[]' value ='<?=$participants_and_weights[$i][0]->id?>'></td>
+                            <td><input type='checkbox' name='checkboxParticipants[]' value ='<?=$participants_and_weights[$i][0]->id?>' <?php if($operation->user_participates($participants_and_weights[$i][0]->id)){echo "checked";}?>></td>
                             <td><?=$participants_and_weights[$i][0]->full_name?></td>
                             <td>
                                 <table>

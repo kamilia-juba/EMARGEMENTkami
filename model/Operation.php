@@ -58,7 +58,6 @@ class Operation extends Model {
     public function get_weight(int $userId): int | null {
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId and user = :userId",["operationId" => $this->id, "userId" => $userId]);
         $data = $query->fetch();
-        var_dump($userId);
         return $data === false ? null : $data["weight"];
     }
 
