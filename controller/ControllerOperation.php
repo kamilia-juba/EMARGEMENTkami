@@ -66,7 +66,12 @@ class ControllerOperation extends Mycontroller{
             $repartition_templates = $tricount->get_repartition_templates();
 
             if(isset($_POST["repartitionTemplates"]) && $_POST["repartitionTemplates"] != "customRepartition"){
-                $selected_repartition = $_POST["repartitionTemplates"];
+                $template = Template::get_template_by_id($_POST["repartitionTemplates"]);
+                $selected_repartition = $template->id;
+                $participants_and_weights = [];
+                foreach($participants as $participant){
+                    $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 1 : $operation->get_weight_from_template($participant, $template)];
+                }
             }
 
             if(isset($_POST["title"]) && isset($_POST["amount"]) && isset($_POST["date"])){

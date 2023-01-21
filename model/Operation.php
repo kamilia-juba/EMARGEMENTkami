@@ -61,6 +61,13 @@ class Operation extends Model {
         return $data === false ? null : $data["weight"];
     }
 
+    public function get_weight_from_template(User $participant, Template $template){
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
+        $data = $query->fetch();
+        return $data === false ? null : $data["weight"];
+
+    }
+
     public function user_participates(int $userId):bool{
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId",["operationId" => $this->id]);
         $data = $query->fetchAll();

@@ -19,6 +19,12 @@
             return $results;
         }
 
+        public static function get_template_by_id(int $id): Template{
+            $query = self::execute("SELECT * FROM repartition_templates WHERE id=:id", ["id" => $id]);
+            $data = $query->fetch();
+            return new Template($data["title"], $data["tricount"], $data["id"]);
+        }
+
     }
 
 ?>
