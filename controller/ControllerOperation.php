@@ -70,7 +70,7 @@ class ControllerOperation extends Mycontroller{
                 $selected_repartition = $template->id;
                 $participants_and_weights = [];
                 foreach($participants as $participant){
-                    $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 1 : $operation->get_weight_from_template($participant, $template)];
+                    $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template)];
                 }
             }
 
