@@ -106,6 +106,29 @@ class Tricount extends Model{
         }
         return round($total,2);
     }
+
+    public function persistUpdate(){
+        self::execute("UPDATE tricounts SET title=:title, description=:description where id=:id",
+    
+                     ["id"=> $this->id,
+                    "title"=>$this->title,
+                    "description"=>$this->description,
+                ]);
+    
+    }
+
+    public function get_participants():array{
+        $query = self::execute("SELECT * FROM users WHERE id in (SELECT DISTINCT user FROM subscriptions WHERE tricount=:id)",["id" => $this->id]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach($data as $row){
+            $results[] = new User($row["mail"],$row["hashed_password"],$row["full_name"],$row["role"],$row["iban"],$row["id"]);
+        }
+        return $results;
+    }
+
+
+
 }
 
 ?>
