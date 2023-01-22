@@ -106,6 +106,43 @@ class Tricount extends Model{
         }
         return round($total,2);
     }
+
+    public function get_participants(int $tricountID): array{
+        $query = self::execute("select * from users where users.id in (SELECT user FROM subscriptions where tricount=:tricountID)",["tricountId"=>$tricountID]);
+        $data=$query->fetchAll();
+        foreach($data as $row){
+            $results[] = new User(
+                $row["mail"],
+                $row["hashed_password"],
+                $row["full_name"],
+                $row["role"],
+                $row["iban"],
+                $row["id"],
+                0);
+        }
+        return $results;
+    }
+
+    public function get_baalance(int $tricountID):array{
+
+        $operations[] = Operation::get_operations_by_tricountid($tricountID);
+        $participants[] = Tricount::get_participants($tricountID);
+
+        foreach($operations as $operation){
+            $totalWeight=Operation::get_total_weights($operation->id);
+            $payer=$operation->get_payer();
+            $sum=Operation::get_total_weights($operation->id); //cette méthode peut être changée en méthode statique
+            $individualAmout= $sum/$totalWeight;
+
+            foreach($participants as $participant){
+                if($participant->id=$payer->id){
+                }
+                else{
+
+                }
+            }
+        }
+    }
 }
 
 ?>
