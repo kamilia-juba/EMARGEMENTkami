@@ -51,7 +51,7 @@
                 for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
                     <table>
                         <tr>
-                            <td><input type='checkbox' name='checkboxParticipants[]' value ='<?=$participants_and_weights[$i][0]->id?>' <?php if($operation->user_participates($participants_and_weights[$i][0]->id)){echo "checked";}?>></td>
+                            <td><input type='checkbox' name='checkboxParticipants[]' <?php if($disable_CBox_and_SaveTemplate){echo "disabled";}?> value ='<?=$participants_and_weights[$i][0]->id?>' <?php if($operation->user_participates($participants_and_weights[$i][0]->id)){echo "checked";}?>></td>
                             <td><?=$participants_and_weights[$i][0]->full_name?></td>
                             <td>
                                 <table>
@@ -63,7 +63,8 @@
                     </table>
             <?php } ?>
     </form>
-    <form id="editOperationForm" action="Operation/editOperation/<?=$operation->id?>" method="post">
+    <?php if(!$disable_CBox_and_SaveTemplate){ ?>
+        <form id="editOperationForm" action="Operation/editOperation/<?=$operation->id?>" method="post">
             <tr><td>Add a new repartition template</td></tr>
             <table>
                 <tr>
@@ -79,6 +80,9 @@
             </table>
 
         </table>
+        </form>
+
+    <?php } ?>
     <?php if (count($errors) != 0): ?>
                 <div class='errors'>
                     <br><br><p>Please correct the following error(s) :</p>
@@ -91,7 +95,6 @@
                 <?php elseif (strlen($success) != 0): ?>
                 <p><span class='success'><?= $success ?></span></p>
             <?php endif; ?>
-    </form>
     <button type="button" name="deleteOperation" id="deleteOperation">Delete this operation</button>
 </body>
 </html>

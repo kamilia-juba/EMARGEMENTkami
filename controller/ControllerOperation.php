@@ -54,6 +54,7 @@ class ControllerOperation extends Mycontroller{
         $errors = [];
         $success = "";
         $selected_repartition = 0;
+        $disable_CBox_and_SaveTemplate = false;
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
             $operation = Operation::get_operation_byid($_GET["param1"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
@@ -69,6 +70,7 @@ class ControllerOperation extends Mycontroller{
                 $template = Template::get_template_by_id($_POST["repartitionTemplates"]);
                 $selected_repartition = $template->id;
                 $participants_and_weights = [];
+                $disable_CBox_and_SaveTemplate = true;
                 foreach($participants as $participant){
                     $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template)];
                 }
@@ -98,7 +100,8 @@ class ControllerOperation extends Mycontroller{
                                                  "participants_and_weights" => $participants_and_weights,
                                                  "repartition_templates"=>$repartition_templates,
                                                  "errors" => $errors,
-                                                 "success" => $success]
+                                                 "success" => $success,
+                                                 "disable_CBox_and_SaveTemplate" => $disable_CBox_and_SaveTemplate]
             );
         } else{
             $this->redirect("Main");
