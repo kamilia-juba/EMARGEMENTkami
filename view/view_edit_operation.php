@@ -46,6 +46,7 @@
                 </td>
                 <td><input type="submit" name="ApplyTemplate" value="&#10226"></td>
             </tr>
+    </form>
             <tr><td>For whom ? (select at least one)</td></tr>
             <?php
                 for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
@@ -62,9 +63,7 @@
                         </tr>
                     </table>
             <?php } ?>
-    </form>
     <?php if(!$disable_CBox_and_SaveTemplate){ ?>
-        <form id="editOperationForm" action="Operation/editOperation/<?=$operation->id?>" method="post">
             <tr><td>Add a new repartition template</td></tr>
             <table>
                 <tr>
@@ -80,7 +79,7 @@
             </table>
 
         </table>
-        </form>
+    </form>
 
     <?php } ?>
     <?php if (count($errors) != 0): ?>
@@ -92,8 +91,6 @@
                         <?php endforeach; ?>
                     </ul>
                 </div>
-                <?php elseif (strlen($success) != 0): ?>
-                <p><span class='success'><?= $success ?></span></p>
             <?php endif; ?>
     <button type="button" name="deleteOperation" id="deleteOperation">Delete this operation</button>
 </body>

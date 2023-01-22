@@ -52,7 +52,6 @@ class ControllerOperation extends Mycontroller{
     public function editOperation(): void {
         $user = $this->get_user_or_redirect();
         $errors = [];
-        $success = "";
         $selected_repartition = 0;
         $disable_CBox_and_SaveTemplate = false;
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
@@ -74,6 +73,10 @@ class ControllerOperation extends Mycontroller{
                 foreach($participants as $participant){
                     $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template)];
                 }
+            }else{
+                if(isset($_POST["checkboxParticipants"])){
+                    
+                }
             }
 
             if(isset($_POST["title"]) && isset($_POST["amount"]) && isset($_POST["date"])){
@@ -88,8 +91,8 @@ class ControllerOperation extends Mycontroller{
                     $operation->amount = $amount;
                     $operation->operation_date = $date;
                     $operation->initiator = $paidBy;
-                    $success = "Your operation has been successfully updated";
                     $operation->persist();
+                    $this->redirect("Operation", "showOperation", $operation->id);
                 }
             }
             
@@ -100,7 +103,6 @@ class ControllerOperation extends Mycontroller{
                                                  "participants_and_weights" => $participants_and_weights,
                                                  "repartition_templates"=>$repartition_templates,
                                                  "errors" => $errors,
-                                                 "success" => $success,
                                                  "disable_CBox_and_SaveTemplate" => $disable_CBox_and_SaveTemplate]
             );
         } else{

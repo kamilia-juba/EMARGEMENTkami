@@ -25,6 +25,13 @@
             return new Template($data["title"], $data["tricount"], $data["id"]);
         }
 
+        public function persist(int $weight, Operation $operation, User $user){
+            $query = self::execute("UPDATE repartitions SET weight=:weight WHERE operation=:operation and user=:user ",
+                                    ["weight" => $weight, 
+                                    "operation" => $operation->id,
+                                    "user" => $user->id]);
+        }
+
     }
 
 ?>
