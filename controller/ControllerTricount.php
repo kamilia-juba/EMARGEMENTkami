@@ -76,5 +76,37 @@ class ControllerTricount extends MyController{
             $this->redirect("Main");
         }
     }
+
+    public function editTricount(): void{
+        
+        $user = $this->get_user_or_redirect();
+        $errors = [];
+        $success = "";
+        $participants = [];
+        
+       if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
+        $tricount=Tricount::getTricountById($_GET["param1"],$user->mail);
+        $participants= $tricount->get_participants();
+        $participants [] = $user;
+       
+            var_dump($_POST);
+            if(isset($_POST['title'])){
+                $title = trim($_POST['title']);
+                $description= trim($_POST['description']);
+                $errors = $tricount->valide_title($title);
+                if (count($errors) == 0) { 
+                    $tricount->title = $title;
+                    $tricount->description = $description;
+                    $tricount->persistUpdate();
+                    $this->redirect("Tricount", "showTricount",$tricount->id) ;
+               }   
+            }           
+            (new View("EditTricount"))->show(["user" => $user,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success]);
+
+        }
+        else{
+         $this->redirect("main");
+       }
+    }
 }
 ?>
