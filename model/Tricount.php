@@ -89,7 +89,6 @@ class Tricount extends Model{
         foreach ($data as $row) {
             $user = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"], $row["id"]);
             $results[]=$user;
-
         }
         return $results;
     }

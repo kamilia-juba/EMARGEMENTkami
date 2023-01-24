@@ -60,7 +60,16 @@ class ControllerTricount extends MyController{
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
             $operations = Operation::get_operations_by_tricountid($tricount->id);
-            (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations,"user"=>$user]);
+            $alone = false;
+            $noExpenses = false;
+            $participants = $tricount->get_participants();
+            if(count($participants)==1){
+                $alone = true;
+            }
+            if(empty($operations)){
+                $noExpenses = true;
+            }
+            (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations,"user"=>$user, "alone" => $alone, "noExpenses" => $noExpenses]);
         } else{
             $this->redirect("Main");
         }

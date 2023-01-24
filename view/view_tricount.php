@@ -13,15 +13,31 @@
         <?=$tricount->title?> &#8594 Expenses
         <button type="button" name = "buttonEdit">Edit</button>
     </div>
-    <a href="Tricount/showBalance/<?= $tricount->id?>"><button type="button" name = "buttonViewBalance">&#8644 View balance</button></a>
-    <ul>
+    <?php if($alone || $noExpenses){ ?>
+            <table>
+                <tr>
+                    <td><?= $alone ? "You are alone!" : "Your Tricount is empty!" ?></td>
+                </tr>
+                <tr>
+                    <td>
+                        <?= $alone ? "Click below to add your friends!" : "Click below to add your first expense!" ?><br>
+                        <?= $alone ?"<a href=''><button type='button' name='addFriendOrExpenseBtn'>Add friends</button></a>" 
+                                    : "<a href='Operation/add_operation/$tricount->id'><button type='button' name='addFriendOrExpenseBtn'>Add an expense</button></a>" ?>
+                    </td>
+                </tr>
+            </table>
+    <?php }else{ ?>
+        <a href="Tricount/showBalance/<?= $tricount->id?>"><button type="button" name = "buttonViewBalance">&#8644 View balance</button></a>
+        <ul>
        <?php foreach($operations as $operation){ ?>
                 <li><a href="Operation/showOperation/<?=$operation->id?>">
                     <h1><?=$operation->title;?></h1><div class="amount"><h1><?=$operation->amount;?> €</h1></div><br>
                     Paid by <?=$operation->get_payer()->full_name;?><div class="dateOperation"><?=$operation->operation_date;?></div>
                 </a></li>
        <?php } ?>
-    </ul>
+        </ul>
+    <?php } ?>
+    
     <section id="bottomBar">
         <section id="myTotal">
             My total<br>
