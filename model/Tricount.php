@@ -92,6 +92,54 @@ class Tricount extends Model{
         return $results;
     }
 
+    public static function get_participants(int $tricountID): array{
+        $query = self::execute("select distinct * from users where users.id in (SELECT user FROM subscriptions where tricount=:tricountID)",["tricountID"=>$tricountID]);
+        $data=$query->fetchAll();
+        foreach($data as $row){
+            $results[] = new User(
+                $row["mail"],
+                $row["hashed_password"],
+                $row["full_name"],
+                $row["role"],
+                $row["iban"],
+                $row["id"],
+                0);
+        }
+        return $results;
+    }
+
+    public static function get_balances(int $tricountID):array{
+        $operations=[];
+        $participant=[];
+
+        $operations = Operation::get_operations_by_tricountid($tricountID);
+        $participants = Tricount::get_participants($tricountID);
+
+
+        foreach($operations as $operation){
+
+            $totalWeight=Operation::get_total_weights($operation->id);
+            $payer=$operation->get_payer();
+            $sum=$operation->amount;
+
+            $individualAmout= $sum/$totalWeight;
+
+            foreach($participants as $participant){
+                if($operation->user_participates($participant->id)){
+                    $participantId=$participant->id;
+                    $payerID=$payer->id;
+                    $myWeight=$operation->get_weight($participantId);
+                    if($payerID==$participantId){
+                        $participant->account+=$sum-($myWeight*$individualAmout);
+                    }
+                    else{
+                        $participant->account-=$myWeight*$individualAmout;
+                    }
+                }
+            }
+        }
+        return $participants;
+    }
 }
 
 ?>
