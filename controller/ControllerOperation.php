@@ -82,30 +82,30 @@ class ControllerOperation extends Mycontroller{
                 $paidBy = $_POST["paidBy"];
                 $errors = array_merge($errors,$operation->validate_title($title));
                 $errors = array_merge($errors,$operation->validate_amount($amount));
+                if(!isset($_POST["checkboxParticipants"])){
+                    if(isset($_POST["weight"])){
+                        $errors[] = "You must select at least 1 participant";
+                    }
+                }
                 if(count($errors)==0){
                     $operation->title = $title;
                     $operation->amount = $amount;
                     $operation->operation_date = $date;
                     $operation->initiator = $paidBy;
                     $operation->persist();
-                    //$this->redirect("Operation", "showOperation", $operation->id);
-                }
-            }
-
-            if(!isset($_POST["checkboxParticipants"])){
-                if(isset($_POST["weight"])){
-                    $errors[] = "You must select at least 1 participant";
-                }
-            }else{
-                //change les poids dans la liste globale des participants du tricount si ils ont été checkés dans la view 
-                $checkboxes = $_POST["checkboxParticipants"];
-                $weights = $_POST["weight"];
-                for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
-                    for($j = 0; $j<sizeof($checkboxes);++$j){
-                        if($participants_and_weights[$i][0]->id==$checkboxes[$j]){
-                            $participants_and_weights[$i][1] = $weights[$i];
+                    $operation->delete_repartitions();
+                    //change les poids dans la liste globale des participants du tricount si ils ont été checkés dans la view 
+                    $checkboxes = $_POST["checkboxParticipants"];
+                    $weights = $_POST["weight"];
+                    for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
+                        for($j = 0; $j<sizeof($checkboxes);++$j){
+                            if($participants_and_weights[$i][0]->id==$checkboxes[$j]){
+                                $participants_and_weights[$i][1] = $weights[$i];
+                                $operation->add_repartitions($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
+                            }
                         }
                     }
+                    //$this->redirect("Operation", "showOperation", $operation->id);
                 }
             }
             

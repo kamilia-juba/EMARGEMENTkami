@@ -130,6 +130,17 @@ class Operation extends Model {
                         "operation_date" => $this->operation_date,
                         "initiator" => $this->initiator]);
     }
+
+    public function delete_repartitions(){
+        self::execute("DELETE FROM repartitions WHERE operation=:operation",["operation" => $this->id]);
+    }
+
+    public function add_repartitions(User $user, int $weight){
+        self::execute("INSERT INTO repartitions(operation,user,weight) VALUES(:operation,:user,:weight) ",
+                     ["operation" => $this->id,
+                      "user" => $user->id,
+                      "weight" => $weight]);
+    }
 }
 
 ?>
