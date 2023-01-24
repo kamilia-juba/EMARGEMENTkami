@@ -26,7 +26,6 @@ class ControllerTricount extends MyController{
         $creator=$user->id;
         
         $errors= [];
-        var_dump($_POST);
         if(isset($_POST['title']) ){
             $title = trim($_POST['title']);
 
@@ -71,7 +70,8 @@ class ControllerTricount extends MyController{
         $user=$this->get_user_or_redirect();
         if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
-            (new View("balance"))->show(["tricount"=>$tricount]);
+            $participants = $tricount->get_balances($_GET["param1"]);
+            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount]);
         }else{
             $this->redirect("Main");
         }

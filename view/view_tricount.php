@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <base href="<?= $web_root ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="<?= $web_root ?>"/>
     <title><?=$tricount->title?></title>
 </head>
 <body>
@@ -26,7 +27,7 @@
             My total<br>
             <?=$tricount->get_logged_user_total($user->id)?> €
         </section>
-        <button name="plusButton">+</button>
+        <a href = "Operation/add_operation/<?= $tricount->id?>"><button name="plusButton">+  </button></a>
         <section id="totalExpenses">
             Total expenses<br>
             <?=$tricount->get_total_expenses();?> €

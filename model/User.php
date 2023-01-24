@@ -13,7 +13,9 @@ class User extends Model {
         public string $full_name, 
         public string $role, 
         public ?string $iban = null,
-        public ?int $id = null){  
+        public ?int $id = null,
+        public ?float $account=0){  
+
     }
 
     public static function get_user_by_id(int $id) : User|false {

@@ -13,7 +13,7 @@ class Tricount extends Model{
     public function nbParticipantsTricount(): int {
         $query = self::execute("select count(*) from subscriptions where tricount = :tricountID", ["tricountID" => $this->id]);
         $data = $query->fetch();
-        return $data[0];
+        return $data[0]-1;
     }
 
     public function get_tricount_by_id() : Tricount|false {
@@ -25,6 +25,7 @@ class Tricount extends Model{
             return new Tricount($data["title"], $data["created_at"], $data["creator"], $data["description"], $data["id"]);
         }
     }
+
     public function persist(int $id) : Tricount {
         $T = time();
         $D = date("y-m-d h:m:s", $T);
@@ -80,32 +81,51 @@ class Tricount extends Model{
         return round($data["total"],2);
     }
 
-    public function get_totals(): array{
-        $query = self::execute("SELECT initiator FROM operations where tricount = :tricountId GROUP BY initiator",["tricountId"=>$this->id]);
-        $data=$query->fetchAll();
-        $operations = Operation::get_operations_by_tricountid($this->id);
+    public function get_all_tricount_participants() : array{
+        $query = self::execute("SELECT * from users where id in (select user from subscriptions where tricount = :tricountId)",["tricountId"=>$this->id]);
+        $data= $query->fetchAll();
         $results = [];
-        foreach($data as $row){
-            $results[] = [$this->get_balance((int)$row[0],$operations),(int)$row[0]];
+
+        foreach ($data as $row) {
+            $user = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"], $row["id"]);
+            $results[]=$user;
+
         }
         return $results;
     }
 
 
-    private function get_balance(int $userId,array $operations):float{
-        $total = 0;
-        foreach ($operations as $operation){
-            if($operation->initiator==$userId){
-                $total+=$operation->amount;
-            }else{
-                if($operation->user_participates($userId)){
-                    $weights = Operation::get_total_weights($operation->id);
-                    $weight = $operation->get_weight($userId);
-                    $total = $total - (($operation->amount/$weights)*$weight);
-                } 
+    public function get_balances(int $tricountID):array{
+        $operations=[];
+        $participant=[];
+    
+        $operations = Operation::get_operations_by_tricountid($tricountID);
+        $participants = $this->get_participants();
+
+
+        foreach($operations as $operation){
+
+            $totalWeight=Operation::get_total_weights($operation->id);
+            $payer=$operation->get_payer();
+            $sum=$operation->amount;
+
+            $individualAmout= $sum/$totalWeight;
+
+            foreach($participants as $participant){
+                if($operation->user_participates($participant->id)){
+                    $participantId=$participant->id;
+                    $payerID=$payer->id;
+                    $myWeight=$operation->get_weight($participantId);
+                    if($payerID==$participantId){
+                        $participant->account+=$sum-($myWeight*$individualAmout);
+                    }
+                    else{
+                        $participant->account-=$myWeight*$individualAmout;
+                    }
+                }
             }
         }
-        return round($total,2);
+        return $participants;
     }
 
     public function get_participants():array{
