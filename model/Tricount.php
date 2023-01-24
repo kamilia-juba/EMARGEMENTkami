@@ -2,6 +2,7 @@
 
 require_once "framework/Model.php";
 require_once "model/Operation.php";
+require_once "model/Template.php";
 
 class Tricount extends Model{
 
@@ -12,7 +13,7 @@ class Tricount extends Model{
     public function nbParticipantsTricount(): int {
         $query = self::execute("select count(*) from subscriptions where tricount = :tricountID", ["tricountID" => $this->id]);
         $data = $query->fetch();
-        return $data[0];
+        return $data[0]-1;
     }
 
     public function get_tricount_by_id() : Tricount|false {
@@ -24,6 +25,7 @@ class Tricount extends Model{
             return new Tricount($data["title"], $data["created_at"], $data["creator"], $data["description"], $data["id"]);
         }
     }
+
     public function persist(int $id) : Tricount {
         $T = time();
         $D = date("y-m-d h:m:s", $T);
@@ -92,28 +94,13 @@ class Tricount extends Model{
         return $results;
     }
 
-    public static function get_participants(int $tricountID): array{
-        $query = self::execute("select distinct * from users where users.id in (SELECT user FROM subscriptions where tricount=:tricountID)",["tricountID"=>$tricountID]);
-        $data=$query->fetchAll();
-        foreach($data as $row){
-            $results[] = new User(
-                $row["mail"],
-                $row["hashed_password"],
-                $row["full_name"],
-                $row["role"],
-                $row["iban"],
-                $row["id"],
-                0);
-        }
-        return $results;
-    }
 
-    public static function get_balances(int $tricountID):array{
+    public function get_balances(int $tricountID):array{
         $operations=[];
         $participant=[];
-
+    
         $operations = Operation::get_operations_by_tricountid($tricountID);
-        $participants = Tricount::get_participants($tricountID);
+        $participants = $this->get_participants();
 
 
         foreach($operations as $operation){
@@ -139,6 +126,46 @@ class Tricount extends Model{
             }
         }
         return $participants;
+    }
+
+    public function get_participants():array{
+        $query = self::execute("SELECT * FROM users WHERE id in (SELECT DISTINCT user FROM subscriptions WHERE tricount=:id)",["id" => $this->id]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach($data as $row){
+            $results[] = new User($row["mail"],$row["hashed_password"],$row["full_name"],$row["role"],$row["iban"],$row["id"]);
+        }
+        return $results;
+    }
+
+    public function get_repartition_templates():array{
+        $query = self::execute("SELECT * FROM repartition_templates WHERE tricount = :tricountId",["tricountId" => $this->id]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach($data as $row){
+            $results[] = new Template($row["title"],$row["tricount"],$row["id"]);
+        }
+        return $results;
+    }
+
+    public function template_name_exists(string $title): bool{
+        $query = self::execute("SELECT * FROM repartition_templates WHERE title=:title and tricount=:tricount",
+                        ["title" => $title,
+                        "tricount" => $this->id]
+        );
+        $data = $query->fetch();
+        if(empty($data)){
+            return false;
+        }
+        return true;
+    }
+
+    public function add_template(string $title): Template{
+        self::execute("INSERT INTO repartition_templates(title,tricount) VALUES (:title, :tricount)",
+                        ["title" => $title, 
+                        "tricount" => $this->id]
+        );
+        return new Template($title,$this->id,Model::lastInsertId());
     }
 }
 

@@ -68,10 +68,17 @@ class Operation extends Model {
         return $data["total"];
     }
 
-    public function get_weight(int $userId): int {
+    public function get_weight(int $userId): int | null {
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId and user = :userId",["operationId" => $this->id, "userId" => $userId]);
         $data = $query->fetch();
-        return $data["weight"];
+        return $data === false ? null : $data["weight"];
+    }
+
+    public function get_weight_from_template(User $participant, Template $template){
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
+        $data = $query->fetch();
+        return $data === false ? null : $data["weight"];
+
     }
 
     public function user_participates(int $userId):bool{
@@ -125,23 +132,43 @@ class Operation extends Model {
                         "user"=>$this->initiator]);                
         return $this;
     }
-
-    public function validate_title() : array {
+    public function validate_title(String $title): array {
         $errors = [];
-        if (strlen($this->title) == 0) {
-            $errors[] = "Title is mandatory";
-        } if ((strlen($this->title) < 3)) {
+        if(strlen($title)<=0) {
+            $errors[] = "A title is required";
+        }
+        if(strlen($title)!=0 && strlen($title)<3){
             $errors[] = "Title must have at least 3 characters";
         }
         return $errors;
     }
 
-    public function validate_amount() : array {
+    public function validate_amount(int $amount): array {
         $errors = [];
-        if (($this->amount) <= 0 || ($this->amount)== "" ) {
-            $errors[] = "Amount must be positive";
+        if($amount<=0){
+            $errors[] = "Amount must be greater than 0";
         }
         return $errors;
+    }
+
+    public function updateOperation(){
+        self::execute("UPDATE operations SET title=:title, amount=:amount, operation_date=:operation_date, initiator=:initiator WHERE id=:id",
+                        ["id" => $this->id, 
+                        "title" => $this->title, 
+                        "amount" => $this->amount, 
+                        "operation_date" => $this->operation_date,
+                        "initiator" => $this->initiator]);
+    }
+
+    public function delete_repartitions(){
+        self::execute("DELETE FROM repartitions WHERE operation=:operation",["operation" => $this->id]);
+    }
+
+    public function add_repartitions(User $user, int $weight){
+        self::execute("INSERT INTO repartitions(operation,user,weight) VALUES(:operation,:user,:weight) ",
+                     ["operation" => $this->id,
+                      "user" => $user->id,
+                      "weight" => $weight]);
     }
 }
 
