@@ -32,6 +32,13 @@
                                     "user" => $user->id]);
         }
 
+        public function add_items(User $user, int $weight){
+            self::execute("INSERT INTO repartition_template_items(user,repartition_template,weight) VALUES (:user,:repartition_template,:weight)",
+                            ["user" => $user->id,
+                            "repartition_template" => $this->id,
+                            "weight" => $weight]
+            );
+        }
     }
 
 ?>

@@ -67,12 +67,12 @@
             <tr><td>Add a new repartition template</td></tr>
             <table>
                 <tr>
-                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox" name="saveTemplateCheck"></td>
                     <td>Save this template</td>
                     <td>
                         <table>
                             <tr><td>Name</td></tr>
-                            <tr><td><input id="templateName" ></td></tr>
+                            <tr><td><input id="newTemplateName" name="newTemplateName" ></td></tr>
                         </table>
                     </td>
                 </tr>

@@ -87,6 +87,25 @@ class ControllerOperation extends Mycontroller{
                         $errors[] = "You must select at least 1 participant";
                     }
                 }
+                if(isset($_POST["saveTemplateCheck"])){
+                    $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
+                    if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){
+                        if($tricount->template_name_exists($_POST["newTemplateName"])){
+                            $errors[] = "This template already exists. Choose another name";
+                        }else{
+                            $newTemplate = $tricount->add_template($newTemplateName);
+                            for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
+                                for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){
+                                    if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
+                                        $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
+                                    }
+                                }
+                            }
+                        }
+                    }else if(isset($_POST["newTemplateName"]) && empty($newTemplateName)){
+                        $errors[] = "A name must be given to template to be able to save it.";
+                    }
+                }
                 if(count($errors)==0){
                     $operation->title = $title;
                     $operation->amount = $amount;
@@ -105,7 +124,8 @@ class ControllerOperation extends Mycontroller{
                             }
                         }
                     }
-                    //$this->redirect("Operation", "showOperation", $operation->id);
+                    
+                    $this->redirect("Operation", "showOperation", $operation->id);
                 }
             }
             

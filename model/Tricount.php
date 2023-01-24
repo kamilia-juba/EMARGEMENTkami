@@ -127,6 +127,26 @@ class Tricount extends Model{
         }
         return $results;
     }
+
+    public function template_name_exists(string $title): bool{
+        $query = self::execute("SELECT * FROM repartition_templates WHERE title=:title and tricount=:tricount",
+                        ["title" => $title,
+                        "tricount" => $this->id]
+        );
+        $data = $query->fetch();
+        if(empty($data)){
+            return false;
+        }
+        return true;
+    }
+
+    public function add_template(string $title): Template{
+        self::execute("INSERT INTO repartition_templates(title,tricount) VALUES (:title, :tricount)",
+                        ["title" => $title, 
+                        "tricount" => $this->id]
+        );
+        return new Template($title,$this->id,Model::lastInsertId());
+    }
 }
 
 ?>
