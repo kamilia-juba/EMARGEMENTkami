@@ -73,10 +73,6 @@ class ControllerOperation extends Mycontroller{
                 foreach($participants as $participant){
                     $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template)];
                 }
-            }else{
-                if(isset($_POST["checkboxParticipants"])){
-                    
-                }
             }
 
             if(isset($_POST["title"]) && isset($_POST["amount"]) && isset($_POST["date"])){
@@ -92,7 +88,24 @@ class ControllerOperation extends Mycontroller{
                     $operation->operation_date = $date;
                     $operation->initiator = $paidBy;
                     $operation->persist();
-                    $this->redirect("Operation", "showOperation", $operation->id);
+                    //$this->redirect("Operation", "showOperation", $operation->id);
+                }
+            }
+
+            if(!isset($_POST["checkboxParticipants"])){
+                if(isset($_POST["weight"])){
+                    $errors[] = "You must select at least 1 participant";
+                }
+            }else{
+                //change les poids dans la liste globale des participants du tricount si ils ont été checkés dans la view 
+                $checkboxes = $_POST["checkboxParticipants"];
+                $weights = $_POST["weight"];
+                for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
+                    for($j = 0; $j<sizeof($checkboxes);++$j){
+                        if($participants_and_weights[$i][0]->id==$checkboxes[$j]){
+                            $participants_and_weights[$i][1] = $weights[$i];
+                        }
+                    }
                 }
             }
             
