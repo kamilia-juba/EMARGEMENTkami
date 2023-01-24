@@ -12,13 +12,11 @@
     </section>
     <table>
         <?php
-            for($i=0;$i<sizeof($tricount->get_totals());++$i){
-                if($tricount->get_totals()[$i][0]<0){
-                    echo "<tr><td>".$tricount->get_totals()[$i][0]."</td><td>".$tricount->get_totals()[$i][1]."</td></tr>";
-                } else {
-                    echo "<tr><td>".$tricount->get_totals()[$i][1]."</td><td>".$tricount->get_totals()[$i][0]."</td></tr>";
-                }
+            foreach($participants as $participant){
+                echo $participant->account;
             }
+
+            
         ?>
         
     </table>
