@@ -15,7 +15,7 @@
         <table>
             <tr><td><input id="title" name="title" value="<?=$operation->title?>"></td></tr>
             <tr>
-                <td><input type="number" id="amount" name ="amount" value="<?=$operation->amount?>"></td>
+                <td><input type="number" id="amount" min="0" name ="amount" value="<?=$operation->amount?>"></td>
                 <td>EUR</td>
             </tr>
             <tr><td>Date</td></tr>
@@ -57,7 +57,7 @@
                             <td>
                                 <table>
                                     <tr><td>Weight</td></tr>
-                                    <tr><td><input type="number" name="weight[]" value="<?=$participants_and_weights[$i][1]?>"></td></tr>
+                                    <tr><td><input type="number" min="0" name="weight[]" value="<?=$participants_and_weights[$i][1]?>"></td></tr>
                                 </table>
                             </td>
                         </tr>

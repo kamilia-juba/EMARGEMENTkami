@@ -117,7 +117,7 @@ class ControllerOperation extends Mycontroller{
             }
 
             if(isset($_POST["title"]) && isset($_POST["amount"]) && isset($_POST["date"])){
-                $title = $_POST["title"];
+                $title = trim($_POST["title"]);
                 $amount = $_POST["amount"];
                 $date = $_POST["date"];
                 $paidBy = $_POST["paidBy"];
