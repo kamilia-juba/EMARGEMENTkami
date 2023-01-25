@@ -30,7 +30,7 @@
         <a href="Tricount/showBalance/<?= $tricount->id?>"><button type="button" name = "buttonViewBalance">&#8644 View balance</button></a>
         <ul>
        <?php foreach($operations as $operation){ ?>
-                <li><a href="Operation/showOperation/<?=$operation->id?>">
+                <li><a href="Operation/showOperation/<?=$tricount->id?>/<?=$operation->id?>">
                     <h1><?=$operation->title;?></h1><div class="amount"><h1><?=$operation->amount;?> €</h1></div><br>
                     Paid by <?=$operation->get_payer()->full_name;?><div class="dateOperation"><?=$operation->operation_date;?></div>
                 </a></li>

@@ -11,8 +11,8 @@ class ControllerOperation extends Mycontroller{
 
     public function showOperation(): void {
         $user = $this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
-            $operation = Operation::get_operation_byid($_GET["param1"]);
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
+            $operation = Operation::get_operation_byid($_GET["param2"]);
             $tricount = Tricount::getTricountById($operation->tricount,$user->mail);
             $paidBy = User::get_user_by_id($operation->initiator);
             $participants = $operation->get_participants();
@@ -96,8 +96,8 @@ class ControllerOperation extends Mycontroller{
         $errors = [];
         $selected_repartition = 0;
         $disable_CBox_and_SaveTemplate = false;
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
-            $operation = Operation::get_operation_byid($_GET["param1"]);
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
+            $operation = Operation::get_operation_byid($_GET["param2"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
             $participants_and_weights = [];
@@ -166,7 +166,7 @@ class ControllerOperation extends Mycontroller{
                         }
                     }
                     
-                    $this->redirect("Operation", "showOperation", $operation->id);
+                    $this->redirect("Operation", "showOperation",$tricount->id, $operation->id);
                 }
             }
             

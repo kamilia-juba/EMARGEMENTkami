@@ -7,11 +7,11 @@
 </head>
 <body>
     <section id="titlebar">
-        <a href="Operation/showOperation/<?=$operation->id?>"><button type="button" name="cancelButton">Cancel</button></a>
+        <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operation->id?>"><button type="button" name="cancelButton">Cancel</button></a>
         <?=$tricount->title?> &#8594 Edit Expense
         <input type="submit" form="editOperationForm" name="saveButton" value="Save">
     </section>
-    <form id="editOperationForm" action="Operation/editOperation/<?=$operation->id?>" method="post">
+    <form id="editOperationForm" action="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>" method="post">
         <table>
             <tr><td><input id="title" name="title" value="<?=$operation->title?>"></td></tr>
             <tr>
@@ -33,7 +33,7 @@
                 </td>
             </tr>
     </form>
-    <form id="applyTemplateForm" action="Operation/editOperation/<?=$operation->id?>" method="post">
+    <form id="applyTemplateForm" action="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>" method="post">
             <tr><td>Use repartition template (optional)</td></tr>
             <tr>
                 <td>
