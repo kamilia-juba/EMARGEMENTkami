@@ -39,6 +39,19 @@
                             "weight" => $weight]
             );
         }
+
+        private function remove_items(){
+            self::execute("DELETE FROM repartition_template_items WHERE repartition_template = :id", ["id"=>$this->id]);
+        }
+
+        private function remove_repartition_template(){
+            self::execute("DELETE FROM repartition_templates WHERE id=:id",["id" => $this->id]);
+        }
+
+        public function remove_template(){
+            self::remove_items();
+            self::remove_repartition_template();
+        }
     }
 
 ?>
