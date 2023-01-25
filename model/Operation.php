@@ -132,7 +132,7 @@ class Operation extends Model {
                         "user"=>$this->initiator]);                
         return $this;
     }
-    public function validate_title(String $title): array {
+    public static function validate_title(String $title): array {
         $errors = [];
         if(strlen($title)<=0) {
             $errors[] = "A title is required";
@@ -143,7 +143,7 @@ class Operation extends Model {
         return $errors;
     }
 
-    public function validate_amount(int $amount): array {
+    public static function validate_amount(int $amount): array {
         $errors = [];
         if($amount<=0){
             $errors[] = "Amount must be greater than 0";

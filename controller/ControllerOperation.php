@@ -72,10 +72,10 @@ class ControllerOperation extends Mycontroller{
 
 
             $operation = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d H:i:s"), $date);
-            $errors = array_merge($errors, $operation->validate_title());
-            $errors = array_merge($errors, $operation->validate_amount());
-            $errorsTitle = array_merge($errorsTitle, $operation->validate_title());
-            $errorsAmount = array_merge($errorsAmount, $operation->validate_amount());
+            $errors = array_merge($errors, Operation::validate_title($title));
+            $errors = array_merge($errors, Operation::validate_amount($amount));
+            $errorsTitle = array_merge($errorsTitle, Operation::validate_title($title));
+            $errorsAmount = array_merge($errorsAmount, Operation::validate_amount($amount));
 
 
             if (count($errors) == 0) { 
