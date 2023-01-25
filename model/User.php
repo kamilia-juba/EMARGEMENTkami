@@ -86,9 +86,10 @@ class User extends Model {
     private static function check_password(string $clear_password, string $hash) : bool {
         return $hash === Tools::my_hash($clear_password);
     }
+
     public function get_user_tricounts() : array {
-        $query = self::execute("select * from tricounts where tricounts.creator = (select id from users where mail = :userMail)", 
-            ["userMail" => $this->mail]);
+        $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId)", 
+            ["userId" => $this->id]);
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row){
@@ -97,6 +98,7 @@ class User extends Model {
 
         return $results;
     }
+
 // SAADAYACINECHAKER
     public static function validate_full_name(string $full_name) : array {
         $errors = [];
