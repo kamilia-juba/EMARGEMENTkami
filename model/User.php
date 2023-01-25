@@ -98,11 +98,11 @@ class User extends Model {
         return $results;
     }
 // SAADAYACINECHAKER
-    public function validate_full_name() : array {
+    public static function validate_full_name(string $full_name) : array {
         $errors = [];
-        if (!strlen($this->full_name) > 0) {
+        if (!strlen($full_name) > 0) {
             $errors[] = "A full name is required.";
-        } if ((strlen($this->full_name) < 3 || strlen($this->full_name)> 256)) {
+        } if ((strlen($full_name) < 3 || strlen($full_name)> 256)) {
 
             $errors[] = "Full name length must be at least 3.";
         } 
@@ -121,7 +121,7 @@ class User extends Model {
         return $errors;
     }
 
-   public function validate_IBAN(string $IBAN) : array {
+   public static function validate_IBAN(string $IBAN) : array {
         $errors = [];
         $Countries = array(
             'al'=>28,'ad'=>24,'at'=>20,'az'=>28,'bh'=>22,'be'=>16,'ba'=>20,'br'=>29,'bg'=>22,'cr'=>21,'hr'=>21,'cy'=>28,'cz'=>24,
@@ -142,12 +142,15 @@ class User extends Model {
             if (!ctype_alpha($pays)) {
             $errors[] = "2 first characters are not letters";
             } 
-
-            if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
-            {
-                $errors[] = "Wrong IBAN size or unknown country";
+            if(array_key_exists(strtolower($pays),$Countries)){
+                if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
+                {
+                    $errors[] = "Wrong IBAN size";
+                }
             }
-           
+            else{
+                $errors[] = "Unknown country";
+            }
         
         return $errors;
         
