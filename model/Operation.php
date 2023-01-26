@@ -170,6 +170,11 @@ class Operation extends Model {
                       "user" => $user->id,
                       "weight" => $weight]);
     }
+
+    public function delete_operation(){
+        self::execute("delete from repartitions where operation=:operationId",["operationId" => $this->id]);
+        self::execute("delete from operations where id=:operationId",["operationId" => $this->id]);
+    }
 }
 
 ?>
