@@ -92,6 +92,5 @@
                     </ul>
                 </div>
             <?php endif; ?>
-    <button type="button" name="deleteOperation" id="deleteOperation">Delete this operation</button>
-</body>
+    <a href="Operation/confirm_delete_operation/<?=$tricount->id?>/<?=$operation->id?>"><button type="button" name="deleteOperation">Delete Operation</button></a></body>
 </html>
