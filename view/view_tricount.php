@@ -10,8 +10,7 @@
     <div class="titlebar">
         <a href= ""><button type="button" name = "buttonBack">Back</button></a>
         <?=$tricount->title?> &#8594 Expenses
-        <button type="button" name = "buttonEdit">Edit</button>
-    </div>
+        <a href="Tricount/EditTricount/<?= $tricount->id?>"><button type="button" name = "buttonEdit">Edit</button>    </div>
     <a href="Tricount/showBalance/<?= $tricount->id?>"><button type="button" name = "buttonViewBalance">&#8644 View balance</button></a>
     <ul>
        <?php foreach($operations as $operation){ ?>

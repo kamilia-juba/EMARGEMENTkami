@@ -26,7 +26,7 @@ class ControllerTricount extends MyController{
         $creator=$user->id;
         
         $errors= [];
-        var_dump($_POST);
+        
         if(isset($_POST['title']) ){
             $title = trim($_POST['title']);
 
@@ -89,7 +89,6 @@ class ControllerTricount extends MyController{
         $participants= $tricount->get_participants();
         $participants [] = $user;
        
-            var_dump($_POST);
             if(isset($_POST['title'])){
                 $title = trim($_POST['title']);
                 $description= trim($_POST['description']);
