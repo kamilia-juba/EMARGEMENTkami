@@ -14,7 +14,6 @@
         <a href="Tricount/EditTricount/<?= $tricount->id?>"><button type="button" name = "buttonEdit">Edit</button>    </div>
     <a href="Tricount/showBalance/<?= $tricount->id?>"><button type="button" name = "buttonViewBalance">&#8644 View balance</button></a>
     <ul>
-        <button type="button" name = "buttonEdit">Edit</button>
     </div>
     <?php if($alone || $noExpenses){ ?>
             <table>
@@ -32,7 +31,6 @@
     <?php }else{ ?>
         <a href="Tricount/showBalance/<?= $tricount->id?>"><button type="button" name = "buttonViewBalance">&#8644 View balance</button></a>
         <ul>
->>>>>>> develop
        <?php foreach($operations as $operation){ ?>
                 <li><a href="Operation/showOperation/<?=$tricount->id?>/<?=$operation->id?>">
                     <h1><?=$operation->title;?></h1><div class="amount"><h1><?=$operation->amount;?> €</h1></div><br>
