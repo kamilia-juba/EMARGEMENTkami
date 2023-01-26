@@ -19,7 +19,7 @@
             <table>
                 <tr>
                     <td><?= $alone ? "You are alone!" : "Your Tricount is empty!" ?></td>
-                </tr>
+                </tr> 
                 <tr>
                     <td>
                         <?= $alone ? "Click below to add your friends!" : "Click below to add your first expense!" ?><br>

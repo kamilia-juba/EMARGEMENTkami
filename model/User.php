@@ -199,4 +199,11 @@ class User extends Model {
         $data = $query->fetch();
         return !(empty($data));
     }
+    
+    public static function get_creator_of_tricount(int $tricountID) : User {
+        $query = self::execute("select * from users where id in (select creator from tricounts where id=:tricountID) ", ["tricountID"=>$tricountID]);
+        $data = $query->fetch();
+
+        return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"],$data["id"]);
+    }
 }

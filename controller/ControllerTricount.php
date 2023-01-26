@@ -94,9 +94,9 @@ class ControllerTricount extends MyController{
         $participants = [];
         
        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
-        $tricount=Tricount::getTricountById($_GET["param1"],$user->mail);
+        $tricount=Tricount::getTricountById($_GET["param1"]);
         $participants= $tricount->get_participants();
-        $participants [] = $user;
+        $creator=$user->get_creator_of_tricount($tricount->id);
        
             if(isset($_POST['title'])){
                 $title = trim($_POST['title']);
@@ -109,7 +109,7 @@ class ControllerTricount extends MyController{
                     $this->redirect("Tricount", "showTricount",$tricount->id) ;
                }   
             }           
-            (new View("EditTricount"))->show(["user" => $user,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success]);
+            (new View("EditTricount"))->show(["user" => $creator,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success]);
 
         }
         else{
