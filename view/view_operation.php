@@ -11,7 +11,7 @@
         <section id="titlebar">
             <a href="Tricount/showTricount/<?=$tricount->id?>"><button name="buttonBack">Back</button></a>
             <?=$tricount->title?> &#8594 <?=$operation->title?>
-            <a href="Operation/editOperation/<?=$operation->id?>"><button name="buttonEdit">Edit</button></a>
+            <a href="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>"><button name="buttonEdit">Edit</button></a>
         </section>
         <h1><?=$operation->amount?> €</h1>
         <table>
@@ -34,11 +34,11 @@
         <section id="bottombar">
             <?php 
                 if($currentIndex!=0){ ?>
-                    <a href="Operation/showOperation/<?=$operations[$currentIndex-1]->id?>"><button type='button' name='buttonPrevious'>Previous</button></a>
+                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex-1]->id?>"><button type='button' name='buttonPrevious'>Previous</button></a>
                 <?php } ?>
             <?php
                 if($currentIndex<sizeof($operations)-1){ ?>
-                    <a href="Operation/showOperation/<?=$operations[$currentIndex+1]->id?>"><button type="button" name="buttonNext">Next</button></a>
+                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex+1]->id?>"><button type="button" name="buttonNext">Next</button></a>
                 <?php } ?>
         </section>
         

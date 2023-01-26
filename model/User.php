@@ -186,4 +186,19 @@ class User extends Model {
         }
         return $errors;
     }
+
+    //vérifie si l'user fait partie du tricount donné en paramètre
+    public function isSubscribedToTricount(int $id): bool{
+        $query = self::execute("SELECT * FROM subscriptions WHERE user=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $id]);
+        $data = $query->fetch();
+        return !(empty($data));
+    }
+
+    //vérifie si l'user fait partie de l'opération donnée en paramètre
+    //Pourrait ne pas être utilisé. A voir
+    public function participatesToOperation(int $operationId): bool{
+        $query = self::execute("SELECT * FROM repartitions WHERE operation=:operationId AND user=:userId",["operationId"=>$operationId,"userId"=>$this->id]);
+        $data = $query->fetch();
+        return !(empty($data));
+    }
 }
