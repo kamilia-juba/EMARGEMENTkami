@@ -56,14 +56,14 @@ class User extends Model {
         if(self::get_user_by_mail($this->mail))
             self::execute("UPDATE Users SET  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE mail=:mail ", 
                             [ "mail"=>$this->mail,
-                                "hashed_password"=>Tools::my_hash($this->hashed_password),
+                                "hashed_password"=>$this->hashed_password,
                                 "full_name"=>$this->full_name,
                                 "role"=>$this->role,
                                 "iban"=>$this->iban]);
         else
             self::execute("INSERT INTO Users(mail,hashed_password,full_name,role,iban) VALUES(:mail,:hashed_password,:full_name,:role,:iban)", 
                             [ "mail"=>$this->mail,
-                            "hashed_password"=>Tools::my_hash($this->hashed_password),
+                            "hashed_password"=>$this->hashed_password,
                             "full_name"=>$this->full_name,
                             "role"=>$this->role,
                             "iban"=>$this->iban]);
@@ -86,10 +86,9 @@ class User extends Model {
     private static function check_password(string $clear_password, string $hash) : bool {
         return $hash === Tools::my_hash($clear_password);
     }
-
     public function get_user_tricounts() : array {
-        $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId)", 
-            ["userId" => $this->id]);
+        $query = self::execute("select * from tricounts where tricounts.creator = (select id from users where mail = :userMail)", 
+            ["userMail" => $this->mail]);
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row){
@@ -98,7 +97,6 @@ class User extends Model {
 
         return $results;
     }
-
 // SAADAYACINECHAKER
     public static function validate_full_name(string $full_name) : array {
         $errors = [];
@@ -115,7 +113,7 @@ class User extends Model {
         }*/
         return $errors;
 }
-    public function validate_mail(string $mail) : array {
+    public static function validate_mail(string $mail) : array {
         $errors = [];
         if (!preg_match("/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/",$mail)) {
             $errors[] = "This mail is not valide";
@@ -185,20 +183,5 @@ class User extends Model {
             $errors[] = "You have to enter twice the same password.";
         }
         return $errors;
-    }
-
-    //vérifie si l'user fait partie du tricount donné en paramètre
-    public function isSubscribedToTricount(int $id): bool{
-        $query = self::execute("SELECT * FROM subscriptions WHERE user=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $id]);
-        $data = $query->fetch();
-        return !(empty($data));
-    }
-
-    //vérifie si l'user fait partie de l'opération donnée en paramètre
-    //Pourrait ne pas être utilisé. A voir
-    public function participatesToOperation(int $operationId): bool{
-        $query = self::execute("SELECT * FROM repartitions WHERE operation=:operationId AND user=:userId",["operationId"=>$operationId,"userId"=>$this->id]);
-        $data = $query->fetch();
-        return !(empty($data));
     }
 }
