@@ -57,7 +57,7 @@ class Tricount extends Model{
 
     }
 
-   public static function getTricountById(int $id, String $mail): Tricount{
+   public static function getTricountById(int $id): Tricount{
         $query = self::execute("SELECT * FROM tricounts WHERE id = :id", ["id"=>$id]);
         $data = $query->fetch();
         return new Tricount($data["title"],$data["created_at"],$data["creator"],$data["description"],$data["id"]);
