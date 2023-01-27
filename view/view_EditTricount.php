@@ -34,6 +34,16 @@
                 }
             ?>
         </table>
+        <form action="Tricount/add_participant/<?= $tricount->id?>" id="addtricountForm" method="post">
+            <table>    
+                <tr>
+                    <td><select name="participant" id="participant"><option value="" selected disabled hidden>--Add a new subscriber--</option>
+                        <?php foreach ($notSubParticipants as $user)
+                        echo '<option value="' . ($user->id) . '">' .$user->full_name . '</option>';
+                    ?> </select><input type="submit" value="Add"></td>
+                </tr>
+            </table>
+        </form>    
             <?php if (count($errors) != 0): ?>
                 <div class='errors'>
                     <p>Please correct the following error(s) :</p>
@@ -43,8 +53,7 @@
                         <?php endforeach; ?>
                     </ul>
                 </div>
-            <?php endif; ?>
-                  
+            <?php endif; ?>  
         </div> 
 
    
