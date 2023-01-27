@@ -32,7 +32,7 @@
                         }
                         else{ 
                             echo "<tr><td>".$participant->full_name." (creator)
-                            <a href= \"Tricount/deleteParticipant/".$tricount->id."/".$participant->id. "\"> <button type=\"button\" name = \"buttonBack\">Poubelle</button></a>
+                            <a href= \"Tricount/deleteParticipant/".$tricount->id."/".$participant->id. "\"></a>
                             </td></tr>";
                         }
                     }else
