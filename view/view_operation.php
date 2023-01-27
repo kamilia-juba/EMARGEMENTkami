@@ -6,41 +6,51 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <base href="<?= $web_root ?>"/>
         <title><?=$operation->title?></title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     </head>
     <body>
-        <section id="titlebar">
-            <a href="Tricount/showTricount/<?=$tricount->id?>"><button name="buttonBack">Back</button></a>
+        <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
+            <a href="Tricount/showTricount/<?=$tricount->id?>" class="btn btn-outline-danger" name="buttonBack">Back</a>
             <?=$tricount->title?> &#8594 <?=$operation->title?>
-            <a href="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>"><button name="buttonEdit">Edit</button></a>
-        </section>
-        <h1><?=$operation->amount?> €</h1>
-        <table>
+            <a href="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>" class="btn btn-primary" name="buttonEdit">Edit</a>
+            </div>
+        <h1 class="text-center p-3"><?=$operation->amount?> €</h1>
         
-        <tr><td>Paid by <?= $user->id==$paidBy->id ? "<b>me</b>" : $paidBy->full_name; ?></td><td><?= $operation->operation_date?></td></tr>
-        <tr><td>For <?= sizeof($users)==1 ? sizeof($users)." participant" : sizeof($users)." participants" ?><?= $user_participates ? ", including <b>me</b>" : ""?></td></tr>
-
-        </table>
-        <table>
-            <?php
-                foreach($users as $participant){
+        <div class="container ps-3 pe-3 pb-3">
+            <div class="d-flex justify-content-between">
+                <p>Paid by <?= $user->id==$paidBy->id ? "<b>me</b>" : $paidBy->full_name; ?></p>
+                <p><?= $operation->operation_date?></p>
+            </div>
+            <p>For <?= sizeof($users)==1 ? sizeof($users)." participant" : sizeof($users)." participants" ?><?= $user_participates ? ", including <b>me</b>" : ""?></p>
+        </div>
+        <ul class="list-group p-2 ms-2 me-2 mb-2">
+            <?php foreach($users as $participant){ 
                     if($participant[0]->id==$user->id){
-                    echo "<tr><td><b>".$participant[0]->full_name." (me)</b></td><td><b>".$participant[1]." €</b></td></tr>";
+                        echo "<li class='list-group-item d-flex justify-content-between'><p><b>".$participant[0]->full_name." (me)</b></p>";
+                        echo "<p><b>".$participant[1]." €</b></p></li>";
                     }else{
-                        echo "<tr><td>".$participant[0]->full_name."</td><td>".$participant[1]." €</td></tr>";
+                        echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant[0]->full_name."</p>";
+                        echo "<p>".$participant[1]." €</p></li>";
                     }
                 }
             ?>
-        </table>
-        <section id="bottombar">
+        </ul>
+        <div class="container w-100 p-5 mb-5 mt-5">
+        </div>
+        <footer class="footer mt-auto fixed-bottom pt-2 ps-2 pe-2 pb-2 fs-5 d-flex justify-content-between" style="background-color: #E3F3FD">
             <?php 
                 if($currentIndex!=0){ ?>
-                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex-1]->id?>"><button type='button' name='buttonPrevious'>Previous</button></a>
+                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex-1]->id?>"class="btn btn-primary" name='buttonPrevious'>Previous</a>
+                <?php }else { ?>
+                    <p></p>
                 <?php } ?>
             <?php
                 if($currentIndex<sizeof($operations)-1){ ?>
-                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex+1]->id?>"><button type="button" name="buttonNext">Next</button></a>
+                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex+1]->id?>"class="btn btn-primary" name="buttonNext">Next</button></a>
+                <?php }else { ?>
+                    <p></p>
                 <?php } ?>
-        </section>
+        </footer>
         
     </body>
 </html>
