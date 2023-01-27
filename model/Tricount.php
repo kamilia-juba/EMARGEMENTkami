@@ -183,6 +183,30 @@ class Tricount extends Model{
         "userId" =>$userId]);
     }
 
+    public function delete_participations(int $userID):void{
+        self::execute("delete from subscriptions where tricount=:tricountID and user=:userID",["tricountID" => $this->id,"userID"=>$userID]);
+    }
+
+    public function delete_repartition_templates():void{
+        $this->delete_repartition_template_items();
+        self::execute("delete from repartition_templates where tricount=:tricountID",["tricountID" => $this->id]);
+    }
+
+    public function delete_repartition_template_items():void{
+        self::execute("delete from repartition_template_items where repartition_template in (select id from repartition_templates where tricount=:tricountID)",["tricountID" => $this->id]);
+    }
+
+
+    public function delete_tricount(int $userID):void{
+        $operations=Operation::get_operations_by_tricountid($this->id);
+        foreach($operations as $operation){
+            $operation->delete_operation();
+        }
+        $this->delete_participations($userID);
+        $this->delete_repartition_templates();
+        self::execute("delete from tricounts where id=:tricountID",["tricountID" => $this->id]);
+    }
+
 }
 
 ?>
