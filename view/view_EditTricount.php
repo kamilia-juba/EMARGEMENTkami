@@ -27,9 +27,21 @@
             <?php
                 foreach($participants as $participant){
                     if($participant->id==$user->id){
-                    echo "<tr><td>".$participant->full_name." (creator)</td></tr>";
-                    }else{
-                        echo "<tr><td>".$participant->full_name."</td></tr>";
+                        if($tricount->has_already_paid($participant->id)){// a changer si on ne peut supprimer le createur
+                            echo "<tr><td>".$participant->full_name." (creator)</td></tr>";
+                        }
+                        else{ 
+                            echo "<tr><td>".$participant->full_name." (creator)
+                            <a href= \"Tricount/deleteParticipant/".$tricount->id."/".$participant->id. "\"> <button type=\"button\" name = \"buttonBack\">Poubelle</button></a>
+                            </td></tr>";
+                        }
+                    }else
+                        if($tricount->has_already_paid($participant->id)){
+                            echo "<tr><td>".$participant->full_name;
+                        }
+                        else{ 
+                            echo "<tr><td>".$participant->full_name."
+                            <a href= \"Tricount/deleteParticipant/".$tricount->id."/".$participant->id. "\"> <button type=\"button\" name = \"buttonBack\">Poubelle</button></a>";
                     }
                 }
             ?>
