@@ -206,4 +206,16 @@ class User extends Model {
 
         return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"],$data["id"]);
     }
+
+    public static function get_users_not_sub_to_a_tricount(int $tricountId) : array {
+        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId)", ["tricountId"=>$tricountId]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach ($data as $row) {
+
+            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"],$row["id"]);
+
+        }
+        return $results;
+    }
 }
