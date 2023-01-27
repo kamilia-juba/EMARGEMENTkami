@@ -151,5 +151,21 @@ class ControllerTricount extends MyController{
             $this->redirect();
         }
     }
+
+    public function deleteParticipant():void{
+        $user = $this->get_user_or_redirect();
+        if (isset($_GET["param1"]) && $_GET["param1"] !== ""  && isset($_GET["param2"]) && $_GET["param2"] !== "") {
+            $participant=User::get_user_by_id($_GET["param2"]);
+            if($participant->isSubscribedToTricount($_GET["param1"])){
+                $tricount=Tricount::getTricountById($_GET["param1"]);
+                $tricount->delete_participation($participant->id);
+                $this->redirect("Tricount", "showTricount",$tricount->id) ;
+            }
+            else{
+                $this->redirect();
+            }
+        }
+        $this->redirect();
+    }
 }
 ?>
