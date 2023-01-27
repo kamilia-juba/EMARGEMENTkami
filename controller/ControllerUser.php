@@ -27,12 +27,13 @@ class ControllerUser extends MyController {
         if (isset($_POST['full_name']) || isset($_POST['IBAN']) ) {
             $full_name = $_POST['full_name'];
             $iban = $_POST['iban'];
-            $user->full_name = $full_name;
-            $user->iban = $iban;
-            $errors = array_merge($errors, $user->validate_IBAN($iban));
-            $errors = array_merge($errors, $user->validate_full_name());
+        
+            $errors = array_merge($errors, User::validate_IBAN($iban));
+            $errors = array_merge($errors, User::validate_full_name($full_name));
 
             if (count($errors) == 0) { 
+                $user->full_name = $full_name;
+                $user->iban = $iban;
                 $user->persist(); //sauve l'utilisateur
                     
             }
