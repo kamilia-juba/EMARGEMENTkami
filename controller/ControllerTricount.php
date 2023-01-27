@@ -93,10 +93,12 @@ class ControllerTricount extends MyController{
         $success = "";
         $participants = [];
         
+        
        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
         $tricount=Tricount::getTricountById($_GET["param1"]);
         $participants= $tricount->get_participants();
         $creator=$user->get_creator_of_tricount($tricount->id);
+        $notSubParticipants=User::get_users_not_sub_to_a_tricount($tricount->id);
        
             if(isset($_POST['title'])){
                 $title = trim($_POST['title']);
@@ -109,12 +111,25 @@ class ControllerTricount extends MyController{
                     $this->redirect("Tricount", "showTricount",$tricount->id) ;
                }   
             }           
-            (new View("EditTricount"))->show(["user" => $creator,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success]);
+            (new View("EditTricount"))->show(["user" => $creator,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success,"notSubParticipants"=>$notSubParticipants]);
 
         }
         else{
          $this->redirect("main");
        }
+    }
+
+    public function add_participant(){
+        $user = $this->get_user_or_redirect();
+        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])){
+            $tricount=Tricount::getTricountById($_GET["param1"]);
+            if(isset($_POST['participant'])){
+                $participantId= $_POST['participant'];
+                $participant=User::get_user_by_id($participantId);  
+                $tricount->add_subscriber($participant->id);
+            }
+        }
+        $this->redirect("Tricount","editTricount",$tricount->id);
     }
 }
 ?>
