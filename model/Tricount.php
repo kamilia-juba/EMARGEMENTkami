@@ -177,6 +177,12 @@ class Tricount extends Model{
     
     }
 
+    public function add_subscriber(int $userId){
+        self::execute("INSERT INTO subscriptions VALUES (:tricountId,:userId)",
+        ["tricountId" => $this->id, 
+        "userId" =>$userId]);
+    }
+
 }
 
 ?>
