@@ -131,5 +131,25 @@ class ControllerTricount extends MyController{
         }
         $this->redirect("Tricount","editTricount",$tricount->id);
     }
+
+    public function confirm_delete_tricount(): void{
+        $user = $this->get_user_or_redirect();
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+            $tricount=Tricount::getTricountById(($_GET["param1"]));
+            (new View("delete_tricount_confirmation"))->show(["tricount"=>$tricount]);
+        }
+        else{
+            $this->redirect();
+        }
+    }
+
+    public function delete_tricount(): void{
+        $user = $this->get_user_or_redirect();
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+            $tricount = Tricount::getTricountById(( $_GET["param1"]));
+            $tricount->delete_tricount($user->id);
+            $this->redirect();
+        }
+    }
 }
 ?>
