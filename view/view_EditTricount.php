@@ -55,7 +55,6 @@
                 </div>
             <?php endif; ?>  
         </div> 
-
-   
+        <a href="Tricount/confirm_delete_tricount/<?=$tricount->id?>"><button type="button" name="deleteOperation">Delete Tricount</button></a></body>
 </body>
 </html>
