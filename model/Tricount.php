@@ -207,6 +207,22 @@ class Tricount extends Model{
         self::execute("delete from tricounts where id=:tricountID",["tricountID" => $this->id]);
     }
 
+    public function delete_participation(int $userID):void{
+        self::execute("delete from subscriptions where tricount =:tricountID and user=:userID",["tricountID" => $this->id,"userID"=>$userID]);
+    }
+
+    public function has_already_paid(int $userId):bool{
+        $operations=Operation::get_operations_by_tricountid($this->id);
+        $result=false;
+
+        foreach($operations as $operation){
+            if($operation->user_participates($userId)){
+                return true;
+            }
+        }
+        return $result;
+    }
+
 }
 
 ?>
