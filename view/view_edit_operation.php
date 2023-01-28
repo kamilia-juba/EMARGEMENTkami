@@ -26,7 +26,7 @@
             Paid by
             <select class="form-select" name="paidBy">
                 <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
-                        <option <?=$participants_and_weights[$i][0]->id==$operation->initiator ? "select" : "" ?> value="<?=$participants_and_weights[$i][0]->id?>"><?=$participants_and_weights[$i][0]->full_name?></option>
+                        <option <?=$participants_and_weights[$i][0]->id==$operation->initiator ? "selected" : "" ?> value="<?=$participants_and_weights[$i][0]->id?>"><?=$participants_and_weights[$i][0]->full_name?></option>
                 <?php } ?>
             </select>
             Use repartition template (optional)
