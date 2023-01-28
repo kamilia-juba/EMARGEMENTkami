@@ -13,8 +13,9 @@ class User extends Model {
         public string $full_name, 
         public string $role, 
         public ?string $iban = null,
-        public ?string $id = null,
+        public ?int $id = null,
         public ?float $account=0){  
+
     }
 
     public static function get_user_by_id(int $id) : User|false {
@@ -55,14 +56,14 @@ class User extends Model {
         if(self::get_user_by_mail($this->mail))
             self::execute("UPDATE Users SET  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE mail=:mail ", 
                             [ "mail"=>$this->mail,
-                                "hashed_password"=>Tools::my_hash($this->hashed_password),
+                                "hashed_password"=>$this->hashed_password,
                                 "full_name"=>$this->full_name,
                                 "role"=>$this->role,
                                 "iban"=>$this->iban]);
         else
             self::execute("INSERT INTO Users(mail,hashed_password,full_name,role,iban) VALUES(:mail,:hashed_password,:full_name,:role,:iban)", 
                             [ "mail"=>$this->mail,
-                            "hashed_password"=>Tools::my_hash($this->hashed_password),
+                            "hashed_password"=>$this->hashed_password,
                             "full_name"=>$this->full_name,
                             "role"=>$this->role,
                             "iban"=>$this->iban]);
@@ -86,8 +87,8 @@ class User extends Model {
         return $hash === Tools::my_hash($clear_password);
     }
     public function get_user_tricounts() : array {
-        $query = self::execute("select * from tricounts where tricounts.creator = (select id from users where mail = :userMail)", 
-            ["userMail" => $this->mail]);
+        $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId)", 
+            ["userId" => $this->id]);
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row){
@@ -97,11 +98,11 @@ class User extends Model {
         return $results;
     }
 // SAADAYACINECHAKER
-    public function validate_full_name() : array {
+    public static function validate_full_name(string $full_name) : array {
         $errors = [];
-        if (!strlen($this->full_name) > 0) {
+        if (!strlen($full_name) > 0) {
             $errors[] = "A full name is required.";
-        } if ((strlen($this->full_name) < 3 || strlen($this->full_name)> 256)) {
+        } if ((strlen($full_name) < 3 || strlen($full_name)> 256)) {
 
             $errors[] = "Full name length must be at least 3.";
         } 
@@ -112,7 +113,7 @@ class User extends Model {
         }*/
         return $errors;
 }
-    public function validate_mail(string $mail) : array {
+    public static function validate_mail(string $mail) : array {
         $errors = [];
         if (!preg_match("/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/",$mail)) {
             $errors[] = "This mail is not valide";
@@ -120,7 +121,7 @@ class User extends Model {
         return $errors;
     }
 
-   public function validate_IBAN(string $IBAN) : array {
+   public static function validate_IBAN(string $IBAN) : array {
         $errors = [];
         $Countries = array(
             'al'=>28,'ad'=>24,'at'=>20,'az'=>28,'bh'=>22,'be'=>16,'ba'=>20,'br'=>29,'bg'=>22,'cr'=>21,'hr'=>21,'cy'=>28,'cz'=>24,
@@ -141,12 +142,15 @@ class User extends Model {
             if (!ctype_alpha($pays)) {
             $errors[] = "2 first characters are not letters";
             } 
-
-            if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
-            {
-                $errors[] = "Wrong IBAN size or unknown country";
+            if(array_key_exists(strtolower($pays),$Countries)){
+                if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
+                {
+                    $errors[] = "Wrong IBAN size";
+                }
             }
-           
+            else{
+                $errors[] = "Unknown country";
+            }
         
         return $errors;
         
@@ -179,5 +183,20 @@ class User extends Model {
             $errors[] = "You have to enter twice the same password.";
         }
         return $errors;
+    }
+
+    //vérifie si l'user fait partie du tricount donné en paramètre
+    public function isSubscribedToTricount(int $id): bool{
+        $query = self::execute("SELECT * FROM subscriptions WHERE user=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $id]);
+        $data = $query->fetch();
+        return !(empty($data));
+    }
+
+    //vérifie si l'user fait partie de l'opération donnée en paramètre
+    //Pourrait ne pas être utilisé. A voir
+    public function participatesToOperation(int $operationId): bool{
+        $query = self::execute("SELECT * FROM repartitions WHERE operation=:operationId AND user=:userId",["operationId"=>$operationId,"userId"=>$this->id]);
+        $data = $query->fetch();
+        return !(empty($data));
     }
 }

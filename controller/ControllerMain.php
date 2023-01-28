@@ -39,7 +39,6 @@ class ControllerMain extends MyController {
         $password = '';
         $password_confirm = '';
         $errors = [];
-        var_dump($_POST);
         if (isset($_POST['mail']) && isset($_POST['full_name']) && isset($_POST['IBAN']) && 
             isset($_POST['password']) && isset($_POST['password_confirm'])) {
            
@@ -49,14 +48,14 @@ class ControllerMain extends MyController {
             $password = $_POST['password'];
             $password_confirm = $_POST['password_confirm'];
 
-            $user = new User($mail ,Tools::my_hash($password), $full_name , "user" ,$IBAN );
             $errors = User::validate_unicity($mail);
-            $errors = array_merge($errors, $user->validate_full_name());
-            $errors = array_merge($errors, $user->validate_mail($mail));
-            $errors = array_merge($errors, $user->validate_IBAN($IBAN));
+            $errors = array_merge($errors, User::validate_full_name($full_name));
+            $errors = array_merge($errors, User::validate_mail($mail));
+            $errors = array_merge($errors, User::validate_IBAN($IBAN));
             $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
 
             if (count($errors) == 0) { 
+                $user = new User($mail ,Tools::my_hash($password), $full_name , "user" ,$IBAN );
                 $user->persist(); //sauve l'utilisateur
                 $this->log_user($user);
             }
