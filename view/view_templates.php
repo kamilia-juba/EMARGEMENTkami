@@ -9,7 +9,7 @@
 <body>
     <a href=""><button type="button" name="backButton">Back</button></a>
     <?=$tricount->title?> &#8594 Templates
-    <a href=""><button type="button" name="addButton">Add</button></a>
+    <a href="Tricount/addTemplate/<?=$tricount->id?>"><button type="button" name="addButton">Add</button></a>
     <div class="listTemplates">
         <table>
             <?php for($i = 0; $i<sizeof($templates_items);++$i){ ?>

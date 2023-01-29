@@ -74,5 +74,22 @@
             $data = $query->fetch();
             return $data["total"];
         }
+
+        public static function add_repartition_template(string $title, int $tricountId): Template{
+            self::execute("INSERT INTO repartition_templates(title,tricount) VALUES(:title,:tricount)", ["title" => $title, "tricount" => $tricountId]);
+            $lastId = Model::lastInsertId();
+            return Template::get_template_by_id($lastId);
+        }
+
+        public static function validate_title(String $title): array {
+            $errors = [];
+            if(strlen($title)<=0) {
+                $errors[] = "A title is required";
+            }
+            if(strlen($title)!=0 && strlen($title)<3){
+                $errors[] = "Title must have at least 3 characters";
+            }
+            return $errors;
+        }
     }
 ?>

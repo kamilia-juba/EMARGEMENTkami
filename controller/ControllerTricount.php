@@ -183,5 +183,45 @@ class ControllerTricount extends MyController{
             $this->redirect("Main");
         }
     }
+
+    public function addTemplate(): void{
+        $user = $this->get_user_or_redirect();
+        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])){
+            $errors = [];
+            $tricount = Tricount::getTricountById($_GET["param1"]);
+            $participants = $tricount->get_participants();
+            if(isset($_POST["title"]) && $_POST["title"] != 0){
+                $title = trim($_POST["title"]);
+                $errors = array_merge($errors, Template::validate_title($title));
+                if(!isset($_POST["checkboxParticipants"])){
+                    if(isset($_POST["weight"])){
+                        $errors[] = "You must select at least 1 participant";
+                    }
+                }
+                if(count($errors)==0){
+                    $checkboxes = $_POST["checkboxParticipants"];
+                    $template = Template::add_repartition_template($title,$tricount->id);
+                    $weight = $_POST["weight"];
+                    var_dump($checkboxes);
+                    var_dump($weight);
+                    for($i=0; $i<sizeof($participants); ++$i){
+                        for($j = 0; $j<sizeof($checkboxes);++$j){
+                            if($participants[$i]->id==$checkboxes[$j]){
+                                $template->add_items($participants[$i], $weight[$i]);
+                            }
+                        }
+                        
+                    }
+                    $this->redirect("Tricount","showTemplates",$tricount->id);
+                }
+            }
+            (new View("add_template"))->show(["tricount" => $tricount,
+                                            "participants" => $participants,
+                                            "errors" => $errors]
+            );
+        }else{
+            $this->redirect("Main");
+        }
+    }
 }
 ?>
