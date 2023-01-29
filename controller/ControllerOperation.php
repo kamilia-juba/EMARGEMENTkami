@@ -169,7 +169,7 @@ class ControllerOperation extends Mycontroller{
             $participants = $tricount->get_participants();
             $participants_and_weights = [];
             foreach($participants as $participant){
-                $participants_and_weights[] = [$participant, $operation->get_weight($participant->id) == null ? 1 : $operation->get_weight($participant->id)];
+                $participants_and_weights[] = [$participant, $operation->get_weight($participant->id) == null ? 1 : $operation->get_weight($participant->id),$operation->user_participates($participant->id)];
             }
             $repartition_templates = $tricount->get_repartition_templates();
 
@@ -179,7 +179,7 @@ class ControllerOperation extends Mycontroller{
                 $participants_and_weights = [];
                 $disable_CBox_and_SaveTemplate = true;
                 foreach($participants as $participant){
-                    $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template)];
+                    $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
                 }
             }
 

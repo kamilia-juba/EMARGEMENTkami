@@ -218,4 +218,10 @@ class User extends Model {
         }
         return $results;
     }
+
+    public function user_participates_to_repartition(int $templateId){
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template=:templateId and user=:userId",["templateId" => $templateId, "userId" => $this->id]);
+        $data = $query->fetch();
+        return !empty($data);
+    }
 }
