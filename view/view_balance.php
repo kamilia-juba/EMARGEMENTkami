@@ -23,7 +23,7 @@
             </div>
             <div class="col">
                 <div class="progress" style=" height:20px; border-radius:0px; background-color: #FFFFFF">
-                    <div class="progress-bar bg-success text-start" role="progressbar" style="width: <?=$participant->account/$sum?>%; border-radius: 0px 6px 6px 0px;" aria-valuenow= "0" aria-valuemin="0" aria-valuemax="100"><span>&nbsp<?=abs(round($participant->account,2))?></div>
+                    <div class="progress-bar bg-success text-start" role="progressbar" style="width: <?=$participant->account/$sum?>%; border-radius: 0px 6px 6px 0px;" aria-valuenow= "0" aria-valuemin="0" aria-valuemax="100"><span  style= color:black>&nbsp<?=abs(round($participant->account,2))?></div>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
         <div class="row g-0">
             <div class="col justify-content-end ">
                 <div class="progress" style="direction: rtl; height:20px; border-radius:0px ; background-color: #FFFFFF;">
-                    <div class="progress-bar bg-danger text-end" role="progressbar" style="width: <?=abs($participant->account)/$sum?>%; border-radius: 6px 0px 0px 6px;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="120"><span>&nbsp<?=abs(round($participant->account,2))?>-</span></div>
+                    <div class="progress-bar bg-danger text-end" role="progressbar" style="width: <?=abs($participant->account)/$sum?>%; border-radius: 6px 0px 0px 6px;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="120"><span style= color:black;>&nbsp<?=abs(round($participant->account,2))?>-</span></div>
                 </div>
             </div>
             <div class="col">
