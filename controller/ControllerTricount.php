@@ -95,7 +95,7 @@ class ControllerTricount extends MyController{
         $participants = [];
         
         
-       if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
+       if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
         $tricount=Tricount::getTricountById($_GET["param1"]);
         $participants= $tricount->get_participants();
         $creator=$user->get_creator_of_tricount($tricount->id);

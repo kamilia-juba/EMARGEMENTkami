@@ -7,7 +7,7 @@
     <base href="<?= $web_root ?>"/>
 </head>
 <body>
-    <a href=""><button type="button" name="backButton">Back</button></a>
+    <a href="Tricount/editTricount/<?=$tricount->id?>"><button type="button" name="backButton">Back</button></a>
     <?=$tricount->title?> &#8594 Templates
     <a href="Tricount/addTemplate/<?=$tricount->id?>"><button type="button" name="addButton">Add</button></a>
     <div class="listTemplates">

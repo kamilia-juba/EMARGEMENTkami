@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="titlebar">
-        <a href= "Tricount/showTricount/"><button type="button" name = "buttonBack">Back</button></a>
+        <a href= "Tricount/showTricount/<?=$tricount->id?>"><button type="button" name = "buttonBack">Back</button></a>
         <?=$tricount->title?> &#8594 Edit
          <input type="submit" name = "buttonSave" value="Save" form="addtricountForm"></a>
     </div>
@@ -67,6 +67,7 @@
                 </div>
             <?php endif; ?>  
         </div> 
+        <a href="Tricount/showTemplates/<?=$tricount->id?>"><button type="button" name="manageTemplates">Manage repartition templates</button></a>
         <a href="Tricount/confirm_delete_tricount/<?=$tricount->id?>"><button type="button" name="deleteOperation">Delete Tricount</button></a></body>
 </body>
 </html>
