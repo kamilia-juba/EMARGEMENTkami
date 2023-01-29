@@ -194,6 +194,15 @@ class ControllerOperation extends Mycontroller{
                     if(isset($_POST["weight"])){
                         $errors[] = "You must select at least 1 participant";
                     }
+                }else{
+                    for($i = 0; $i < sizeof($_POST["checkboxParticipants"]);++$i){
+                        if($_POST["checkboxParticipants"][$i]==$_POST["paidBy"]){
+                            $paidByIsSelected = true;
+                        }
+                    }
+                    if(!$paidByIsSelected){
+                        $errors[] = "The payer have to be selected";
+                    }
                 }
                 if(isset($_POST["saveTemplateCheck"])){
                     $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
@@ -213,14 +222,6 @@ class ControllerOperation extends Mycontroller{
                     }else if(isset($_POST["newTemplateName"]) && empty($newTemplateName)){
                         $errors[] = "A name must be given to template to be able to save it.";
                     }
-                }
-                for($i = 0; $i < sizeof($_POST["checkboxParticipants"]);++$i){
-                    if($_POST["checkboxParticipants"][$i]==$_POST["paidBy"]){
-                        $paidByIsSelected = true;
-                    }
-                }
-                if(!$paidByIsSelected){
-                    $errors[] = "The payer have to be selected";
                 }
                 if(count($errors)==0){
                     $operation->title = $title;
