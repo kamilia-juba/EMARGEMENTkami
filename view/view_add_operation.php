@@ -49,11 +49,11 @@
                     <input class ="form-control mb-2" id="date" name="date" type="date" value="<?php $timezone = date_default_timezone_get(); echo date("Y-m-d")?>"></td>
                     
                     Paid by
-                    <select class = "form-select" name="paidBy" id="paidBy">
-                        <?php foreach ($participants as $data)
-                            echo '<option value="' . ($data->id) . '">' .$data->full_name . '</option>';
-                        ?> </select></td>
-                    </select>
+            <select class="form-select" name="paidBy">
+                <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
+                        <option <?=$participants_and_weights[$i][0]->id==$user->id ? "selected" : "" ?> value="<?=$participants_and_weights[$i][0]->id?>"><?=$participants_and_weights[$i][0]->full_name?></option>
+                <?php } ?>
+            </select>
             
             Use repartition template (optional)
             <div class="input-group mb-2">
