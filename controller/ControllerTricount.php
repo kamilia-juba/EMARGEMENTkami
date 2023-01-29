@@ -86,6 +86,7 @@ class ControllerTricount extends MyController{
         }
     }
 
+
     public function editTricount(): void{
         
         $user = $this->get_user_or_redirect();
@@ -166,6 +167,21 @@ class ControllerTricount extends MyController{
             }
         }
         $this->redirect();
+    }
+
+    public function showTemplates(): void{
+        $user=$this->get_user_or_redirect();
+        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])){
+            $tricount = Tricount::getTricountById($_GET["param1"]);
+            $templates = $tricount->get_repartition_templates();
+            $templates_items = [];
+            foreach($templates as $template){
+                $templates_items[] = [$template->get_repartition_template_users(),$template];
+            }
+            (new View("templates"))->show(["tricount" => $tricount, "templates_items" => $templates_items]);
+        }else{
+            $this->redirect("Main");
+        }
     }
 }
 ?>
