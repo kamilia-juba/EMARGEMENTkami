@@ -218,4 +218,10 @@ class User extends Model {
         }
         return $results;
     }
+
+    public function isSubscribedToTemplate(int $templateId): bool{
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId and repartition_template=:templateId", ["userId" => $this->id, "templateId" => $templateId]);
+        $data = $query->fetch();
+        return !(empty($data));
+    }
 }
