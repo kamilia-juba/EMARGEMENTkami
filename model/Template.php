@@ -74,5 +74,46 @@
             $data = $query->fetch();
             return $data["total"];
         }
+
+        public function user_participates(int $userId):bool{
+            $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template = :templateId",["templateId" => $this->id]);
+            $data = $query->fetchAll();
+            foreach($data as $row){
+                if($row["user"]==$userId){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public function template_name_exists(string $title): bool{
+            $query = self::execute("SELECT * FROM repartition_templates WHERE title=:title and id=:templateId",
+                            ["title" => $title,
+                            "templateId" => $this->id]
+            );
+            $data = $query->fetch();
+            if(empty($data)){
+                return false;
+            }
+            return true;
+        }
+        
+        public function add_template(string $title): Template{
+        self::execute("INSERT INTO repartition_templates(title,tricount) VALUES (:title, :tricount)",
+                        ["title" => $title, 
+                        "tricount" => $this->id]
+        );
+        return new Template($title,$this->id,Model::lastInsertId());
+        }
+
+        public function update_item(User $user, int $weight){
+            self::execute("UPDATE repartition_template_items SET weight=:weight WHERE user=:user and repartition_template=:repartition_template",
+                            ["user" => $user->id,
+                            "repartition_template" => $this->id,
+                            "weight" => $weight]
+            );
+        }
     }
+
+    
 ?>
