@@ -26,5 +26,7 @@
             <?php } ?>
         </table>
     </div>
+
+    <a href="Template/edit_template/1"><button type="button" name="backButton">edit</button></a>
 </body>
 </html>
