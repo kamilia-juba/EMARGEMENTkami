@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="titlebar">
-        <a href= "Tricount/showTricount/"><button type="button" name = "buttonBack">Back</button></a>
+        <a href= "Tricount/showTricount/<?=$tricount->id?>"><button type="button" name = "buttonBack">Back</button></a>
         <?=$tricount->title?> &#8594 Edit
          <input type="submit" name = "buttonSave" value="Save" form="addtricountForm"></a>
     </div>
