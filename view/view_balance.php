@@ -11,27 +11,34 @@
     </div>
 </head>
 <body>
-    <section id="titlebar">
-    <a href="Tricount/showTricount/<?= $tricount->id?>"><button type ="button" name="buttonBack">Back</button></a>
-        <?=$tricount->title?> &#8594 Balance
-    </section>
-    <table>
-        <?php
-            foreach($participants as $participant){
-                echo round($participant->account,2). "  ". $participant->full_name;
-            }
 
-            echo $maxUser->account;
 
-            
-        ?>
-    </table>
-    <table><td>
-<tr><div class="progress"  style="height:20px; border-radius: 0; background-color: #FFFFFF">
-  <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="25"></div>
-</div>
-</tr>
-</td></table>
-    </table>
+
+    <div class="container-fluid">
+        <?php foreach($participants as $participant){?>
+        <div class="row g-0">
+            <?php if($participant->account>=0):?>
+            <div class="col text-end">
+                <span><?=$participant->full_name?>&nbsp</span>
+            </div>
+            <div class="col">
+                <div class="progress" style=" height:20px; border-radius:0px; background-color: #FFFFFF">
+                    <div class="progress-bar bg-success text-start" role="progressbar" style="width: <?=$participant->account/$sum?>%; border-radius: 0px 6px 6px 0px;" aria-valuenow= "0" aria-valuemin="0" aria-valuemax="100"><span>&nbsp<?=abs(round($participant->account,2))?></div>
+                </div>
+            </div>
+        </div>
+        <?php else: ?>
+        <div class="row g-0">
+            <div class="col justify-content-end ">
+                <div class="progress" style="direction: rtl; height:20px; border-radius:0px ; background-color: #FFFFFF;">
+                    <div class="progress-bar bg-danger text-end" role="progressbar" style="width: <?=abs($participant->account)/$sum?>%; border-radius: 6px 0px 0px 6px;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="120"><span>&nbsp<?=abs(round($participant->account,2))?>-</span></div>
+                </div>
+            </div>
+            <div class="col">
+                <span>&nbsp<?=$participant->full_name?></span>
+            </div>
+        </div>
+        <?php endif; } ?>
+    </div>
 </body>
 </html>
