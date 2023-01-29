@@ -23,7 +23,7 @@
         <a href= "" class= "btn btn-outline-danger" name = "buttonBack">Back</a>
         <?=$tricount->title?> &#8594 Expenses
 
-        <a href="" class="btn btn-primary" name = "buttonEdit">Edit</a>
+        <a href="Tricount/editTricount/<?= $tricount->id?>" class="btn btn-primary" name = "buttonEdit">Edit</a>
     </div>
     <?php if($alone || $noExpenses){ ?>
         <div class="container pt-5 ps-2 pe-2 text-center">
