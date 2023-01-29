@@ -81,12 +81,18 @@ class ControllerTricount extends MyController{
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
             $participants = $tricount->get_balances($_GET["param1"]);
             $maxUser=$participants[0];
-            for($i=1;$i<sizeof($participants);++$i){
+            $sum=0;
+            for($i=0;$i<sizeof($participants);++$i){
                 if($participants[$i]>$maxUser){
                     $maxUser=$participants[$i];
                 }
+                if($participants[$i]->account>0){
+                    $sum+=$participants[$i]->account;
+                }
+
             }
-            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser]);
+            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser,"sum"=>$sum/100,"total"=>$sum]);
+            $participants=[];
         }else{
             $this->redirect("Main");
         }
