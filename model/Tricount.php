@@ -57,7 +57,9 @@ class Tricount extends Model{
 
     }
 
-   public static function getTricountById(int $id): Tricount{
+
+
+    public static function getTricountById(int $id): Tricount{
         $query = self::execute("SELECT * FROM tricounts WHERE id = :id", ["id"=>$id]);
         $data = $query->fetch();
         return new Tricount($data["title"],$data["created_at"],$data["creator"],$data["description"],$data["id"]);
@@ -166,6 +168,63 @@ class Tricount extends Model{
         );
         return new Template($title,$this->id,Model::lastInsertId());
     }
+
+    public function persistUpdate(){
+        self::execute("UPDATE tricounts SET title=:title, description=:description where id=:id",
+    
+                     ["id"=> $this->id,
+                    "title"=>$this->title,
+                    "description"=>$this->description,
+                ]);
+    
+    }
+
+    public function add_subscriber(int $userId){
+        self::execute("INSERT INTO subscriptions VALUES (:tricountId,:userId)",
+        ["tricountId" => $this->id, 
+        "userId" =>$userId]);
+    }
+
+    public function delete_participations(int $userID):void{
+        self::execute("delete from subscriptions where tricount=:tricountID and user=:userID",["tricountID" => $this->id,"userID"=>$userID]);
+    }
+
+    public function delete_repartition_templates():void{
+        $this->delete_repartition_template_items();
+        self::execute("delete from repartition_templates where tricount=:tricountID",["tricountID" => $this->id]);
+    }
+
+    public function delete_repartition_template_items():void{
+        self::execute("delete from repartition_template_items where repartition_template in (select id from repartition_templates where tricount=:tricountID)",["tricountID" => $this->id]);
+    }
+
+
+    public function delete_tricount(int $userID):void{
+        $operations=Operation::get_operations_by_tricountid($this->id);
+        foreach($operations as $operation){
+            $operation->delete_operation();
+        }
+        $this->delete_participations($userID);
+        $this->delete_repartition_templates();
+        self::execute("delete from tricounts where id=:tricountID",["tricountID" => $this->id]);
+    }
+
+    public function delete_participation(int $userID):void{
+        self::execute("delete from subscriptions where tricount =:tricountID and user=:userID",["tricountID" => $this->id,"userID"=>$userID]);
+    }
+
+    public function has_already_paid(int $userId):bool{
+        $operations=Operation::get_operations_by_tricountid($this->id);
+        $result=false;
+
+        foreach($operations as $operation){
+            if($operation->user_participates($userId)){
+                return true;
+            }
+        }
+        return $result;
+    }
+
 }
 
 ?>
