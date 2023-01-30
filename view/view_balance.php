@@ -16,7 +16,7 @@
 
 
 
-    <div class="container-fluid " style="font-size:20px;">
+<div class="container" style="font-size:20px;">
         <?php foreach($participants as $participant){?>
         <div class="row g-0 p-1">
             <?php if($participant->account>=0):?>
@@ -26,7 +26,7 @@
             <div class="col">
                 <div class="progress" style=" height:35px; border-radius:0px; background-color: #FFFFFF">
                     <div class="progress-bar bg-success text-start" role="progressbar" style="width: <?=$participant->account/$sum?>%; border-radius: 0px 6px 6px 0px;" aria-valuenow= "0" aria-valuemin="0" aria-valuemax="100">
-                        <span  style= "position: absolute; width: 100%; color: black; text-align: right overflow: visible;color:black;font-size:19px">&nbsp<?=abs(round($participant->account,2))?>&nbsp€</span>
+                        <span  style= "position: absolute; color: black; text-align: right overflow: visible;color:black;font-size:19px">&nbsp<?=abs(round($participant->account,2))?>&nbsp€</span>
                     </div>
                 </div>
             </div>
@@ -35,8 +35,8 @@
         <div class="row g-0 p-1">
             <div class="col justify-content-end ">
                 <div class="progress" style="direction: rtl; height:35px; border-radius:0px ; background-color: #FFFFFF;">
-                    <div class="progress-bar bg-danger text-end" role="progressbar" style="width: <?=abs($participant->account)/$sum?>%; border-radius: 6px 0px 0px 6px;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="120">
-                        <span style=  "position: absolute; width: 100%; color: black; text-align: right overflow: visible; color:black;font-size:19px">&nbsp€&nbsp<?=abs(round($participant->account,2))?>-</span>
+                    <div class="progress-bar bg-danger text-end" role="progressbar" style="width: <?=abs($participant->account)/$sum?>%; border-radius: 6px 0px 0px 6px;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        <span style=  "position: absolute; color: black; text-align: right overflow: visible; color:black;font-size:19px">&nbsp€&nbsp<?=abs(round($participant->account,2))?>-</span>
                     </div>
                 </div>
             </div>
