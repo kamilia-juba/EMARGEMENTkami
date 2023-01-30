@@ -52,6 +52,44 @@
             self::remove_items();
             self::remove_repartition_template();
         }
-    }
 
+        public function get_repartition_template_users(): array{
+            $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template=:id", ["id" => $this->id]);
+            $data = $query->fetchAll();
+            $results = [];
+            foreach($data as $row){
+                $results[] = User::get_user_by_id($row["user"]);
+            }
+            return $results;
+        }
+
+        public function get_repartition_user_weight(int $userId):int{
+            $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId AND repartition_template=:templateId", ["userId" => $userId, "templateId" => $this->id]);
+            $data = $query->fetch();
+            return $data["weight"];
+        }
+
+        public function get_repartition_total_weight(): int{
+            $query = self::execute("SELECT sum(weight) total FROM repartition_template_items WHERE repartition_template=:id", ["id" => $this->id]);
+            $data = $query->fetch();
+            return $data["total"];
+        }
+
+        public static function add_repartition_template(string $title, int $tricountId): Template{
+            self::execute("INSERT INTO repartition_templates(title,tricount) VALUES(:title,:tricount)", ["title" => $title, "tricount" => $tricountId]);
+            $lastId = Model::lastInsertId();
+            return Template::get_template_by_id($lastId);
+        }
+
+        public static function validate_title(String $title): array {
+            $errors = [];
+            if(strlen($title)<=0) {
+                $errors[] = "A title is required";
+            }
+            if(strlen($title)!=0 && strlen($title)<3){
+                $errors[] = "Title must have at least 3 characters";
+            }
+            return $errors;
+        }
+    }
 ?>

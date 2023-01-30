@@ -22,7 +22,8 @@
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD ">
         <a href= "" class= "btn btn-outline-danger" name = "buttonBack">Back</a>
         <?=$tricount->title?> &#8594 Expenses
-        <a href="" class="btn btn-primary" name = "buttonEdit">Edit</a>
+
+        <a href="Tricount/editTricount/<?= $tricount->id?>" class="btn btn-primary" name = "buttonEdit">Edit</a>
     </div>
     <?php if($alone || $noExpenses){ ?>
         <div class="container pt-5 ps-2 pe-2 text-center">
@@ -37,6 +38,7 @@
                 </li>
             </ul>
         </div>
+
     <?php }else{ ?>
         <div class="container">
             <a href="Tricount/showBalance/<?= $tricount->id?>" class="btn btn-success w-100 mt-2 mb-2" name = "buttonViewBalance">&#8644 View balance</a>

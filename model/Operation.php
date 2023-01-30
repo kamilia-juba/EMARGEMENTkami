@@ -81,6 +81,13 @@ class Operation extends Model {
 
     }
 
+    public static function get_weight_from_template_static(User $participant, Template $template){ // a changer pour rendre l'autre static
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
+        $data = $query->fetch();
+        return $data === false ? null : $data["weight"];
+
+    }
+
     public function user_participates(int $userId):bool{
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId",["operationId" => $this->id]);
         $data = $query->fetchAll();
@@ -126,10 +133,7 @@ class Operation extends Model {
                         "initiator"=>$this->initiator,
                         "created_at"=>$this->created_at]);
         $lastid= Model::lastInsertId();
-        self::execute("INSERT INTO repartitions(operation,user,weight) VALUES(:operation,:user,:weight)", 
-                        [ "weight"=>1,
-                        "operation"=>$lastid,
-                        "user"=>$this->initiator]);                
+        $this->id=$lastid;           
         return $this;
     }
     public static function validate_title(String $title): array {
@@ -169,6 +173,11 @@ class Operation extends Model {
                      ["operation" => $this->id,
                       "user" => $user->id,
                       "weight" => $weight]);
+    }
+
+    public function delete_operation(){
+        self::execute("delete from repartitions where operation=:operationId",["operationId" => $this->id]);
+        self::execute("delete from operations where id=:operationId",["operationId" => $this->id]);
     }
 }
 
