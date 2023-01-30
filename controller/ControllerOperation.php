@@ -53,8 +53,8 @@ class ControllerOperation extends Mycontroller{
         $disable_CBox_and_SaveTemplate = false;
         $selected_repartition = 0;
         
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
-            $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+        $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
         $title = "";
         $amount = "";
         $date = "";
