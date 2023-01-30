@@ -161,7 +161,6 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         $errors = [];
         $selected_repartition = 0;
-        $disable_CBox_and_SaveTemplate = false;
         $paidByIsSelected = false;
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
             $operation = Operation::get_operation_byid($_GET["param2"]);
@@ -177,7 +176,6 @@ class ControllerOperation extends Mycontroller{
                 $template = Template::get_template_by_id($_POST["repartitionTemplates"]);
                 $selected_repartition = $template->id;
                 $participants_and_weights = [];
-                $disable_CBox_and_SaveTemplate = true;
                 foreach($participants as $participant){
                     $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
                 }
@@ -252,8 +250,7 @@ class ControllerOperation extends Mycontroller{
                                                  "user"=>$user,"tricount" => $tricount,
                                                  "participants_and_weights" => $participants_and_weights,
                                                  "repartition_templates"=>$repartition_templates,
-                                                 "errors" => $errors,
-                                                 "disable_CBox_and_SaveTemplate" => $disable_CBox_and_SaveTemplate]
+                                                 "errors" => $errors]
             );
         } else{
             $this->redirect("Main");
