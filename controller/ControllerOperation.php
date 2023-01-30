@@ -161,7 +161,6 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         $errors = [];
         $selected_repartition = 0;
-        $paidByIsSelected = false;
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
             $operation = Operation::get_operation_byid($_GET["param2"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
@@ -191,15 +190,6 @@ class ControllerOperation extends Mycontroller{
                 if(!isset($_POST["checkboxParticipants"])){
                     if(isset($_POST["weight"])){
                         $errors[] = "You must select at least 1 participant";
-                    }
-                }else{
-                    for($i = 0; $i < sizeof($_POST["checkboxParticipants"]);++$i){
-                        if($_POST["checkboxParticipants"][$i]==$_POST["paidBy"]){
-                            $paidByIsSelected = true;
-                        }
-                    }
-                    if(!$paidByIsSelected){
-                        $errors[] = "The payer have to be selected";
                     }
                 }
                 if(isset($_POST["saveTemplateCheck"])){
