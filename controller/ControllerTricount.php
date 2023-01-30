@@ -198,6 +198,9 @@ class ControllerTricount extends MyController{
                         $errors[] = "You must select at least 1 participant";
                     }
                 }
+                if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
+                    $errors[] = "Weights must be greater than 0";
+                }
                 if(count($errors)==0){
                     $checkboxes = $_POST["checkboxParticipants"];
                     $template = Template::add_repartition_template($title,$tricount->id);

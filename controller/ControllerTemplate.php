@@ -34,10 +34,6 @@ class ControllerTemplate extends Mycontroller{
     public function edit_template(){
         $user=$this->get_user_or_redirect();
         $errors = [];
-        $disable_CBox_and_SaveTemplate = false;
-        $selected_repartition = 0;
-
-
 
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && $user->isSubscribedToTemplate($_GET["param2"]) && isset($_GET["param2"]) && $_GET["param2"] !== "" ){
             $tricount = Tricount::getTricountById($_GET["param1"]);
@@ -60,7 +56,9 @@ class ControllerTemplate extends Mycontroller{
                         $errors[] = "You must select at least 1 participant";
                     }
                 }
-
+                if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
+                    $errors[] = "Weights must be greater than 0";
+                }
                 if(count($errors)==0){
                     $checkboxes = $_POST["checkboxParticipants"];
                     $weights = $_POST["weight"];

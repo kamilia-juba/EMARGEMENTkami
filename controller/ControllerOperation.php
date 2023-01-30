@@ -121,8 +121,10 @@ class ControllerOperation extends Mycontroller{
             $errors = array_merge($errors, Operation::validate_amount($amount));
             $errorsTitle = array_merge($errorsTitle, Operation::validate_title($title));
             $errorsAmount = array_merge($errorsAmount, Operation::validate_amount($amount));
-
-
+            if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
+                $errors[] = "Weights must be greater than 0";
+            }
+            
             if (count($errors) == 0) { 
                 $operationss = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d H:i:s"), $date);
                 $operation=$operationss->persist();
@@ -210,6 +212,9 @@ class ControllerOperation extends Mycontroller{
                     }else if(isset($_POST["newTemplateName"]) && empty($newTemplateName)){
                         $errors[] = "A name must be given to template to be able to save it.";
                     }
+                }
+                if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
+                    $errors[] = "Weights must be greater than 0";
                 }
                 if(count($errors)==0){
                     $operation->title = $title;
