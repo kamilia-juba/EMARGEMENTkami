@@ -161,15 +161,13 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         $errors = [];
         $selected_repartition = 0;
-        $disable_CBox_and_SaveTemplate = false;
-        $paidByIsSelected = false;
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
             $operation = Operation::get_operation_byid($_GET["param2"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
             $participants_and_weights = [];
             foreach($participants as $participant){
-                $participants_and_weights[] = [$participant, $operation->get_weight($participant->id) == null ? 1 : $operation->get_weight($participant->id)];
+                $participants_and_weights[] = [$participant, $operation->get_weight($participant->id) == null ? 1 : $operation->get_weight($participant->id),$operation->user_participates($participant->id)];
             }
             $repartition_templates = $tricount->get_repartition_templates();
 
@@ -177,9 +175,8 @@ class ControllerOperation extends Mycontroller{
                 $template = Template::get_template_by_id($_POST["repartitionTemplates"]);
                 $selected_repartition = $template->id;
                 $participants_and_weights = [];
-                $disable_CBox_and_SaveTemplate = true;
                 foreach($participants as $participant){
-                    $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template)];
+                    $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
                 }
             }
 
@@ -193,15 +190,6 @@ class ControllerOperation extends Mycontroller{
                 if(!isset($_POST["checkboxParticipants"])){
                     if(isset($_POST["weight"])){
                         $errors[] = "You must select at least 1 participant";
-                    }
-                }else{
-                    for($i = 0; $i < sizeof($_POST["checkboxParticipants"]);++$i){
-                        if($_POST["checkboxParticipants"][$i]==$_POST["paidBy"]){
-                            $paidByIsSelected = true;
-                        }
-                    }
-                    if(!$paidByIsSelected){
-                        $errors[] = "The payer have to be selected";
                     }
                 }
                 if(isset($_POST["saveTemplateCheck"])){
@@ -252,8 +240,7 @@ class ControllerOperation extends Mycontroller{
                                                  "user"=>$user,"tricount" => $tricount,
                                                  "participants_and_weights" => $participants_and_weights,
                                                  "repartition_templates"=>$repartition_templates,
-                                                 "errors" => $errors,
-                                                 "disable_CBox_and_SaveTemplate" => $disable_CBox_and_SaveTemplate]
+                                                 "errors" => $errors]
             );
         } else{
             $this->redirect("Main");

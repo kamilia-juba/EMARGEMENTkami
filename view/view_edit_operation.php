@@ -42,19 +42,25 @@
             For whom ? (select at least one)</td></tr>
             <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
                 <div class="input-group mb-2 mt-2">
-                    <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" name="checkboxParticipants[]" value ="<?=$participants_and_weights[$i][0]->id?>" <?php if($operation->user_participates($participants_and_weights[$i][0]->id)){echo "checked";}?>></span>
+                    <span class="form-control" style="background-color: #E9ECEF">
+                        <input type="checkbox" 
+                            name="checkboxParticipants[]" 
+                            value ="<?=$participants_and_weights[$i][0]->id?>" 
+                            <?php if($participants_and_weights[$i][2]){ ?>
+                                        checked
+                            <?php } ?>
+                        >
+                    </span>
                     <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants_and_weights[$i][0]->full_name?></span>
                     <input class="form-control" type="number" min="0" name="weight[]" value="<?=$participants_and_weights[$i][1]?>">
                 </div>
             <?php } ?>
-            <?php if(!$disable_CBox_and_SaveTemplate){ ?>
-                Add a new repartition template
-                <div class="input-group mb-2 pt-2 pb-2">
-                    <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" name="saveTemplateCheck"></span>
-                    <span class="input-group-text" style="background-color: #E9ECEF">Save this template</span>
-                    <input class="form-control w-50" id="newTemplateName" name="newTemplateName">
-                </div>
-            <?php } ?>  
+            Add a new repartition template
+            <div class="input-group mb-2 pt-2 pb-2">
+                <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" name="saveTemplateCheck"></span>
+                <span class="input-group-text" style="background-color: #E9ECEF">Save this template</span>
+                <input class="form-control w-50" id="newTemplateName" name="newTemplateName">
+            </div>
         </form>
         <?php if (count($errors) != 0): ?>
                 <div class="text-danger">
