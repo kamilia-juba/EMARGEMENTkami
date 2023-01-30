@@ -14,7 +14,7 @@
         <table>
             <?php for($i = 0; $i<sizeof($templates_items);++$i){ ?>
                     <tr>
-                        <td><a href="">
+                        <td><a href="Template/edit_template/<?=$tricount->id?>/<?=$templates_items[$i][1]->id?>">
                             <?= $templates_items[$i][1]->title ?>
                             <ul>
                                 <?php foreach($templates_items[$i][0] as $user) { ?>

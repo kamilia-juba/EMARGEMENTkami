@@ -176,7 +176,7 @@ class ControllerOperation extends Mycontroller{
                 $selected_repartition = $template->id;
                 $participants_and_weights = [];
                 foreach($participants as $participant){
-                    $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
+                    $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
                 }
             }
 

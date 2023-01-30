@@ -40,7 +40,7 @@
             );
         }
 
-        private function remove_items(){
+        public function remove_items(){
             self::execute("DELETE FROM repartition_template_items WHERE repartition_template = :id", ["id"=>$this->id]);
         }
 
@@ -87,9 +87,10 @@
         }
 
         public function template_name_exists(string $title): bool{
-            $query = self::execute("SELECT * FROM repartition_templates WHERE title=:title and id=:templateId",
+            $query = self::execute("SELECT * FROM repartition_templates WHERE title=:title and id!=:templateId and tricount=:tricount",
                             ["title" => $title,
-                            "templateId" => $this->id]
+                            "templateId" => $this->id,
+                            "tricount" => $this->tricount]
             );
             $data = $query->fetch();
             if(empty($data)){
@@ -106,13 +107,6 @@
         return new Template($title,$this->id,Model::lastInsertId());
         }
 
-        public function update_item(User $user, int $weight){
-            self::execute("UPDATE repartition_template_items SET weight=:weight WHERE user=:user and repartition_template=:repartition_template",
-                            ["user" => $user->id,
-                            "repartition_template" => $this->id,
-                            "weight" => $weight]
-            );
-        }
         public static function add_repartition_template(string $title, int $tricountId): Template{
             self::execute("INSERT INTO repartition_templates(title,tricount) VALUES(:title,:tricount)", ["title" => $title, "tricount" => $tricountId]);
             $lastId = Model::lastInsertId();
@@ -128,6 +122,16 @@
                 $errors[] = "Title must have at least 3 characters";
             }
             return $errors;
+        }
+
+        public function update_template(string $title){
+            self::execute("UPDATE repartition_templates SET title=:title WHERE id=:id", ["title" => $title, "id" => $this->id]);
+        }
+
+        public static function get_weight_from_template(User $participant, Template $template){
+            $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
+            $data = $query->fetch();
+            return $data === false ? null : $data["weight"];
         }
     }
 
