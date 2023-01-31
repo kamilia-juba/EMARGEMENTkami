@@ -71,7 +71,7 @@
             <p>TOTAL EXPENSES</p>
         </div>
         <div class="d-flex justify-content-between">
-            <p><b><?=$tricount->get_logged_user_total($user->id)?> €</b></p>
+            <p><b><?=round($myBalance,1)?> €</b></p>
             <p><b><?=$tricount->get_total_expenses();?> €</b></p>
         </div>
     </footer>
