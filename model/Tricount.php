@@ -165,7 +165,7 @@ class Tricount extends Model{
     }
 
     public function get_participants():array{
-        $query = self::execute("SELECT * FROM users WHERE id in (SELECT DISTINCT user FROM subscriptions WHERE tricount=:id)",["id" => $this->id]);
+        $query = self::execute("SELECT * FROM users WHERE id in (SELECT DISTINCT user FROM subscriptions WHERE tricount=:id) ORDER BY full_name",["id" => $this->id]);
         $data = $query->fetchAll();
         $results = [];
         foreach($data as $row){

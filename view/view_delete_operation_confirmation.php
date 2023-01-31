@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+  <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css” />
+  
   <head>
   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +11,24 @@
     <base href="<?= $web_root ?>"/>
   </head>
   <body>
-  <h1>Are you sure?</h1>
-    <br></br>
-    <p>Do you really want to delete operation "<?=$operation->title?>" and all of it's dependencies</p>
-    <br></br>
-    <p>This process cannot be undone</p>
-    <a href="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>"><button type="button" name="No">Cancel</button></a></body>
-    <a href="Operation/delete_operation/<?=$tricount->id?>/<?=$operation->id?>"><button type="button" name="Yes">Delete</button></a></body>
-    </form>
+    <div class="container d-flex align-items-center min-vh-100 text-danger">
+      <div class="container border rounded ">
+        <div class="container border-bottom text-center pt-4 pb-4">
+          <h1><p><i class="fa-regular fa-trash-can fa-xl"></i></p>
+              <p>Are you sure?</p>
+          </h1>
+        </div>
+          <div class="container border-bottom text-center pt-4 pb-4">
+          <form id="deleteTemplateForm" action="Operation/delete_operation/<?=$tricount->id?>/<?=$operation->id?>" method="POST">
+                      <p>Do you really want to delete operation "<span style="font-weight:bold;"><?=$operation->title?></span>" and all of its dependencies ?<p>
+                      <p>This process cannot be undone.</p>
+              
+                    <td><input class="btn btn-secondary" type="submit" name="no" value="Cancel"></td>
+                    <td><input class="btn btn-danger" type="submit" name="yes" value="Delete"></td>  
+                  
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
