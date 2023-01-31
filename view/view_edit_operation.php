@@ -71,6 +71,6 @@
                     </ul>
                 </div>
             <?php endif; ?>
-    <a href="Operation/confirm_delete_operation/<?=$tricount->id?>/<?=$operation->id?>" class="btn btn-danger w-100" name="deleteOperation">Delete Operation</a>
+    <a href="Operation/delete_operation/<?=$tricount->id?>/<?=$operation->id?>" class="btn btn-danger w-100" name="deleteOperation">Delete Operation</a>
 </body>
 </html>
