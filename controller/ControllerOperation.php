@@ -53,8 +53,8 @@ class ControllerOperation extends Mycontroller{
         $disable_CBox_and_SaveTemplate = false;
         $selected_repartition = 0;
         
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
-            $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+        $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
         $title = "";
         $amount = "";
         $date = "";
@@ -121,8 +121,10 @@ class ControllerOperation extends Mycontroller{
             $errors = array_merge($errors, Operation::validate_amount($amount));
             $errorsTitle = array_merge($errorsTitle, Operation::validate_title($title));
             $errorsAmount = array_merge($errorsAmount, Operation::validate_amount($amount));
-
-
+            if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
+                $errors[] = "Weights must be greater than 0";
+            }
+            
             if (count($errors) == 0) { 
                 $operationss = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d H:i:s"), $date);
                 $operation=$operationss->persist();
@@ -151,7 +153,8 @@ class ControllerOperation extends Mycontroller{
                                             "participants_and_weights" => $participants_and_weights,
                                             "repartition_templates"=>$repartition_templates,
                                             "disable_CBox_and_SaveTemplate" => $disable_CBox_and_SaveTemplate,
-                                            "selected_repartition" => $selected_repartition]);
+                                            "selected_repartition" => $selected_repartition,
+                                            "user"=>$user]);
         }else{
             $this->redirect("main");
         }
@@ -176,7 +179,7 @@ class ControllerOperation extends Mycontroller{
                 $selected_repartition = $template->id;
                 $participants_and_weights = [];
                 foreach($participants as $participant){
-                    $participants_and_weights[] = [$participant, $operation->get_weight_from_template($participant, $template) == null ? 0 : $operation->get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
+                    $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
                 }
             }
 
@@ -210,6 +213,9 @@ class ControllerOperation extends Mycontroller{
                     }else if(isset($_POST["newTemplateName"]) && empty($newTemplateName)){
                         $errors[] = "A name must be given to template to be able to save it.";
                     }
+                }
+                if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
+                    $errors[] = "Weights must be greater than 0";
                 }
                 if(count($errors)==0){
                     $operation->title = $title;

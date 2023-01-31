@@ -36,7 +36,7 @@ class ControllerTricount extends MyController{
             
             if (count($errors) == 0) { 
                 $tricount->persist($creator); //sauve le tricount
-                (new View("addFreinds"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
+                $this->redirect("Tricount", "yourTricounts");
 
                
             }
@@ -69,7 +69,8 @@ class ControllerTricount extends MyController{
             if(empty($operations)){
                 $noExpenses = true;
             }
-            (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations,"user"=>$user, "alone" => $alone, "noExpenses" => $noExpenses]);
+            $myBalance=$tricount->get_my_total($user->id);
+            (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations,"user"=>$user, "alone" => $alone, "noExpenses" => $noExpenses,"myBalance"=>$myBalance]);
         } else{
             $this->redirect("Main");
         }
@@ -79,8 +80,20 @@ class ControllerTricount extends MyController{
         $user=$this->get_user_or_redirect();
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
-            $participants = $tricount->get_balances($_GET["param1"]);
-            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount]);
+            $participants = $tricount->get_balances();
+            $maxUser=$participants[0];
+            $sum=0;
+            for($i=0;$i<sizeof($participants);++$i){
+                if($participants[$i]>$maxUser){
+                    $maxUser=$participants[$i];
+                }
+                if($participants[$i]->account>0){
+                    $sum+=$participants[$i]->account;
+                }
+
+            }
+            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser,"sum"=>$sum/100,"total"=>$sum,"user"=>$user]);
+            $participants=[];
         }else{
             $this->redirect("Main");
         }

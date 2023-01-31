@@ -57,8 +57,6 @@ class Tricount extends Model{
 
     }
 
-
-
     public static function getTricountById(int $id): Tricount{
         $query = self::execute("SELECT * FROM tricounts WHERE id = :id", ["id"=>$id]);
         $data = $query->fetch();
@@ -96,11 +94,11 @@ class Tricount extends Model{
     }
 
 
-    public function get_balances(int $tricountID):array{
+    public function get_balances():array{
         $operations=[];
         $participant=[];
     
-        $operations = Operation::get_operations_by_tricountid($tricountID);
+        $operations = Operation::get_operations_by_tricountid($this->id);
         $participants = $this->get_participants();
 
 
@@ -127,6 +125,33 @@ class Tricount extends Model{
             }
         }
         return $participants;
+    }
+
+    public function get_my_total(int $userId):float{
+        $operations=[];
+        $participant=[];
+        $res=0;
+    
+        $operations = Operation::get_operations_by_tricountid($this->id);
+        $participants = $this->get_participants();
+
+
+        foreach($operations as $operation){
+
+            $totalWeight=Operation::get_total_weights($operation->id);
+            $sum=$operation->amount;
+            $myWeight=$operation->get_weight($userId);
+            $individualAmout= $sum/$totalWeight;
+
+            foreach($participants as $participant){
+                if($operation->user_participates($participant->id)){
+                    if($participant->id==$userId){
+                        $res+=$individualAmout*$myWeight;
+                    }
+                }
+            }
+        }
+        return $res;
     }
 
     public function get_participants():array{
