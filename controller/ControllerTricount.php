@@ -172,7 +172,7 @@ class ControllerTricount extends MyController{
 
                 $tricount=Tricount::getTricountById($_GET["param1"]);
 
-                if(!$participant->has_already_paid($tricount->id)){
+                if(!$participant->has_already_paid($tricount->id)&&!$tricount->has_already_paid($participant->id)){ // a renommer pour le premier en has already paid et l'autre en has already participated
                     $tricount->delete_participation($participant->id);
                     $this->redirect("Tricount", "editTricount",$tricount->id) ;
                 }
