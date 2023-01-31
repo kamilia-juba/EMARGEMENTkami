@@ -80,7 +80,19 @@ class ControllerTricount extends MyController{
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
             $participants = $tricount->get_balances($_GET["param1"]);
-            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount]);
+            $maxUser=$participants[0];
+            $sum=0;
+            for($i=0;$i<sizeof($participants);++$i){
+                if($participants[$i]>$maxUser){
+                    $maxUser=$participants[$i];
+                }
+                if($participants[$i]->account>0){
+                    $sum+=$participants[$i]->account;
+                }
+
+            }
+            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser,"sum"=>$sum/100,"total"=>$sum,"user"=>$user]);
+            $participants=[];
         }else{
             $this->redirect("Main");
         }

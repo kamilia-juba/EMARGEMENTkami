@@ -153,7 +153,8 @@ class ControllerOperation extends Mycontroller{
                                             "participants_and_weights" => $participants_and_weights,
                                             "repartition_templates"=>$repartition_templates,
                                             "disable_CBox_and_SaveTemplate" => $disable_CBox_and_SaveTemplate,
-                                            "selected_repartition" => $selected_repartition]);
+                                            "selected_repartition" => $selected_repartition,
+                                            "user"=>$user]);
         }else{
             $this->redirect("main");
         }
