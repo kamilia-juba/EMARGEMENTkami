@@ -36,22 +36,14 @@ class ControllerTricount extends MyController{
             
             if (count($errors) == 0) { 
                 $tricount->persist($creator); //sauve le tricount
+                $user->add_subscription();
                 $this->redirect("Tricount", "yourTricounts");
 
-               
-            }
-            else{
-            (new View("addtricount"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
-
             }
         }
-        else {
-
         (new View("addtricount"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
-        }
-        
-        
     }
+
     public function index() : void {
           }
 

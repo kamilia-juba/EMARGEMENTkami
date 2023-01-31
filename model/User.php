@@ -232,4 +232,11 @@ class User extends Model {
         $data = $query->fetch();
         return !empty($data);
     }
+
+    //ajoute un accès dans la table subscriptions en fonction du dernier ID(tricount) inséré
+    public function add_subscription(){
+        $lastInserted = Model::lastInsertId();
+        self::execute("INSERT INTO subscriptions(tricount,user) VALUES(:lastInserted, :user)", ["lastInserted" => $lastInserted, "user" => $this->id]);
+
+    }
 }
