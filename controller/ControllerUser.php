@@ -34,7 +34,8 @@ class ControllerUser extends MyController {
             if (count($errors) == 0) { 
                 $user->full_name = $full_name;
                 $user->iban = $iban;
-                $user->persist(); //sauve l'utilisateur
+                $user->persist();
+                $this->redirect("user","settings");
                     
             }
         }
