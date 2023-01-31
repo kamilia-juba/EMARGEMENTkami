@@ -169,9 +169,14 @@ class ControllerTricount extends MyController{
         if (isset($_GET["param1"]) && $_GET["param1"] !== ""  && isset($_GET["param2"]) && $_GET["param2"] !== "") {
             $participant=User::get_user_by_id($_GET["param2"]);
             if($participant->isSubscribedToTricount($_GET["param1"])){
+
                 $tricount=Tricount::getTricountById($_GET["param1"]);
-                $tricount->delete_participation($participant->id);
-                $this->redirect("Tricount", "showTricount",$tricount->id) ;
+
+                if(!$participant->has_already_paid($tricount->id)){
+                    $tricount->delete_participation($participant->id);
+                    $this->redirect("Tricount", "editTricount",$tricount->id) ;
+                }
+                $this->redirect("Tricount", "editTricount",$tricount->id);
             }
             else{
                 $this->redirect();
