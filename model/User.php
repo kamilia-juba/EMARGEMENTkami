@@ -237,6 +237,5 @@ class User extends Model {
     public function add_subscription(){
         $lastInserted = Model::lastInsertId();
         self::execute("INSERT INTO subscriptions(tricount,user) VALUES(:lastInserted, :user)", ["lastInserted" => $lastInserted, "user" => $this->id]);
-
     }
 }

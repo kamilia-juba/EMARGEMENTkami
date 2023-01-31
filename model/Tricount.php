@@ -250,6 +250,12 @@ class Tricount extends Model{
         return $result;
     }
 
+    //returns true if there's already a combination of a title and a user given as parameters
+    public static function tricountTitleAlreadyExists(string $title, User $user){
+        $query = self::execute("SELECT * FROM tricounts WHERE title=:title and creator=:user", ["title" => $title, "user" => $user->id]);
+        $data = $query->fetch();
+        return !empty($data);
+    }
 }
 
 ?>
