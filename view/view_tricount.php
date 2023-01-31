@@ -52,7 +52,7 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <p>Paid by <?=$operation->get_payer()->full_name?></p>
-                        <p><?=$operation->operation_date?></p>
+                        <p><?=date('d/m/Y',strtotime($operation->operation_date))?></p>
                     </div>
                 </a></li>
        <?php } ?>
