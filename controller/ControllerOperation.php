@@ -253,21 +253,6 @@ class ControllerOperation extends Mycontroller{
         }
     }
 
-    public function confirm_delete_operation(): void{
-        $user = $this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
-            
-            $tricount = Tricount::getTricountById(( $_GET["param1"]));
-            if($user->participatesToOperation($_GET["param2"])){
-                $operation = Operation::get_operation_byid($_GET["param2"]);
-                (new View("delete_operation_confirmation"))->show(["operation"=>$operation,"tricount"=>$tricount]);    
-            }
-            else{
-                $this->redirect();
-            }   
-        }
-    }
-
     public function delete_operation(){
         $user = $this->get_user_or_redirect();
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
@@ -275,12 +260,21 @@ class ControllerOperation extends Mycontroller{
             $tricount = Tricount::getTricountById(( $_GET["param1"]));
             if($user->participatesToOperation($_GET["param2"])){
                 $operation= Operation::get_operation_byid($_GET["param2"]);
-                $operation->delete_operation();
-                $this->redirect();
+
+                if(isset($_POST["yes"])){
+                    $operation->delete_operation();
+                    $this->redirect("Tricount","showTricount",$tricount->id);
+                }
+                if(isset($_POST["no"])){
+                    $this->redirect("Operation","editOperation",$tricount->id,$operation->id);
+                }
+                (new View("delete_operation_confirmation"))->show(["operation"=>$operation,"tricount"=>$tricount]);
             }
             else{
                 $this->redirect();
             }
+        }
+        else{
             $this->redirect();
         }
     }
