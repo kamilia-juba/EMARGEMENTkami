@@ -27,7 +27,7 @@
             <?php
                 foreach($participants as $participant){
                     if($participant->id==$user->id){
-                        if($participant->has_already_paid($tricount->id)){// a changer si on ne peut supprimer le createur
+                        if($participant->has_already_paid($tricount->id)|| $tricount->has_already_paid($participant->id)){// a changer si on ne peut supprimer le createur
                             echo "<tr><td>".$participant->full_name." (creator)</td></tr>";
                         }
                         else{ 
@@ -36,7 +36,7 @@
                             </td></tr>";
                         }
                     }else
-                        if($participant->has_already_paid($tricount->id)){
+                        if($participant->has_already_paid($tricount->id)||$tricount->has_already_paid($participant->id)){
                             echo "<tr><td>".$participant->full_name;
                         }
                         else{ 
