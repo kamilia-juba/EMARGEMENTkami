@@ -36,7 +36,7 @@ class ControllerTricount extends MyController{
             
             if (count($errors) == 0) { 
                 $tricount->persist($creator); //sauve le tricount
-                (new View("addFreinds"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
+                $this->redirect("Tricount", "yourTricounts");
 
                
             }
