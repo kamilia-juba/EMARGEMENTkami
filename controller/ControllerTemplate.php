@@ -16,9 +16,9 @@ class ControllerTemplate extends Mycontroller{
             $template = Template::get_template_by_id($_GET["param2"]);
             if(isset($_POST["yes"])){
                 $template->remove_template();
-                //a ajouter redirection vers edit_template
+                $this->redirect("Tricount", "showTemplates", $tricount->id);
             }else if(isset($_POST["no"])){
-                //a ajouter redirection vers edit_template
+                $this->redirect("Template", "edit_template", $tricount->id, $template->id);
             }
 
             (new View("delete_template"))->show(
