@@ -33,6 +33,10 @@ class ControllerTricount extends MyController{
 
             $tricount = new Tricount($title,$created_at,$creator,$description);
             $errors = $tricount->valide_title($title);
+
+            if(Tricount::tricountTitleAlreadyExists($title, $user)){
+                $errors[] = "You already have a tricount with this title. Choose another title";
+            }
             
             if (count($errors) == 0) { 
                 $tricount->persist($creator); //sauve le tricount
