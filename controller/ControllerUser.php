@@ -25,8 +25,8 @@ class ControllerUser extends MyController {
 
 
         if (isset($_POST['full_name']) || isset($_POST['IBAN']) ) {
-            $full_name = $_POST['full_name'];
-            $iban = $_POST['iban'];
+            $full_name = Tools::sanitize($_POST['full_name']);
+            $iban = Tools::sanitize($_POST['iban']);
         
             $errors = array_merge($errors, User::validate_IBAN($iban));
             $errors = array_merge($errors, User::validate_full_name($full_name));
