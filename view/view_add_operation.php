@@ -20,14 +20,14 @@
                 
                     
                         <input class="form-control mb-2" id="title" name="title" type="text" value="<?= $title?>" placeholder="Title">
-                            <?php if (count($errorsTitle) != 0): ?>
-                            <div class='text-danger'>
-                                <ul>
-                                <?php foreach ($errorsTitle as $errors): ?>
-                                    <li><?= $errors ?></li>
-                                <?php endforeach; ?>
-                                </ul>
-                            </div>
+                        <?php if (count($errorsTitle) != 0): ?>
+                        <div class='text-danger'>
+                            <ul>
+                            <?php foreach ($errorsTitle as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                            </ul>
+                        </div>
                         <?php endif; ?></td>
                     
                         <div class="input-group mb-2">           
@@ -73,14 +73,21 @@
                     <input class="form-control" type="number" min="0" name="weight[]" value="<?=$participants_and_weights[$i][1]?>">
                 </div>
             <?php } ?>
-            <?php if(!$disable_CBox_and_SaveTemplate){ ?>
-                Add a new repartition template
-                <div class="input-group mb-2 pt-2 pb-2">
-                    <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" name="saveTemplateCheck"></span>
-                    <span class="input-group-text" style="background-color: #E9ECEF">Save this template</span>
-                    <input class="form-control w-50" id="newTemplateName" name="newTemplateName">
-                </div>
-            <?php } ?>  
+            <?php if (count($errorsCheckboxes) != 0): ?>
+                        <div class='text-danger'>
+                            <ul>
+                            <?php foreach ($errorsCheckboxes as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                            </ul>
+                        </div>
+            <?php endif; ?></td>
+            Add a new repartition template
+            <div class="input-group mb-2 pt-2 pb-2">
+                <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" name="saveTemplateCheck"></span>
+                <span class="input-group-text" style="background-color: #E9ECEF">Save this template</span>
+                <input class="form-control w-50" id="newTemplateName" name="newTemplateName">
+            </div>
             </form>
         </div>
     </body>
