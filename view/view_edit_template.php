@@ -43,7 +43,7 @@
                     </ul>
                 </div>
             <?php endif; ?>
-            <a href="Template/deleteTemplate/<?=$tricount->id?>/<?=$template->id?>" class="btn btn-danger w-100" name="deleteOperation">Delete Operation</a> 
+            <a href="Template/deleteTemplate/<?=$tricount->id?>/<?=$template->id?>" class="btn btn-danger w-100" name="deleteTemplate">Delete Template</a> 
         </div>
     </body>
 </html>
