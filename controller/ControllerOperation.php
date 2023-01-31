@@ -62,6 +62,7 @@ class ControllerOperation extends Mycontroller{
         $errorsTitle = [];
         $errorsAmount = [];
         $errorsCheckboxes= [];
+        $errorsSaveTemplate = [];
         $participants = $tricount->get_participants();
         $participants_and_weights = [];
         foreach($participants as $participant){
@@ -97,7 +98,7 @@ class ControllerOperation extends Mycontroller{
                 $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
                 if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){
                     if($tricount->template_name_exists($_POST["newTemplateName"])){
-                        $errors[] = "This template already exists. Choose another name";
+                        $errorsSaveTemplate[] = "This template already exists. Choose another name";
                     }else{
                         $newTemplate = $tricount->add_template($newTemplateName);
                         for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
@@ -109,7 +110,7 @@ class ControllerOperation extends Mycontroller{
                         }
                     }
                 }else if(isset($_POST["newTemplateName"]) && empty($newTemplateName)){
-                    $errors[] = "A name must be given to template to be able to save it.";
+                    $errorsSaveTemplate[] = "A name must be given to template to be able to save it.";
                 }
             }
 
@@ -122,6 +123,7 @@ class ControllerOperation extends Mycontroller{
             $errors = array_merge($errors,$errorsTitle);
             $errors = array_merge($errors,$errorsAmount);
             $errors = array_merge($errors,$errorsCheckboxes);
+            $errors = array_merge($errors,$errorsSaveTemplate);
             
             
             if (count($errors) == 0) { 
@@ -147,6 +149,7 @@ class ControllerOperation extends Mycontroller{
                                             "errorsTitle" => $errorsTitle,
                                             "errorsAmount" => $errorsAmount, 
                                             "errorsCheckboxes" => $errorsCheckboxes,
+                                            "errorsSaveTemplate" => $errorsSaveTemplate,
                                             "tricount"=> $tricount, 
                                             "participants" => $participants,
                                             "participants_and_weights" => $participants_and_weights,

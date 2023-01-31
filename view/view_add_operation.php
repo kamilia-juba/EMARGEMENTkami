@@ -97,6 +97,15 @@
                 <input class="form-control w-50" id="newTemplateName" name="newTemplateName">
             </div>
             </form>
+            <?php if (count($errorsSaveTemplate) != 0): ?>
+                        <div class='text-danger'>
+                            <ul>
+                            <?php foreach ($errorsSaveTemplate as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                            </ul>
+                        </div>
+            <?php endif; ?>
         </div>
     </body>
 </html>
