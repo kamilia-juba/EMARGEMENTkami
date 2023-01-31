@@ -91,7 +91,7 @@ class ControllerTricount extends MyController{
                 }
 
             }
-            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser,"sum"=>$sum/100,"total"=>$sum]);
+            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser,"sum"=>$sum/100,"total"=>$sum,"user"=>$user]);
             $participants=[];
         }else{
             $this->redirect("Main");
