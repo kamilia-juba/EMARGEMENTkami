@@ -65,7 +65,7 @@ class ControllerOperation extends Mycontroller{
         $participants = $tricount->get_participants();
         $participants_and_weights = [];
         foreach($participants as $participant){
-            $participants_and_weights[] = [$participant, 1];
+                $participants_and_weights[] = [$participant, 1, true];
         }
         $repartition_templates = $tricount->get_repartition_templates();
 
@@ -75,7 +75,7 @@ class ControllerOperation extends Mycontroller{
             $selected_repartition = $template->id;
             $participants_and_weights = [];
             foreach($participants as $participant){
-                $participants_and_weights[] = [$participant, Operation::get_weight_from_template_static($participant, $template) == null ? 0 : Operation::get_weight_from_template_static($participant, $template)];
+                    $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
             }
         }
 
