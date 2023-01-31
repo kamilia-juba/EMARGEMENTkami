@@ -33,7 +33,7 @@
                 </li>
                 <li class="list-group-item ps-3">
                     <p><?= $alone ? "Click below to add your friends!" : "Click below to add your first expense!" ?></p>
-                    <p><?= $alone ?"<a href='' class='btn btn-primary' name='addFriendOrExpenseBtn'>Add friends</button></a>" 
+                    <p><?= $alone ?"<a href='Tricount/editTricount/$tricount->id' class='btn btn-primary' name='addFriendOrExpenseBtn'>Add friends</button></a>" 
                                 : "<a href='Operation/add_operation/$tricount->id' class='btn btn-primary' name='addFriendOrExpenseBtn'>Add an expense</a>" ?></p>
                 </li>
             </ul>
