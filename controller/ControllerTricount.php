@@ -209,6 +209,11 @@ class ControllerTricount extends MyController{
             if(isset($_POST["title"]) && $_POST["title"] != 0){
                 $title = trim($_POST["title"]);
                 $errors = array_merge($errors, Template::validate_title($title));
+
+                if(!$this->weightsAreNumeric($_POST["weight"])){
+                    $errors[] = "Weights must be numeric";
+                }
+
                 if(!isset($_POST["checkboxParticipants"])){
                     if(isset($_POST["weight"])){
                         $errors[] = "You must select at least 1 participant";

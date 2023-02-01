@@ -118,6 +118,10 @@ class ControllerOperation extends Mycontroller{
                 $errorsCheckboxes[] = "Weights must be greater than 0";
             }
 
+            if(!$this->weightsAreNumeric($_POST["weight"])){
+                $errorsCheckboxes[] = "Weights must be numeric";
+            }
+
             $errorsTitle = array_merge($errorsTitle, Operation::validate_title($title));
             $errorsAmount = array_merge($errorsAmount, Operation::validate_amount($amount));
             !is_numeric($amount) ? $errorsAmount[] = "Amount should be numeric" : "";
@@ -218,6 +222,11 @@ class ControllerOperation extends Mycontroller{
                 if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
                     $errors[] = "Weights must be greater than 0";
                 }
+
+                if(!$this->weightsAreNumeric($_POST["weight"])){
+                    $errors[] = "Weights must be numeric";
+                }
+
                 if(count($errors)==0){
                     $operation->title = $title;
                     $operation->amount = $amount;

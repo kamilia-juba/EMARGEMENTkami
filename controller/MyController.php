@@ -12,6 +12,15 @@ abstract class Mycontroller extends Controller{
         }
         return true;
     }
+
+    public function weightsAreNumeric(array $weights): bool{
+        for($i=0;$i<sizeof($weights);++$i){
+            if(!is_numeric($weights[$i])){
+                return false;
+            }
+        }
+        return true;
+    }
     
 }
 

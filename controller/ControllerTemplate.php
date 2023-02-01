@@ -59,6 +59,11 @@ class ControllerTemplate extends Mycontroller{
                 if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
                     $errors[] = "Weights must be greater than 0";
                 }
+
+                if(!$this->weightsAreNumeric($_POST["weight"])){
+                    $errors[] = "Weights must be numeric";
+                }
+
                 if(count($errors)==0){
                     $checkboxes = $_POST["checkboxParticipants"];
                     $weights = $_POST["weight"];
