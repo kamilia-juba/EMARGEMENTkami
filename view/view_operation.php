@@ -19,7 +19,7 @@
         <div class="container ps-3 pe-3 pb-3">
             <div class="d-flex justify-content-between">
                 <p>Paid by <?= $user->id==$paidBy->id ? "<b>me</b>" : $paidBy->full_name; ?></p>
-                <p><?= $operation->operation_date?></p>
+                <p><?=date('d/m/Y',strtotime($operation->operation_date))?></p>
             </div>
             <p>For <?= sizeof($users)==1 ? sizeof($users)." participant" : sizeof($users)." participants" ?><?= $user_participates ? ", including <b>me</b>" : ""?></p>
         </div>
