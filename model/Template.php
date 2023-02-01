@@ -113,17 +113,6 @@
             return Template::get_template_by_id($lastId);
         }
 
-        public static function validate_title(String $title): array {
-            $errors = [];
-            if(strlen($title)<=0) {
-                $errors[] = "A title is required";
-            }
-            if(strlen($title)!=0 && strlen($title)<3){
-                $errors[] = "Title must have at least 3 characters";
-            }
-            return $errors;
-        }
-
         public function update_template(string $title){
             self::execute("UPDATE repartition_templates SET title=:title WHERE id=:id", ["title" => $title, "id" => $this->id]);
         }

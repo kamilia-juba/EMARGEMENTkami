@@ -32,8 +32,8 @@ class ControllerTricount extends MyController{
             $description = trim($_POST['description']);
 
             $tricount = new Tricount($title,$created_at,$creator,$description);
-            $errors = Tricount::validate_title($title);
-            $errors = array_merge($errors,Tricount::validate_description($description));
+            $errors = $this->validate_title($title);
+            $errors = array_merge($errors,$this->validate_description($description));
 
 
             if(Tricount::tricountTitleAlreadyExists($title, $user)){
@@ -115,7 +115,7 @@ class ControllerTricount extends MyController{
             if(isset($_POST['title'])){
                 $title = trim($_POST['title']);
                 $description= trim($_POST['description']);
-                $errors = Tricount::validate_title($title);
+                $errors = $this->validate_title($title);
                 if (count($errors) == 0) { 
                     $tricount->title = $title;
                     $tricount->description = $description;
@@ -209,7 +209,7 @@ class ControllerTricount extends MyController{
             $participants = $tricount->get_participants();
             if(isset($_POST["title"]) && $_POST["title"] != 0){
                 $title = trim($_POST["title"]);
-                $errors = array_merge($errors, Template::validate_title($title));
+                $errors = array_merge($errors, $this->validate_title($title));
 
                 if(!$this->weightsAreNumeric($_POST["weight"])){
                     $errors[] = "Weights must be numeric";
