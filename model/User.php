@@ -238,4 +238,11 @@ class User extends Model {
         $lastInserted = Model::lastInsertId();
         self::execute("INSERT INTO subscriptions(tricount,user) VALUES(:lastInserted, :user)", ["lastInserted" => $lastInserted, "user" => $this->id]);
     }
+
+    public function has_already_paid(int $tricountId): bool{
+        $query = self::execute("SELECT * FROM operations WHERE initiator=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $tricountId]);
+        $data = $query->fetch();
+        return !(empty($data));
+
+    }
 }

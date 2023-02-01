@@ -258,21 +258,17 @@ class ControllerOperation extends Mycontroller{
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
             
             $tricount = Tricount::getTricountById(( $_GET["param1"]));
-            if($user->participatesToOperation($_GET["param2"])){
-                $operation= Operation::get_operation_byid($_GET["param2"]);
+            $operation= Operation::get_operation_byid($_GET["param2"]);
 
-                if(isset($_POST["yes"])){
-                    $operation->delete_operation();
-                    $this->redirect("Tricount","showTricount",$tricount->id);
-                }
-                if(isset($_POST["no"])){
-                    $this->redirect("Operation","editOperation",$tricount->id,$operation->id);
-                }
-                (new View("delete_operation_confirmation"))->show(["operation"=>$operation,"tricount"=>$tricount]);
+            if(isset($_POST["yes"])){
+                $operation->delete_operation();
+                $this->redirect("Tricount","showTricount",$tricount->id);
             }
-            else{
-                $this->redirect();
+            if(isset($_POST["no"])){
+                $this->redirect("Operation","editOperation",$tricount->id,$operation->id);
             }
+            (new View("delete_operation_confirmation"))->show(["operation"=>$operation,"tricount"=>$tricount]);
+            
         }
         else{
             $this->redirect();
