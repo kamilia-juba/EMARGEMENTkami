@@ -55,7 +55,7 @@ class ControllerTricount extends MyController{
 
     public function showTricount(): void{
         $user = $this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])) {
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
             $operations = Operation::get_operations_by_tricountid($tricount->id);
             $alone = false;
@@ -76,7 +76,7 @@ class ControllerTricount extends MyController{
     
     public function showBalance(): void{
         $user=$this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])) {
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
             $participants = $tricount->get_balances();
             $maxUser=$participants[0];
@@ -106,7 +106,7 @@ class ControllerTricount extends MyController{
         $participants = [];
         
         
-       if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+       if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])) {
         $tricount=Tricount::getTricountById($_GET["param1"]);
         $participants= $tricount->get_participants();
         $creator=$user->get_creator_of_tricount($tricount->id);
@@ -133,7 +133,7 @@ class ControllerTricount extends MyController{
 
     public function add_participant(){
         $user = $this->get_user_or_redirect();
-        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])){
+        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])){
             $tricount=Tricount::getTricountById($_GET["param1"]);
             if(isset($_POST['participant'])){
                 $participantId= $_POST['participant'];
@@ -146,7 +146,7 @@ class ControllerTricount extends MyController{
 
     public function confirm_delete_tricount(): void{
         $user = $this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])) {
             $tricount=Tricount::getTricountById(($_GET["param1"]));
             (new View("delete_tricount_confirmation"))->show(["tricount"=>$tricount]);
         }
@@ -157,7 +157,7 @@ class ControllerTricount extends MyController{
 
     public function delete_tricount(): void{
         $user = $this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])) {
             $tricount = Tricount::getTricountById(( $_GET["param1"]));
             $tricount->delete_tricount($user->id);
             $this->redirect();
@@ -166,7 +166,7 @@ class ControllerTricount extends MyController{
 
     public function deleteParticipant():void{
         $user = $this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== ""  && isset($_GET["param2"]) && $_GET["param2"] !== "") {
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"])  && isset($_GET["param2"]) && $_GET["param2"] !== "" && is_numeric($_GET["param2"])) {
             $participant=User::get_user_by_id($_GET["param2"]);
             if($participant->isSubscribedToTricount($_GET["param1"])){
 
@@ -187,7 +187,7 @@ class ControllerTricount extends MyController{
 
     public function showTemplates(): void{
         $user=$this->get_user_or_redirect();
-        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])){
+        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])){
             $tricount = Tricount::getTricountById($_GET["param1"]);
             $templates = $tricount->get_repartition_templates();
             $templates_items = [];
@@ -202,13 +202,18 @@ class ControllerTricount extends MyController{
 
     public function addTemplate(): void{
         $user = $this->get_user_or_redirect();
-        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])){
+        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])){
             $errors = [];
             $tricount = Tricount::getTricountById($_GET["param1"]);
             $participants = $tricount->get_participants();
             if(isset($_POST["title"]) && $_POST["title"] != 0){
                 $title = trim($_POST["title"]);
                 $errors = array_merge($errors, Template::validate_title($title));
+
+                if(!$this->weightsAreNumeric($_POST["weight"])){
+                    $errors[] = "Weights must be numeric";
+                }
+
                 if(!isset($_POST["checkboxParticipants"])){
                     if(isset($_POST["weight"])){
                         $errors[] = "You must select at least 1 participant";
