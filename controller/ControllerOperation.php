@@ -96,6 +96,7 @@ class ControllerOperation extends Mycontroller{
 
             if(isset($_POST["saveTemplateCheck"])){
                 $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
+                $weights = $_POST["weight"];
                 if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){
                     if($tricount->template_name_exists($_POST["newTemplateName"])){
                         $errorsSaveTemplate[] = "This template already exists. Choose another name";
@@ -104,6 +105,7 @@ class ControllerOperation extends Mycontroller{
                         for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                             for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){
                                 if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
+                                    $participants_and_weights[$i][1] = $weights[$i];
                                     $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
                                 }
                             }
@@ -202,6 +204,7 @@ class ControllerOperation extends Mycontroller{
                 }
                 if(isset($_POST["saveTemplateCheck"])){
                     $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
+                    $weights = $_POST["weight"];
                     if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){
                         if($tricount->template_name_exists($_POST["newTemplateName"])){
                             $errors[] = "This template already exists. Choose another name";
@@ -210,6 +213,7 @@ class ControllerOperation extends Mycontroller{
                             for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                                 for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){
                                     if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
+                                        $participants_and_weights[$i][1] = $weights[$i];
                                         $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
                                     }
                                 }
