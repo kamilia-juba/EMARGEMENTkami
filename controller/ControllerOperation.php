@@ -11,7 +11,7 @@ class ControllerOperation extends Mycontroller{
 
     public function showOperation(): void {
         $user = $this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "" && is_numeric($_GET["param2"])) {
             $operation = Operation::get_operation_byid($_GET["param2"]);
             $tricount = Tricount::getTricountById($operation->tricount,$user->mail);
             $paidBy = User::get_user_by_id($operation->initiator);
@@ -52,7 +52,7 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         $selected_repartition = 0;
         
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"])) {
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])) {
         $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
         $title = "";
         $amount = "";
@@ -168,7 +168,7 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         $errors = [];
         $selected_repartition = 0;
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "" && is_numeric($_GET["param2"])) {
             $operation = Operation::get_operation_byid($_GET["param2"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
@@ -265,7 +265,7 @@ class ControllerOperation extends Mycontroller{
 
     public function delete_operation(){
         $user = $this->get_user_or_redirect();
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "") {
+        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "" && is_numeric($_GET["param2"])) {
             
             $tricount = Tricount::getTricountById(( $_GET["param1"]));
             $operation= Operation::get_operation_byid($_GET["param2"]);
