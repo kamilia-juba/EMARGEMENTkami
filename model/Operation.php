@@ -129,24 +129,6 @@ class Operation extends Model {
         $this->id=$lastid;           
         return $this;
     }
-    public static function validate_title(String $title): array {
-        $errors = [];
-        if(strlen($title)<=0) {
-            $errors[] = "A title is required";
-        }
-        if(strlen($title)!=0 && strlen($title)<3){
-            $errors[] = "Title must have at least 3 characters";
-        }
-        return $errors;
-    }
-
-    public static function validate_amount(float $amount): array {
-        $errors = [];
-        if($amount<=0){
-            $errors[] = "Amount must be greater than 0";
-        }
-        return $errors;
-    }
 
     public function updateOperation(){
         self::execute("UPDATE operations SET title=:title, amount=:amount, operation_date=:operation_date, initiator=:initiator WHERE id=:id",

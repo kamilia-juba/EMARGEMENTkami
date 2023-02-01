@@ -48,25 +48,6 @@ class Tricount extends Model{
         return $this;
     }
 
-    public static function validate_title(String $title): array {
-        $errors = [];
-        if(strlen($title)<=0) {
-            $errors[] = "A title is required";
-        }
-        if(strlen($title)!=0 && strlen($title)<3){
-            $errors[] = "Title must have at least 3 characters";
-        }
-        return $errors;
-    }
-
-    public static function validate_description(string $description): array{
-        $errors = [];
-        if(strlen($description)!=0 && strlen($description)<3){
-            $errors[] = "Description must either be empty or at least have 3 characters";
-        }
-        return $errors;
-    }
-
     public static function getTricountById(int $id): Tricount{
         $query = self::execute("SELECT * FROM tricounts WHERE id = :id", ["id"=>$id]);
         $data = $query->fetch();

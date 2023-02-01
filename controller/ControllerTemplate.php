@@ -49,7 +49,7 @@ class ControllerTemplate extends Mycontroller{
                 if($template->template_name_exists($title)){
                     $errors[] = "Choose another title, this title already exists";
                 }
-                $errors = array_merge($errors,$template->validate_title($title));
+                $errors = array_merge($errors,$this->validate_title($title));
 
                 if(!isset($_POST["checkboxParticipants"])){
                     if(isset($_POST["weight"])){
