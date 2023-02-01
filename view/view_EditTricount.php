@@ -18,7 +18,7 @@
             <label for="title">Titre :</label><br>
             <input type="text" id="title" name="title" value="<?= $tricount ->title?>"> <br>
             <label for="description">Description :</label><br>
-            <input type="text" id="description" name="description"><br><br>
+            <input type="text" id="description" name="description" value=<?= $tricount ->description?>><br><br>
             
 
             </form> 
