@@ -120,11 +120,11 @@ class ControllerOperation extends Mycontroller{
 
             $errorsTitle = array_merge($errorsTitle, Operation::validate_title($title));
             $errorsAmount = array_merge($errorsAmount, Operation::validate_amount($amount));
+            !is_numeric($amount) ? $errorsAmount[] = "Amount should be numeric" : "";
             $errors = array_merge($errors,$errorsTitle);
             $errors = array_merge($errors,$errorsAmount);
             $errors = array_merge($errors,$errorsCheckboxes);
-            $errors = array_merge($errors,$errorsSaveTemplate);
-            
+            $errors = array_merge($errors,$errorsSaveTemplate);            
             
             if (count($errors) == 0) { 
                 $operationss = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d H:i:s"), $date);
@@ -188,6 +188,7 @@ class ControllerOperation extends Mycontroller{
                 $amount = $_POST["amount"];
                 $date = $_POST["date"];
                 $paidBy = $_POST["paidBy"];
+                !is_numeric($amount) ? $errors[] = "Amount should be numeric" : "";
                 $errors = array_merge($errors,$operation->validate_title($title));
                 $errors = array_merge($errors,$operation->validate_amount($amount));
                 if(!isset($_POST["checkboxParticipants"])){

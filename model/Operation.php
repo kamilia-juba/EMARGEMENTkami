@@ -140,7 +140,7 @@ class Operation extends Model {
         return $errors;
     }
 
-    public static function validate_amount(int $amount): array {
+    public static function validate_amount(float $amount): array {
         $errors = [];
         if($amount<=0){
             $errors[] = "Amount must be greater than 0";
