@@ -248,4 +248,14 @@ class User extends Model {
         return !(empty($data));
 
     }
+
+    public static function getSignupErrors(string $mail, string $full_name, string $iban, string $password, string $password_confirm ): array{
+        $errors = [];
+        $errors = User::validate_unicity($mail);
+        $errors = array_merge($errors, User::validate_full_name($full_name));
+        $errors = array_merge($errors, User::validate_mail($mail));
+        $errors = array_merge($errors, User::validate_IBAN($iban));
+        $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
+        return $errors;
+    }
 }
