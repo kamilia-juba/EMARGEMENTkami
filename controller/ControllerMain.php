@@ -17,12 +17,12 @@ class ControllerMain extends MyController {
 
     //gestion de la connexion d'un utilisateur
     public function login() : void {
-        $pseudo = '';
         $password = '';
+        $mail = "";
         $errors = [];
-        if (isset($_POST['mail']) && isset($_POST['password'])) { //note : pourraient contenir des chaînes vides
-            $mail = $_POST['mail'];
-            $password = $_POST['password'];
+        if (isset($_POST['mail']) && isset($_POST['password'])) { 
+            $mail = Tools::sanitize($_POST['mail']);
+            $password = Tools::sanitize($_POST['password']);
 
             $errors = User::validate_login($mail, $password);
             if (empty($errors)) {
@@ -42,11 +42,11 @@ class ControllerMain extends MyController {
         if (isset($_POST['mail']) && isset($_POST['full_name']) && isset($_POST['IBAN']) && 
             isset($_POST['password']) && isset($_POST['password_confirm'])) {
            
-            $mail = trim($_POST['mail']);
-            $full_name = trim($_POST['full_name']);
-            $IBAN = trim($_POST['IBAN']);
-            $password = $_POST['password'];
-            $password_confirm = $_POST['password_confirm'];
+            $mail = Tools::sanitize($_POST['mail']);
+            $full_name = Tools::sanitize($_POST['full_name']);
+            $IBAN = Tools::sanitize($_POST['IBAN']);
+            $password = Tools::sanitize($_POST['password']);
+            $password_confirm = Tools::sanitize($_POST['password_confirm']);
 
             $errors = User::validate_unicity($mail);
             $errors = array_merge($errors, User::validate_full_name($full_name));
