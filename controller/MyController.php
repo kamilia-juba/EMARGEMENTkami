@@ -69,6 +69,29 @@ abstract class Mycontroller extends Controller{
         return false;
     } 
     
+    //méthodes pour controllerOperation
+
+    //méthode qui récupère l'index courant utilisé pour le next et previous
+    public function getCurrentIndex(array $operations, Operation $operation): int{
+        $result = 0;
+        for($i=0;$i<sizeof($operations);++$i){
+            if($operations[$i]->id == $operation->id){
+                $result = $i;
+            }
+        }
+        return $result;
+    }
+
+    public function get_users_and_their_operation_amounts(Operation $operation): array{
+        $participants = $operation->get_participants();
+        $users = [];
+        $total_weight = Operation::get_total_weights($operation->id);
+        foreach($participants as $participant){
+            $weight = $operation->get_weight($participant);
+            $users[] = [User::get_user_by_id($participant),round(($operation->amount/$total_weight)*$weight,2)];
+        }
+        return $users;
+    }
 }
 
 ?>

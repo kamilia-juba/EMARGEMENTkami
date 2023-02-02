@@ -15,24 +15,10 @@ class ControllerOperation extends Mycontroller{
             $operation = Operation::get_operation_byid($_GET["param2"]);
             $tricount = Tricount::getTricountById($operation->tricount,$user->mail);
             $paidBy = User::get_user_by_id($operation->initiator);
-            $participants = $operation->get_participants();
-            $user_participates = false;
-            $users = [];
+            $user_participates = $operation->user_participates($user->id);
+            $users = $this->get_users_and_their_operation_amounts($operation);
             $operations = Operation::get_operations_by_tricountid($tricount->id);
-            $currentIndex = 0;
-            for($i=0;$i<sizeof($operations);++$i){
-                if($operations[$i]->id == $operation->id){
-                    $currentIndex = $i;
-                }
-            }
-            $total_weight = Operation::get_total_weights($operation->id);
-            foreach($participants as $participant){
-                if($participant==$user->id){
-                    $user_participates = true;
-                }
-                $weight = $operation->get_weight($participant);
-                $users[] = [User::get_user_by_id($participant),round(($operation->amount/$total_weight)*$weight,2)];
-            }
+            $currentIndex = $this->getCurrentIndex($operations, $operation);
             (new View("operation"))->show(
                                         ["user" => $user, 
                                         "operation" => $operation, 
