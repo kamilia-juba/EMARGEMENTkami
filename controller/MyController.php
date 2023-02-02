@@ -49,6 +49,25 @@ abstract class Mycontroller extends Controller{
         return $errors;
     }
     
+    public function validate_url() :bool{
+
+        $user = $this->get_user_or_redirect();
+        $numberOfParam=0;
+        
+        if(isset($_GET["param1"])&&!isset($_GET["param2"])){$numberOfParam=1;}
+        if(isset($_GET["param1"])&&isset($_GET["param2"])){$numberOfParam=2;}
+        
+
+        if($numberOfParam==1){
+            return isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) &&  $user->isSubscribedToTricount($_GET["param1"]);
+        }
+
+        if($numberOfParam==2){
+            return isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && isset($_GET["param2"]) && $_GET["param2"] !== "" && is_numeric($_GET["param2"]) && $user->isSubscribedToTricount($_GET["param1"]);
+        
+        }
+        return false;
+    } 
     
 }
 
