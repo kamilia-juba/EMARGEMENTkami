@@ -25,20 +25,30 @@
 
         <a href="Tricount/editTricount/<?= $tricount->id?>" class="btn btn-primary" name = "buttonEdit">Edit</a>
     </div>
-    <?php if($alone || $noExpenses){ ?>
+    <?php if($alone && $noExpenses){ ?>
         <div class="container pt-5 ps-2 pe-2 text-center">
             <ul class="list-group p-2">
                 <li class="list-group-item list-group-item-secondary ps-3 fs-4">
-                    <?= $alone ? "<b>You are alone!</b>" : "<b>Your Tricount is empty!</b>" ?>
+                    <b>You are alone!</b>
                 </li>
                 <li class="list-group-item ps-3">
-                    <p><?= $alone ? "Click below to add your friends!" : "Click below to add your first expense!" ?></p>
-                    <p><?= $alone ?"<a href='Tricount/editTricount/$tricount->id' class='btn btn-primary' name='addFriendOrExpenseBtn'>Add friends</button></a>" 
-                                : "<a href='Operation/add_operation/$tricount->id' class='btn btn-primary' name='addFriendOrExpenseBtn'>Add an expense</a>" ?></p>
+                    <p>Click below to add your friends!</p>
+                    <p><a href='Tricount/editTricount/<?=$tricount->id?>' class='btn btn-primary' name='addFriendOrExpenseBtn'>Add friends</button></a></p>
                 </li>
             </ul>
         </div>
-
+    <?php }elseif(!$alone && $noExpenses) { ?>
+        <div class="container pt-5 ps-2 pe-2 text-center">
+            <ul class="list-group p-2">
+                <li class="list-group-item list-group-item-secondary ps-3 fs-4">
+                    <b>Your Tricount is empty!</b>
+                </li>
+                <li class="list-group-item ps-3">
+                    <p>Click below to add your first expense!</p>
+                    <p><a href='Operation/add_operation/<?=$tricount->id?>' class='btn btn-primary' name='addFriendOrExpenseBtn'>Add an expense</a></p>
+                </li>
+            </ul>
+        </div>
     <?php }else{ ?>
         <div class="container">
             <a href="Tricount/showBalance/<?= $tricount->id?>" class="btn btn-success w-100 mt-2 mb-2" name = "buttonViewBalance">&#8644 View balance</a>
