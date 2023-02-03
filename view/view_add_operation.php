@@ -9,9 +9,9 @@
         
     </head>
     <body>
-    <div class="pt-2 ps-3 pe-3 pb-2 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
+    <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
         <a href="Tricount/showTricount/<?=$tricount->id?>/" class="btn btn-outline-danger">Cancel</a>
-        <b><?=$tricount->title?> &#8594; New expense</b>
+        <?=$tricount->title?> &#8594; New expense
         <input type="submit" class="btn btn-primary" form="addOperationForm" name="saveButton" value="Save">
     </div>
         <div class="container min-vh-100 pt-2">
