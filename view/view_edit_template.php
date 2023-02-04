@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <title><?= $template->title?> -> Edit template</title>
-        <base href="<?= $web_root ?>"/>
+        <base href="<?= $web_root ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     </head>
     <body>
         <div class="pt-2 ps-3 pe-3 pb-2 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
-            <a href="Tricount/showTemplates/<?=$tricount->id?>" class="btn btn-outline-danger" name="cancelButton">Cancel</a>
-            <b><?=$tricount->title?> &#8594 Edit Template</b>
-            <input type="submit" class="btn btn-primary" form="applyTemplateForm" name="saveButton" value="Save">
+            <a href="Tricount/showTemplates/<?=$tricount->id?>" class="btn btn-outline-danger">Cancel</a>
+            <b><?=$tricount->title?> &#8594; Edit Template</b>
+            <input type="submit" class="btn btn-primary" form="applyTemplateForm" value="Save">
         </div>
         <div class="container min-vh-100 pt-2">
             <form id="applyTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post">
@@ -43,7 +43,7 @@
                     </ul>
                 </div>
             <?php endif; ?>
-            <a href="Template/deleteTemplate/<?=$tricount->id?>/<?=$template->id?>" class="btn btn-danger w-100" name="deleteTemplate">Delete Template</a> 
+            <a href="Template/deleteTemplate/<?=$tricount->id?>/<?=$template->id?>" class="btn btn-danger w-100">Delete Template</a> 
         </div>
     </body>
 </html>
