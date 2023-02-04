@@ -1,30 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Templates</title>
-    <base href="<?= $web_root ?>"/>
-</head>
-<body>
-    <a href="Tricount/editTricount/<?=$tricount->id?>"><button type="button" name="backButton">Back</button></a>
-    <?=$tricount->title?> &#8594 Templates
-    <a href="Tricount/addTemplate/<?=$tricount->id?>"><button type="button" name="addButton">Add</button></a>
-    <div class="listTemplates">
-        <table>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">   
+            <a href="Tricount/editTricount/<?=$tricount->id?>" class="btn btn-outline-danger" name="backButton">Back</a>
+            <?=$tricount->title?> &#8594 Templates
+            <a href="Tricount/addTemplate/<?=$tricount->id?>" class="btn btn-primary" name="addButton">Add</a>
+        </div>    
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Templates</title>
+        <base href="<?= $web_root ?>"/>
+    </head>
+    <body>
+        <ul class="list-group p-2">
             <?php for($i = 0; $i<sizeof($templates_items);++$i){ ?>
-                    <tr>
-                        <td><a href="Template/edit_template/<?=$tricount->id?>/<?=$templates_items[$i][1]->id?>">
-                            <?= $templates_items[$i][1]->title ?>
-                            <ul>
-                                <?php foreach($templates_items[$i][0] as $user) { ?>
-                                        <li><?=$user->full_name?> (<?=$templates_items[$i][1]->get_repartition_user_weight($user->id)?>/<?=$templates_items[$i][1]->get_repartition_total_weight()?>)</li>
-                                <?php } ?>
-                            </ul>
-                        </a></td>
-                    </tr>
+                <li class="list-group-item ps-3"> <a href="Template/edit_template/<?=$tricount->id?>/<?=$templates_items[$i][1]->id?>" class="text-decoration-none text-dark">
+                    <div >
+                        <h4><?= $templates_items[$i][1]->title ?></h4>
+                        <ul 
+                         >
+                            
+                             <?php foreach($templates_items[$i][0] as $user) { ?>
+                                 <li ><?=$user->full_name?> (<?=$templates_items[$i][1]->get_repartition_user_weight($user->id)?>/<?=$templates_items[$i][1]->get_repartition_total_weight()?>)</li>
+                             <?php } ?>
+                        </ul>
+                  
+              
             <?php } ?>
-        </table>
-    </div>
-</body>
+        </ul>
+        </div>
+    </body>
 </html>

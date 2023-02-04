@@ -3,8 +3,8 @@
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">   
-            <a href = "Tricount/yourTricounts/"  class="btn btn-outline-danger" name="buttonCancel">Cancel</button></a>
-            Tricount->add    
+            <a href = "Tricount/yourTricounts/"  class="btn btn-outline-danger" name="buttonCancel">Cancel</a>
+            Tricount &#8594 add    
             <form id="addTricount" action="Tricount/addtricount" method="post">
             <button from="addTricount" class="btn btn-primary" type="submit">Save</button>
         </div>    
