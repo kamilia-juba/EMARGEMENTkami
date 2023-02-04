@@ -77,7 +77,10 @@ class User extends Model {
             if (!self::check_password($password, $user->hashed_password)) {
                 $errors[] = "Wrong password. Please try again.";
             }
-        } else {
+
+        }else if($mail==""){
+            $errors[] = "Please enter a mail.";
+        }else {
             $errors[] = "Can't find a member with the mail '$mail'. Please sign up.";
         }
         return $errors;
@@ -198,5 +201,61 @@ class User extends Model {
         $query = self::execute("SELECT * FROM repartitions WHERE operation=:operationId AND user=:userId",["operationId"=>$operationId,"userId"=>$this->id]);
         $data = $query->fetch();
         return !(empty($data));
+    }
+    
+    public static function get_creator_of_tricount(int $tricountID) : User {
+        $query = self::execute("select * from users where id in (select creator from tricounts where id=:tricountID) ", ["tricountID"=>$tricountID]);
+        $data = $query->fetch();
+
+        return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"],$data["id"]);
+    }
+
+    public static function get_users_not_sub_to_a_tricount(int $tricountId) : array {
+        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId)", ["tricountId"=>$tricountId]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach ($data as $row) {
+
+            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"],$row["id"]);
+
+        }
+        return $results;
+    }
+
+
+    public function isSubscribedToTemplate(int $templateId): bool{
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId and repartition_template=:templateId", ["userId" => $this->id, "templateId" => $templateId]);
+        $data = $query->fetch();
+        return !(empty($data));
+
+    }
+
+    public function user_participates_to_repartition(int $templateId){
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template=:templateId and user=:userId",["templateId" => $templateId, "userId" => $this->id]);
+        $data = $query->fetch();
+        return !empty($data);
+    }
+
+    //ajoute un accès dans la table subscriptions en fonction du dernier ID(tricount) inséré
+    public function add_subscription(){
+        $lastInserted = Model::lastInsertId();
+        self::execute("INSERT INTO subscriptions(tricount,user) VALUES(:lastInserted, :user)", ["lastInserted" => $lastInserted, "user" => $this->id]);
+    }
+
+    public function has_already_paid(int $tricountId): bool{
+        $query = self::execute("SELECT * FROM operations WHERE initiator=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $tricountId]);
+        $data = $query->fetch();
+        return !(empty($data));
+
+    }
+
+    public static function getSignupErrors(string $mail, string $full_name, string $iban, string $password, string $password_confirm ): array{
+        $errors = [];
+        $errors = User::validate_unicity($mail);
+        $errors = array_merge($errors, User::validate_full_name($full_name));
+        $errors = array_merge($errors, User::validate_mail($mail));
+        $errors = array_merge($errors, User::validate_IBAN($iban));
+        $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
+        return $errors;
     }
 }

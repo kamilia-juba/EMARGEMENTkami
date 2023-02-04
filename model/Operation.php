@@ -74,13 +74,6 @@ class Operation extends Model {
         return $data === false ? null : $data["weight"];
     }
 
-    public function get_weight_from_template(User $participant, Template $template){
-        $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
-        $data = $query->fetch();
-        return $data === false ? null : $data["weight"];
-
-    }
-
     public static function get_weight_from_template_static(User $participant, Template $template){ // a changer pour rendre l'autre static
         $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
         $data = $query->fetch();
@@ -135,24 +128,6 @@ class Operation extends Model {
         $lastid= Model::lastInsertId();
         $this->id=$lastid;           
         return $this;
-    }
-    public static function validate_title(String $title): array {
-        $errors = [];
-        if(strlen($title)<=0) {
-            $errors[] = "A title is required";
-        }
-        if(strlen($title)!=0 && strlen($title)<3){
-            $errors[] = "Title must have at least 3 characters";
-        }
-        return $errors;
-    }
-
-    public static function validate_amount(int $amount): array {
-        $errors = [];
-        if($amount<=0){
-            $errors[] = "Amount must be greater than 0";
-        }
-        return $errors;
     }
 
     public function updateOperation(){

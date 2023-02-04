@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD "> 
-        <a href= "" class= "btn btn-outline-danger" name = "buttonBack">Back</a> <?=$tricount->title?> &#8594 Balance
+        <a href= "Tricount/showTricount/<?=$tricount->id?>" class= "btn btn-outline-danger" name = "buttonBack">Back</a> <?=$tricount->title?> &#8594 Balance
     </div>
 </head>
 <body>
