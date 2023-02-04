@@ -14,8 +14,9 @@
     </div>
     <div class="container pt-2 ">
         <div  style="font-size:15px;">
-            <div class="row g-0 p-1">
+            
             <?php foreach($participants as $participant){?>
+            <div class="row g-0 p-1">
             <?php if( $participant->account > 0) : ?>
                 <?php if($participant->id==$user->id): ?>
                     <div class="col text-end ">
