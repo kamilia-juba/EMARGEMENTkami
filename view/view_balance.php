@@ -14,8 +14,8 @@
     </div>
     <div class="container pt-2 ">
         <div  style="font-size:15px;">
-            
             <?php foreach($participants as $participant){?>
+
             <div class="row g-0 p-1">
             <?php if( $participant->account > 0) : ?>
                 <?php if($participant->id==$user->id): ?>
@@ -42,10 +42,7 @@
                     </div>
                 <?php endif;  ?>
             </div>
-        </div>
-
-        
-        
+             
         <?php elseif($participant->account<0) : ?>
             <div class="row g-0 p-1">
             <?php if($participant->id==$user->id) : ?>
@@ -72,7 +69,7 @@
                         <span class="align-middle" >&nbsp;<?=$participant->full_name?>&nbsp;</span>
                 </div>
             <?php endif;  ?>
-            
+            </div>
         <?php endif; } ?>
         </div>
     </div>
