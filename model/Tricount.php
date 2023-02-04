@@ -217,16 +217,20 @@ class Tricount extends Model{
 
     public function delete_tricount(int $userID):void{
         $operations=Operation::get_operations_by_tricountid($this->id);
+        $participants=$this->get_all_tricount_participants();
         foreach($operations as $operation){
             $operation->delete_operation();
         }
-        $this->delete_participations($userID);
+        foreach($participants as $participant){
+            $this->delete_participations($participant->id);
+        }
+
         $this->delete_repartition_templates();
         self::execute("delete from tricounts where id=:tricountID",["tricountID" => $this->id]);
     }
 
     public function delete_participation(int $userID):void{
-        self::execute("delete from subscriptions where tricount =:tricountID and user=:userID",["tricountID" => $this->id,"userID"=>$userID]);
+        self::execute("delete from subscriptions where tricount = (select id from tricounts where=:tricountID) and user=:userID",["tricountID" => $this->id,"userID"=>$userID]);
     }
 
     public function has_already_paid(int $userId):bool{
