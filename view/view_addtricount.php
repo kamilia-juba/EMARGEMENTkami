@@ -35,7 +35,6 @@
                 </ul>
             </div>
          <?php endif; ?>
->>>>>>> UC_AddTricount
                   
         </div>        
     </body>
