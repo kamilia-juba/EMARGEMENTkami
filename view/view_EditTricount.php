@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="titlebar">
-        <a href= "Tricount/showTricount/"><button type="button" name = "buttonBack">Back</button></a>
+        <a href= "Tricount/showTricount/<?=$tricount->id?>"><button type="button" name = "buttonBack">Back</button></a>
         <?=$tricount->title?> &#8594 Edit
          <input type="submit" name = "buttonSave" value="Save" form="addtricountForm"></a>
     </div>
@@ -18,7 +18,7 @@
             <label for="title">Titre :</label><br>
             <input type="text" id="title" name="title" value="<?= $tricount ->title?>"> <br>
             <label for="description">Description :</label><br>
-            <input type="text" id="description" name="description"><br><br>
+            <input type="text" id="description" name="description" value=<?= $tricount ->description?>><br><br>
             
 
             </form> 
@@ -27,7 +27,7 @@
             <?php
                 foreach($participants as $participant){
                     if($participant->id==$user->id){
-                        if($tricount->has_already_paid($participant->id)){// a changer si on ne peut supprimer le createur
+                        if($participant->has_already_paid($tricount->id)|| $tricount->has_already_paid($participant->id)){// a changer si on ne peut supprimer le createur
                             echo "<tr><td>".$participant->full_name." (creator)</td></tr>";
                         }
                         else{ 
@@ -36,7 +36,7 @@
                             </td></tr>";
                         }
                     }else
-                        if($tricount->has_already_paid($participant->id)){
+                        if($participant->has_already_paid($tricount->id)||$tricount->has_already_paid($participant->id)){
                             echo "<tr><td>".$participant->full_name;
                         }
                         else{ 
@@ -67,6 +67,7 @@
                 </div>
             <?php endif; ?>  
         </div> 
-        <a href="Tricount/confirm_delete_tricount/<?=$tricount->id?>"><button type="button" name="deleteOperation">Delete Tricount</button></a></body>
+        <a href="Tricount/showTemplates/<?=$tricount->id?>"><button type="button" name="manageTemplates">Manage repartition templates</button></a>
+        <a href="Tricount/delete_tricount/<?=$tricount->id?>"><button type="button" name="DeleteTricount">Delete Tricount</button></a></body>
 </body>
 </html>

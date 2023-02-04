@@ -48,15 +48,6 @@ class Tricount extends Model{
         return $this;
     }
 
-    public  function  valide_title( ) : array{
-        $errors =[];
-        if(strlen($this->title)==0){
-            $errors[] = 'title cant be empty';
-        }
-        return $errors;
-
-    }
-
     public static function getTricountById(int $id): Tricount{
         $query = self::execute("SELECT * FROM tricounts WHERE id = :id", ["id"=>$id]);
         $data = $query->fetch();
@@ -94,11 +85,11 @@ class Tricount extends Model{
     }
 
 
-    public function get_balances(int $tricountID):array{
+    public function get_balances():array{
         $operations=[];
         $participant=[];
     
-        $operations = Operation::get_operations_by_tricountid($tricountID);
+        $operations = Operation::get_operations_by_tricountid($this->id);
         $participants = $this->get_participants();
 
 
@@ -127,8 +118,35 @@ class Tricount extends Model{
         return $participants;
     }
 
+    public function get_my_total(int $userId):float{
+        $operations=[];
+        $participant=[];
+        $res=0;
+    
+        $operations = Operation::get_operations_by_tricountid($this->id);
+        $participants = $this->get_participants();
+
+
+        foreach($operations as $operation){
+
+            $totalWeight=Operation::get_total_weights($operation->id);
+            $sum=$operation->amount;
+            $myWeight=$operation->get_weight($userId);
+            $individualAmout= $sum/$totalWeight;
+
+            foreach($participants as $participant){
+                if($operation->user_participates($participant->id)){
+                    if($participant->id==$userId){
+                        $res+=$individualAmout*$myWeight;
+                    }
+                }
+            }
+        }
+        return $res;
+    }
+
     public function get_participants():array{
-        $query = self::execute("SELECT * FROM users WHERE id in (SELECT DISTINCT user FROM subscriptions WHERE tricount=:id)",["id" => $this->id]);
+        $query = self::execute("SELECT * FROM users WHERE id in (SELECT DISTINCT user FROM subscriptions WHERE tricount=:id) ORDER BY full_name",["id" => $this->id]);
         $data = $query->fetchAll();
         $results = [];
         foreach($data as $row){
@@ -199,10 +217,14 @@ class Tricount extends Model{
 
     public function delete_tricount(int $userID):void{
         $operations=Operation::get_operations_by_tricountid($this->id);
+        $participants=$this->get_all_tricount_participants();
         foreach($operations as $operation){
             $operation->delete_operation();
         }
-        $this->delete_participations($userID);
+        foreach($participants as $participant){
+            $this->delete_participations($participant->id);
+        }
+
         $this->delete_repartition_templates();
         self::execute("delete from tricounts where id=:tricountID",["tricountID" => $this->id]);
     }
@@ -223,6 +245,12 @@ class Tricount extends Model{
         return $result;
     }
 
+    //returns true if there's already a combination of a title and a user given as parameters
+    public static function tricountTitleAlreadyExists(string $title, User $user){
+        $query = self::execute("SELECT * FROM tricounts WHERE title=:title and creator=:user", ["title" => $title, "user" => $user->id]);
+        $data = $query->fetch();
+        return !empty($data);
+    }
 }
 
 ?>
