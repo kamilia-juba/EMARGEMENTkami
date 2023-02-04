@@ -79,10 +79,12 @@
     <?php foreach($participants as $participant){?>           
         <?php if($participant->account==0) : ?>
             <?php if($participant->id==$user->id) : ?>
-                <p class="align-middle" style="font-weight:bolder ;">&nbsp;<?=$participant->full_name?>&nbsp;(me)</p>
+                <p class="text-center align-middle" style="font-weight:bolder ;">&nbsp;<?=$participant->full_name?>&nbsp;(me)</p>
             <?php else: ?>
-                <p class="align-middle" >&nbsp;<?=$participant->full_name?>&nbsp;</p>
+                <p class="text-center align-middle" >&nbsp;<?=$participant->full_name?>&nbsp;</p>
+            </div>
             <?php endif;?>
+            
         <?php endif; }?>
     </div>
 </div>
