@@ -68,6 +68,6 @@
             <?php endif; ?>  
         </div> 
         <a href="Tricount/showTemplates/<?=$tricount->id?>"><button type="button" name="manageTemplates">Manage repartition templates</button></a>
-        <a href="Tricount/confirm_delete_tricount/<?=$tricount->id?>"><button type="button" name="deleteOperation">Delete Tricount</button></a></body>
+        <a href="Tricount/delete_tricount/<?=$tricount->id?>"><button type="button" name="DeleteTricount">Delete Tricount</button></a></body>
 </body>
 </html>
