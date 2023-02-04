@@ -13,8 +13,8 @@
         <?=$tricount->title?> &#8594; Balance
     </div>
     <div class="container pt-2 ">
-    <div  style="font-size:15px;">
-        <div class="row g-0 p-1">
+        <div  style="font-size:15px;">
+            <div class="row g-0 p-1">
             <?php foreach($participants as $participant){?>
             <?php if( $participant->account > 0) : ?>
                 <?php if($participant->id==$user->id): ?>
@@ -41,7 +41,7 @@
                     </div>
                 <?php endif;  ?>
             </div>
-        </div>
+
         
         
         <?php elseif($participant->account<0) : ?>
@@ -70,10 +70,11 @@
                         <span class="align-middle" >&nbsp;<?=$participant->full_name?>&nbsp;</span>
                 </div>
             <?php endif;  ?>
-        </div>
+            
         <?php endif; } ?>
+        </div>
     </div>
-    </div>
+    
     
     <div class="text-center">
     <?php foreach($participants as $participant){?>           
