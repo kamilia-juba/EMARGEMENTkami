@@ -14,8 +14,8 @@
     </div>
     <div class="container pt-2 ">
     <div  style="font-size:15px;">
+        <div class="row g-0 p-1">
             <?php foreach($participants as $participant){?>
-            <div class="row g-0 p-1">
             <?php if( $participant->account > 0) : ?>
                 <?php if($participant->id==$user->id): ?>
                     <div class="col text-end ">
@@ -43,8 +43,9 @@
             </div>
         </div>
         
+        
         <?php elseif($participant->account<0) : ?>
-        <div class="row g-0 p-1">
+            <div class="row g-0 p-1">
             <?php if($participant->id==$user->id) : ?>
                 <div class="col justify-content-end ">
                     <div class="progress" style="direction: rtl; height:28px; border-radius:0px ; background-color: #FFFFFF;">
@@ -56,6 +57,7 @@
                 <div class="col">
                         <span class="align-middle" style="font-weight:bolder ;">&nbsp;<?=$participant->full_name?>&nbsp;(me)</span>
                 </div>
+            </div>
             <?php else: ?>
                 <div class="col justify-content-end ">
                     <div class="progress" style="direction: rtl; height:28px; border-radius:0px ; background-color: #FFFFFF;">
@@ -72,9 +74,9 @@
         <?php endif; } ?>
     </div>
     </div>
-
-    <?php foreach($participants as $participant){?>
-    <div class="text-center">                
+    
+    <div class="text-center">
+    <?php foreach($participants as $participant){?>           
         <?php if($participant->account==0) : ?>
             <?php if($participant->id==$user->id) : ?>
                 <p class="align-middle" style="font-weight:bolder ;">&nbsp;<?=$participant->full_name?>&nbsp;(me)</p>
