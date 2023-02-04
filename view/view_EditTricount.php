@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <title>Edit <?=$tricount->title?></title>
     <meta charset="UTF-8">
     <base href="<?= $web_root ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 
@@ -21,19 +23,18 @@
         <form action="Tricount/EditTricount/<?= $tricount->id?>" id="editTricountForm" method="post">
             <div class="form-group p-1 ms-2 me-2 mb-2">
                     <label class="pb-1">Title :</label>
-                    <input class="form-control "type="text" id="title" name="title" value="<?= $tricount ->title?>">
+                    <input class="form-control" type="text" id="title" name="title" value="<?= $tricount->title?>">
             </div>
             <div class="form-group p-1 ms-2 me-2 mb-2">
                     <label class="pb-1">Descripition (optional) :</label>
-                    <input class="form-control" type="text" id="description" name="description" value=<?= $tricount ->description?>></td>
+                    <input class="form-control" type="text" id="description" name="description" value=<?= $tricount ->description?>>
             </div>
         </form>
 
-
+        <!-- <i style='color:red' class='fa-regular fa-trash-can fa-xl'> -->
 
 
     <h2 class= "p-1 ms-2 me-2 mb-2">Subscriptions</h2>
-
 
     <ul class="list-group p-1 ms-2 me-2 mb-2">
         <?php foreach($participants as $participant){
@@ -42,7 +43,7 @@
                         echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name." (creator)</p></li>";
                     }
                     else{ 
-                        echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name." (creator)
+                        echo "<li class=' list-group-item d-flex justify-content-between'><p>".$participant->full_name." (creator)
                         <a href= \"Tricount/deleteParticipant/".$tricount->id."/".$participant->id. "\"></a>
                         </p></li>";
                     }
@@ -51,8 +52,8 @@
                         echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name."</p></li>";
                     }
                     else{ 
-                        echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name."
-                        <a href= \"Tricount/deleteParticipant/".$tricount->id."/".$participant->id. "\"> <button type=\"button\" name = \"buttonBack\">Poubelle</button></a></p></li>";
+                        echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name.'</p>';
+                        echo "<p><a href= \"Tricount/deleteParticipant/".$tricount->id."/".$participant->id. "\" 'style='float:right' <i style='color:red' class='fa-regular fa-trash-can fa-xl  '> </a></p></li>";
                 }
             }
         ?>
@@ -82,7 +83,7 @@
                     </ul>
                 </div>
         <?php endif; ?>
-        </div> 
+         
 
 
         <footer>    
