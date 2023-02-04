@@ -230,7 +230,7 @@ class Tricount extends Model{
     }
 
     public function delete_participation(int $userID):void{
-        self::execute("delete from subscriptions where tricount = (select id from tricounts where=:tricountID) and user=:userID",["tricountID" => $this->id,"userID"=>$userID]);
+        self::execute("delete from subscriptions where tricount =:tricountID and user=:userID",["tricountID" => $this->id,"userID"=>$userID]);
     }
 
     public function has_already_paid(int $userId):bool{
