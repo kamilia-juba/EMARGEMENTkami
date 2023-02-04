@@ -35,8 +35,6 @@
                         <input class="form-control" type="number" min="0" name="weight[]" value="1">
                     </div>
                 <?php } ?>
-            </table>
-        </form>
         <?php if (count($errors) != 0): ?>
             <div class="text-danger">
                         <ul>
@@ -44,8 +42,8 @@
                                 <li><?= $error ?></li>
                             <?php endforeach; ?>
                         </ul>
-                    </div>
-        <?php endif; ?> 
-    </div>
-</body>
+            </div>
+         <?php endif; ?> 
+        </div>
+    </body>
 </html>
