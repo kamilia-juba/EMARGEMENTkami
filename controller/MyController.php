@@ -92,6 +92,47 @@ abstract class Mycontroller extends Controller{
         }
         return $users;
     }
+
+    public function get_add_operation_errors(): array{
+
+        $title = trim($_POST['title']);
+        $amount = floatval(trim($_POST['amount']));
+        $errorsTitle = [];
+        $errorsAmount = [];
+        $errorsCheckboxes= [];
+        $errorsSaveTemplate = [];
+
+        $array = array("errorsTitle" => $errorsTitle, "errorsAmount" => $errorsAmount, "errorsCheckboxes" => $errorsCheckboxes,"errorsSaveTemplate" => $errorsSaveTemplate);
+
+        if(isset($_POST["saveTemplateCheck"])){
+            $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
+            if(isset($_POST["newTemplateName"]) && $newTemplateName!= "" && isset($_POST["newTemplateName"]) && empty($newTemplateName)){
+                $errorsSaveTemplate[] = "A name must be given to template to be able to save it.";
+            }
+        }
+
+            $errorsTitle = array_merge($errorsTitle, $this->validate_title($title));
+            $errorsAmount = array_merge($errorsAmount, $this->validate_amount($amount));
+            !is_numeric($amount) ? $errorsAmount[] = "Amount should be numeric" : "";
+
+            if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
+                $errorsCheckboxes[] = "Weights must be greater than 0";
+            }
+
+            if(!$this->weightsAreNumeric($_POST["weight"])){
+                $errorsCheckboxes[] = "Weights must be numeric";
+            }
+
+            if(!isset($_POST["checkboxParticipants"])){
+                if(isset($_POST["weight"])){
+                    $errorsCheckboxes[] = "You must select at least 1 participant";
+                }
+            }
+
+            $array = array("errorsTitle" => $errorsTitle, "errorsAmount" => $errorsAmount, "errorsCheckboxes" => $errorsCheckboxes,"errorsSaveTemplate" => $errorsSaveTemplate);
+                     
+        return $array;
+    }
 }
 
 ?>

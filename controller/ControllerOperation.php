@@ -74,19 +74,13 @@ class ControllerOperation extends Mycontroller{
             $date = trim($_POST['date']);
             $paidBy = trim($_POST['paidBy']);
 
-            if(!isset($_POST["checkboxParticipants"])){
-                if(isset($_POST["weight"])){
-                    $errorsCheckboxes[] = "You must select at least 1 participant";
-                }
-            }
 
             if(isset($_POST["saveTemplateCheck"])){
                 $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
                 $weights = $_POST["weight"];
                 if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){
-                    if($tricount->template_name_exists($_POST["newTemplateName"])){
+                    if(!$tricount->template_name_exists($_POST["newTemplateName"])){
                         $errorsSaveTemplate[] = "This template already exists. Choose another name";
-                    }else{
                         $newTemplate = $tricount->add_template($newTemplateName);
                         for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                             for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){
@@ -97,28 +91,16 @@ class ControllerOperation extends Mycontroller{
                             }
                         }
                     }
-                }else if(isset($_POST["newTemplateName"]) && empty($newTemplateName)){
-                    $errorsSaveTemplate[] = "A name must be given to template to be able to save it.";
                 }
-            }
-
-            if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
-                $errorsCheckboxes[] = "Weights must be greater than 0";
-            }
-
-            if(!$this->weightsAreNumeric($_POST["weight"])){
-                $errorsCheckboxes[] = "Weights must be numeric";
-            }
-
-            $errorsTitle = array_merge($errorsTitle, $this->validate_title($title));
-            $errorsAmount = array_merge($errorsAmount, $this->validate_amount($amount));
-            !is_numeric($amount) ? $errorsAmount[] = "Amount should be numeric" : "";
-            $errors = array_merge($errors,$errorsTitle);
-            $errors = array_merge($errors,$errorsAmount);
-            $errors = array_merge($errors,$errorsCheckboxes);
-            $errors = array_merge($errors,$errorsSaveTemplate);            
+            }           
             
-            if (count($errors) == 0) { 
+            $errors=$this->get_add_operation_errors();
+            $errorsTitle = $errors["errorsTitle"];
+            $errorsAmount =$errors["errorsAmount"];
+            $errorsCheckboxes= $errors["errorsCheckboxes"];
+            $errorsSaveTemplate = $errors["errorsSaveTemplate"];
+
+            if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { 
                 $operationss = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d H:i:s"), $date);
                 $operation=$operationss->persist();
                 $checkboxes = $_POST["checkboxParticipants"];
@@ -133,7 +115,10 @@ class ControllerOperation extends Mycontroller{
                 }
                 $this->redirect("Tricount", "showTricount", $tricount->id);
             }
+            $errors=$this->get_add_operation_errors();
+            
         }
+
 
         (new View("add_operation"))->show(["title" => $title, 
                                             'amount'=> $amount,
