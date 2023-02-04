@@ -15,8 +15,7 @@
         <div class="pt-2 ps-3 pe-3 pb-2 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
             <a href="Tricount/showTemplates/<?=$tricount->id?>" class="btn btn-outline-danger" >Cancel</a>
             <?=$tricount->title?> &#8594; New template
-           
-            <input type="submit" class="btn btn-primary" value="Save" form="addtemplateForm"><br>
+            <input type="submit" class="btn btn-primary" value="Save" form="addtemplateForm">
         </div> 
         <div class="container">
         <form id="addtemplateForm" action="Tricount/addTemplate/<?=$tricount->id?>" method="post">
