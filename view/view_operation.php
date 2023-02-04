@@ -4,15 +4,15 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <base href="<?= $web_root ?>"/>
+        <base href="<?= $web_root ?>">
         <title><?=$operation->title?></title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     </head>
     <body>
         <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
-            <a href="Tricount/showTricount/<?=$tricount->id?>" class="btn btn-outline-danger" name="buttonBack">Back</a>
-            <?=$tricount->title?> &#8594 <?=$operation->title?>
-            <a href="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>" class="btn btn-primary" name="buttonEdit">Edit</a>
+            <a href="Tricount/showTricount/<?=$tricount->id?>" class="btn btn-outline-danger" >Back</a>
+            <?=$tricount->title?> &#8594; <?=$operation->title?>
+            <a href="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>" class="btn btn-primary">Edit</a>
             </div>
         <h1 class="text-center p-3"><?=$operation->amount?> €</h1>
         
@@ -40,13 +40,13 @@
         <footer class="footer mt-auto fixed-bottom pt-2 ps-2 pe-2 pb-2 fs-5 d-flex justify-content-between" style="background-color: #E3F3FD">
             <?php 
                 if($currentIndex!=0){ ?>
-                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex-1]->id?>"class="btn btn-primary" name='buttonPrevious'>Previous</a>
+                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex-1]->id?>" class="btn btn-primary">Previous</a>
                 <?php }else { ?>
                     <p></p>
                 <?php } ?>
             <?php
                 if($currentIndex<sizeof($operations)-1){ ?>
-                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex+1]->id?>"class="btn btn-primary" name="buttonNext">Next</button></a>
+                    <a href="Operation/showOperation/<?=$tricount->id?>/<?=$operations[$currentIndex+1]->id?>" class="btn btn-primary">Next</a>
                 <?php }else { ?>
                     <p></p>
                 <?php } ?>
