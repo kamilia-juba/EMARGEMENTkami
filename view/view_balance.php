@@ -16,7 +16,7 @@
 
 
 
-<div class="container  " style="font-size:15px;">
+<div class="container pt-2 " style="font-size:15px;">
         <?php foreach($participants as $participant){?>
         <div class="row g-0 p-1">
             <?php if($participant->account>0):?>
