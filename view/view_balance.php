@@ -19,7 +19,7 @@
 <div class="container  " style="font-size:15px;">
         <?php foreach($participants as $participant){?>
         <div class="row g-0 p-1">
-            <?php if($participant->account>=0):?>
+            <?php if($participant->account>0):?>
                 <?php if($participant->id==$user->id) : ?>
                     <div class="col text-end ">
                         <span class="align-middle" style="font-weight:bolder"><?=$participant->full_name?>&nbsp</span>
@@ -44,7 +44,7 @@
                     </div>
                 <?php endif;  ?>
         </div>
-        <?php else: ?>
+        <?php elseif($participant->account<0) : ?>
         <div class="row g-0 p-1">
             <?php if($participant->id==$user->id) : ?>
                 <div class="col justify-content-end ">
@@ -71,6 +71,16 @@
             <?php endif;  ?>
         </div>
         <?php endif; } ?>
+    </div>
+    <?php foreach($participants as $participant){?>
+    <div class="text-center">                
+        <?php if($participant->account==0) : ?>
+            <?php if($participant->id==$user->id) : ?>
+                <p class="align-middle" style="font-weight:bolder ;">&nbsp<?=$participant->full_name?>&nbsp(me)</p>
+            <?php else: ?>
+                <p class="align-middle" >&nbsp<?=$participant->full_name?>&nbsp</p>
+            <?php endif;?>
+        <?php endif; }?>
     </div>
 </body>
 </html>
