@@ -13,8 +13,9 @@
         <?=$tricount->title?> &#8594; Balance
     </div>
     <div class="container pt-2 ">
-    <div  style="font-size:15px;">
+        <div  style="font-size:15px;">
             <?php foreach($participants as $participant){?>
+
             <div class="row g-0 p-1">
             <?php if( $participant->account > 0) : ?>
                 <?php if($participant->id==$user->id): ?>
@@ -41,10 +42,9 @@
                     </div>
                 <?php endif;  ?>
             </div>
-        </div>
-        
+             
         <?php elseif($participant->account<0) : ?>
-        <div class="row g-0 p-1">
+            <div class="row g-0 p-1">
             <?php if($participant->id==$user->id) : ?>
                 <div class="col justify-content-end ">
                     <div class="progress" style="direction: rtl; height:28px; border-radius:0px ; background-color: #FFFFFF;">
@@ -56,6 +56,7 @@
                 <div class="col">
                         <span class="align-middle" style="font-weight:bolder ;">&nbsp;<?=$participant->full_name?>&nbsp;(me)</span>
                 </div>
+            </div>
             <?php else: ?>
                 <div class="col justify-content-end ">
                     <div class="progress" style="direction: rtl; height:28px; border-radius:0px ; background-color: #FFFFFF;">
@@ -68,19 +69,22 @@
                         <span class="align-middle" >&nbsp;<?=$participant->full_name?>&nbsp;</span>
                 </div>
             <?php endif;  ?>
-        </div>
+            </div>
         <?php endif; } ?>
+        </div>
     </div>
-    </div>
-
-    <?php foreach($participants as $participant){?>
-    <div class="text-center">                
+    
+    
+    <div class="text-center">
+    <?php foreach($participants as $participant){?>           
         <?php if($participant->account==0) : ?>
             <?php if($participant->id==$user->id) : ?>
-                <p class="align-middle" style="font-weight:bolder ;">&nbsp;<?=$participant->full_name?>&nbsp;(me)</p>
+                <p class="text-center align-middle" style="font-weight:bolder ;">&nbsp;<?=$participant->full_name?>&nbsp;(me)</p>
             <?php else: ?>
-                <p class="align-middle" >&nbsp;<?=$participant->full_name?>&nbsp;</p>
+                <p class="text-center align-middle" >&nbsp;<?=$participant->full_name?>&nbsp;</p>
+            </div>
             <?php endif;?>
+            
         <?php endif; }?>
     </div>
 </div>
