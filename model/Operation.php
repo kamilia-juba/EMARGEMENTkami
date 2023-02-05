@@ -36,6 +36,7 @@ class Operation extends Model {
         return $errors;
     }
 
+    //méthode statique qui récupère une opération par rapport à un id donné en paramètre
     public static function get_operation_by_id(int $id) : Operation{
         $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId",["tricountId"=>$id]);
         $data = $query->fetch();
@@ -43,6 +44,7 @@ class Operation extends Model {
 
     }
 
+    //méthode statique qui récupère toutes les opérations d'un tricount par rapport à un id donné en paramètre
     public static function get_operations_by_tricountid(int $tricountId) : array{
 
         $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId order by created_at DESC", ["tricountId" => $tricountId]);
@@ -55,25 +57,28 @@ class Operation extends Model {
 
     }
 
+    //méthode qui renvoie l'user qui a payé l'opération
     public function get_payer(): User{
         $query = self::execute("SELECT * from Users where id = (SELECT initiator FROM operations WHERE id=:id)",["id"=>$this->id]);
         $data = $query->fetch();
         return new User($data["mail"],$data["hashed_password"],$data["full_name"],$data["role"],$data["iban"], $data["id"]);
     }
 
-
+    //méthode statique qui récupère le poids total de l'opération
     public static function get_total_weights(int $id): int{
         $query = self::execute("SELECT sum(weight) total from repartitions WHERE operation=:operationId",["operationId" => $id]);
         $data = $query->fetch();
         return $data["total"];
     }
 
+    //méthode qui récupère le poids sur l'opération d'un user par rapport à son id donné en paramètre
     public function get_weight(int $userId): int | null {
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId and user = :userId",["operationId" => $this->id, "userId" => $userId]);
         $data = $query->fetch();
         return $data === false ? null : $data["weight"];
     }
 
+    //méthode statique qui récupère le poids d'un User d'un Template
     public static function get_weight_from_template_static(User $participant, Template $template){ // a changer pour rendre l'autre static
         $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
         $data = $query->fetch();
@@ -81,6 +86,7 @@ class Operation extends Model {
 
     }
 
+    //méthode qui détermine si un user participe à l'opération ou non
     public function user_participates(int $userId):bool{
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId",["operationId" => $this->id]);
         $data = $query->fetchAll();
@@ -92,6 +98,7 @@ class Operation extends Model {
         return false;
     }
 
+    //méthode statique qui récupère une opération par son id
     public static function get_operation_byid(int $id):Operation{
         $query = self::execute("SELECT * FROM operations WHERE id = :id",["id"=>$id]);
         $data = $query->fetch();
@@ -106,6 +113,7 @@ class Operation extends Model {
         );
     }
 
+    //méthode qui récupère tous les participants de l'opération
     public function get_participants():array{
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :id",["id" => $this->id]);
         $data = $query->fetchAll();
@@ -116,6 +124,7 @@ class Operation extends Model {
         return $results;
     }
 
+    //méthode qui insère dans la table operations dans la BDD une nouvelle opération et puis la renvoie
     public function persist() : Operation {
         
         self::execute("INSERT INTO operations(title,tricount,amount,operation_date,initiator,created_at) VALUES(:title,:tricount,:amount,:operation_date,:initiator,:created_at)", 
@@ -130,6 +139,7 @@ class Operation extends Model {
         return $this;
     }
 
+    //méthode qui met à jour une opération dans la BDD
     public function updateOperation(){
         self::execute("UPDATE operations SET title=:title, amount=:amount, operation_date=:operation_date, initiator=:initiator WHERE id=:id",
                         ["id" => $this->id, 
@@ -139,10 +149,12 @@ class Operation extends Model {
                         "initiator" => $this->initiator]);
     }
 
+    //méthode qui supprime de la BDD les répartitions d'une opération
     public function delete_repartitions(){
         self::execute("DELETE FROM repartitions WHERE operation=:operation",["operation" => $this->id]);
     }
 
+    //méthode qui ajoute dans la BDD les répartitions d'une opération
     public function add_repartitions(User $user, int $weight){
         self::execute("INSERT INTO repartitions(operation,user,weight) VALUES(:operation,:user,:weight) ",
                      ["operation" => $this->id,
@@ -150,6 +162,7 @@ class Operation extends Model {
                       "weight" => $weight]);
     }
 
+    //méthode qui supprime une opération et tous ses liens dans la BDD
     public function delete_operation(){
         self::execute("delete from repartitions where operation=:operationId",["operationId" => $this->id]);
         self::execute("delete from operations where id=:operationId",["operationId" => $this->id]);
