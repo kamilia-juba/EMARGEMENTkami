@@ -69,9 +69,9 @@ class ControllerUser extends MyController {
             $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
 
             if (count($errors) == 0) { 
-                $user->hashed_password =$password;
+                $user->hashed_password = Tools::my_hash($password);
                 $user->persist(); //sauve l'utilisateur
-                $success = "Password updated succefully";
+                $this->redirect("User","settings");
             }
         }
         (new View("change_password"))->show([ "errors" => $errors, "success" => $success]);
