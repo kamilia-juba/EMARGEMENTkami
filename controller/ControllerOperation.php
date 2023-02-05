@@ -80,7 +80,6 @@ class ControllerOperation extends Mycontroller{
                 $weights = $_POST["weight"];
                 if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){
                     if(!$tricount->template_name_exists($_POST["newTemplateName"])){
-                        $errorsSaveTemplate[] = "This template already exists. Choose another name";
                         $newTemplate = $tricount->add_template($newTemplateName);
                         for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                             for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){
@@ -90,11 +89,13 @@ class ControllerOperation extends Mycontroller{
                                 }
                             }
                         }
+                    }else{
+                        $errorsSaveTemplate[] = "This template already exists. Choose another name";
                     }
                 }
             }           
             
-            $errors=$this->get_add_operation_errors();
+            $errors=$this->get_add_operation_errors($tricount);
             $errorsTitle = $errors["errorsTitle"];
             $errorsAmount =$errors["errorsAmount"];
             $errorsCheckboxes= $errors["errorsCheckboxes"];
@@ -115,7 +116,6 @@ class ControllerOperation extends Mycontroller{
                 }
                 $this->redirect("Tricount", "showTricount", $tricount->id);
             }
-            $errors=$this->get_add_operation_errors();
             
         }
 
@@ -140,6 +140,10 @@ class ControllerOperation extends Mycontroller{
     public function editOperation(): void {
         $user = $this->get_user_or_redirect();
         $errors = [];
+        $errorsTitle = [];
+        $errorsAmount = [];
+        $errorsCheckboxes= [];
+        $errorsSaveTemplate = [];
         $selected_repartition = 0;
         if ($this->validate_url()) {
             $operation = Operation::get_operation_byid($_GET["param2"]);
@@ -165,21 +169,11 @@ class ControllerOperation extends Mycontroller{
                 $amount = $_POST["amount"];
                 $date = $_POST["date"];
                 $paidBy = $_POST["paidBy"];
-                !is_numeric($amount) ? $errors[] = "Amount should be numeric" : "";
-                $errors = array_merge($errors,$this->validate_title($title));
-                $errors = array_merge($errors,$this->validate_amount($amount));
-                if(!isset($_POST["checkboxParticipants"])){
-                    if(isset($_POST["weight"])){
-                        $errors[] = "You must select at least 1 participant";
-                    }
-                }
                 if(isset($_POST["saveTemplateCheck"])){
                     $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
                     $weights = $_POST["weight"];
                     if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){
-                        if($tricount->template_name_exists($_POST["newTemplateName"])){
-                            $errors[] = "This template already exists. Choose another name";
-                        }else{
+                        if(!$tricount->template_name_exists($_POST["newTemplateName"])){
                             $newTemplate = $tricount->add_template($newTemplateName);
                             for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                                 for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){
@@ -189,20 +183,19 @@ class ControllerOperation extends Mycontroller{
                                     }
                                 }
                             }
+                        }else{
+                            $errorsSaveTemplate[] = "This template already exists. Choose another name";
                         }
-                    }else if(isset($_POST["newTemplateName"]) && empty($newTemplateName)){
-                        $errors[] = "A name must be given to template to be able to save it.";
                     }
                 }
-                if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
-                    $errors[] = "Weights must be greater than 0";
-                }
+            
+                $errors=$this->get_add_operation_errors($tricount);
+                $errorsTitle = $errors["errorsTitle"];
+                $errorsAmount =$errors["errorsAmount"];
+                $errorsCheckboxes= $errors["errorsCheckboxes"];
+                $errorsSaveTemplate = $errors["errorsSaveTemplate"];
 
-                if(!$this->weightsAreNumeric($_POST["weight"])){
-                    $errors[] = "Weights must be numeric";
-                }
-
-                if(count($errors)==0){
+                if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { 
                     $operation->title = $title;
                     $operation->amount = $amount;
                     $operation->operation_date = $date;
@@ -230,8 +223,11 @@ class ControllerOperation extends Mycontroller{
                                                  "operation" => $operation,
                                                  "user"=>$user,"tricount" => $tricount,
                                                  "participants_and_weights" => $participants_and_weights,
-                                                 "repartition_templates"=>$repartition_templates,
-                                                 "errors" => $errors]
+                                                 "repartition_templates"=>$repartition_templates, 
+                                                 "errorsTitle" => $errorsTitle,
+                                                 "errorsAmount" => $errorsAmount, 
+                                                 "errorsCheckboxes" => $errorsCheckboxes,
+                                                 "errorsSaveTemplate" => $errorsSaveTemplate]
             );
         } else{
             $this->redirect("Main");

@@ -93,7 +93,7 @@ abstract class Mycontroller extends Controller{
         return $users;
     }
 
-    public function get_add_operation_errors(): array{
+    public function get_add_operation_errors(Tricount $tricount): array{
 
         $title = trim($_POST['title']);
         $amount = floatval(trim($_POST['amount']));
@@ -106,7 +106,7 @@ abstract class Mycontroller extends Controller{
 
         if(isset($_POST["saveTemplateCheck"])){
             $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
-            if(isset($_POST["newTemplateName"]) && $newTemplateName!= "" && isset($_POST["newTemplateName"]) && empty($newTemplateName)){
+            if(isset($_POST["newTemplateName"]) && $newTemplateName== ""){
                 $errorsSaveTemplate[] = "A name must be given to template to be able to save it.";
             }
         }
