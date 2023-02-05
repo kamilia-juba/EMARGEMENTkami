@@ -112,12 +112,19 @@ abstract class Mycontroller extends Controller{
 
         $array = array("errorsTitle" => $errorsTitle, "errorsAmount" => $errorsAmount, "errorsCheckboxes" => $errorsCheckboxes,"errorsSaveTemplate" => $errorsSaveTemplate);
 
-        if(isset($_POST["saveTemplateCheck"])){
+
+        if(isset($_POST["saveTemplateCheck"])){                                                         //execute ce code si l'utilisateur check save template
             $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
-            if(isset($_POST["newTemplateName"]) && $newTemplateName== ""){
-                $errorsSaveTemplate[] = "A name must be given to template to be able to save it.";
+            $weights = $_POST["weight"];
+            if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){                              //verifie si le nom est entré et n'est pas vide
+                if($tricount->template_name_exists($_POST["newTemplateName"])){
+                    $errorsSaveTemplate[] = "This template already exists. Choose another name";                        //verifie si le nom existe déjà et sinon il sauvegarde chaque item dans la bdd et ajoute le template
+                }
+                if(isset($_POST["newTemplateName"]) && $newTemplateName== ""){
+                    $errorsSaveTemplate[] = "A name must be given to template to be able to save it.";
+                }
             }
-        }
+        }  
 
             $errorsTitle = array_merge($errorsTitle, $this->validate_title($title));
             $errorsAmount = array_merge($errorsAmount, $this->validate_amount($amount));

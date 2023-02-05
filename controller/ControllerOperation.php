@@ -72,28 +72,7 @@ class ControllerOperation extends Mycontroller{
             $title = trim($_POST['title']);
             $amount = floatval(trim($_POST['amount']));
             $date = trim($_POST['date']);
-            $paidBy = trim($_POST['paidBy']);
-
-
-            if(isset($_POST["saveTemplateCheck"])){                                                         //execute ce code si l'utilisateur check save template
-                $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
-                $weights = $_POST["weight"];
-                if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){                              //verifie si le nom est entré et n'est pas vide
-                    if(!$tricount->template_name_exists($_POST["newTemplateName"])){                        //verifie si le nom existe déjà et sinon il sauvegarde chaque item dans la bdd et ajoute le template
-                        $newTemplate = $tricount->add_template($newTemplateName);
-                        for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
-                            for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){                    
-                                if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
-                                    $participants_and_weights[$i][1] = $weights[$i];
-                                    $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
-                                }
-                            }
-                        }
-                    }else{
-                        $errorsSaveTemplate[] = "This template already exists. Choose another name";
-                    }
-                }
-            }           
+            $paidBy = trim($_POST['paidBy']);      
             
             $errors=$this->get_add_operation_errors($tricount);                                            //recupération du reste des erreurs
             $errorsTitle = $errors["errorsTitle"];
@@ -102,6 +81,23 @@ class ControllerOperation extends Mycontroller{
             $errorsSaveTemplate = $errors["errorsSaveTemplate"];
 
             if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors
+                
+                
+                if(isset($_POST["saveTemplateCheck"])){
+                    $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
+                    $weights = $_POST["weight"];
+
+                    $newTemplate = $tricount->add_template($newTemplateName);
+                    for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
+                        for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){                    
+                            if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
+                                $participants_and_weights[$i][1] = $weights[$i];
+                                $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
+                            }
+                        }
+                    }
+                }    
+
                 $operationss = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d H:i:s"), $date);
                 $operation=$operationss->persist();
                 $checkboxes = $_POST["checkboxParticipants"];
@@ -169,25 +165,7 @@ class ControllerOperation extends Mycontroller{
                 $amount = $_POST["amount"];
                 $date = $_POST["date"];
                 $paidBy = $_POST["paidBy"];
-                if(isset($_POST["saveTemplateCheck"])){
-                    $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
-                    $weights = $_POST["weight"];
-                    if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){
-                        if(!$tricount->template_name_exists($_POST["newTemplateName"])){
-                            $newTemplate = $tricount->add_template($newTemplateName);
-                            for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
-                                for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){
-                                    if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
-                                        $participants_and_weights[$i][1] = $weights[$i];
-                                        $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
-                                    }
-                                }
-                            }
-                        }else{
-                            $errorsSaveTemplate[] = "This template already exists. Choose another name";
-                        }
-                    }
-                }
+            
             
                 $errors=$this->get_add_operation_errors($tricount);
                 $errorsTitle = $errors["errorsTitle"];
@@ -196,6 +174,22 @@ class ControllerOperation extends Mycontroller{
                 $errorsSaveTemplate = $errors["errorsSaveTemplate"];
 
                 if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { 
+
+                    if(isset($_POST["saveTemplateCheck"])){
+                        $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
+                        $weights = $_POST["weight"];
+
+                        $newTemplate = $tricount->add_template($newTemplateName);
+                        for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
+                            for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){                    
+                                if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
+                                    $participants_and_weights[$i][1] = $weights[$i];
+                                    $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
+                                }
+                            }
+                        }
+                    }  
+
                     $operation->title = $title;
                     $operation->amount = $amount;
                     $operation->operation_date = $date;
