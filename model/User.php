@@ -53,7 +53,7 @@ class User extends Model {
     }
 
         public function persist() : User {
-        if(self::get_user_by_id($this->id))
+        if(self::get_user_by_mail($this->mail))
             self::execute("UPDATE Users SET  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE mail=:mail ", 
                             [ "mail"=>$this->mail,
                                 "hashed_password"=>$this->hashed_password,
