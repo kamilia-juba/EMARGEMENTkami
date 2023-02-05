@@ -8,12 +8,12 @@ class ControllerTemplate extends Mycontroller{
 
     public function index() : void {
     }
-
+    //verifie si l'utilisateur est connecter il suprime le template si non rediriger vers index 
     public function deleteTemplate(){
         $user = $this->get_user_or_redirect();
         if($this->validate_url()){
-            $tricount = Tricount::getTricountById($_GET["param1"],$user->mail);
-            $template = Template::get_template_by_id($_GET["param2"]);
+            $tricount = Tricount::getTricountById($_GET["param1"],$user->mail);// recupere le tricount 
+            $template = Template::get_template_by_id($_GET["param2"]);// recupere le template 
             if(isset($_POST["yes"])){
                 $template->remove_template();
                 $this->redirect("Tricount", "showTemplates", $tricount->id);
@@ -30,17 +30,18 @@ class ControllerTemplate extends Mycontroller{
             $this->redirect("Main");
         }
     }
-
+    // permet de faire des modification dans le template 
     public function edit_template(){
         $user=$this->get_user_or_redirect();
         $errors = [];
 
         if ($this->validate_url()){
-            $tricount = Tricount::getTricountById($_GET["param1"]);
-            $template = Template::get_template_by_id($_GET["param2"]);
-            $participants = $tricount->get_participants();
+            $tricount = Tricount::getTricountById($_GET["param1"]); // recuper le tricount 
+            $template = Template::get_template_by_id($_GET["param2"]);// recupere le template 
+            $participants = $tricount->get_participants(); // recupere les participant du tricount 
             $participants_and_weights = [];
             foreach($participants as $participant){
+                // renseigne le poid de chaque participant dans le tricount 
                 $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
             }
             if(isset($_POST["title"])){
@@ -65,7 +66,7 @@ class ControllerTemplate extends Mycontroller{
                 if(!$this->weightsAreNumeric($_POST["weight"])){
                     $errors[] = "Weights must be numeric";
                 }
-                
+                // verifie si ya pas d'erreurs des save les difications apporter
                 if(count($errors)==0){
                     $checkboxes = $_POST["checkboxParticipants"];
                     $weights = $_POST["weight"];
