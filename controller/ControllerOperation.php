@@ -80,7 +80,7 @@ class ControllerOperation extends Mycontroller{
             $errorsCheckboxes= $errors["errorsCheckboxes"];
             $errorsSaveTemplate = $errors["errorsSaveTemplate"];
 
-            if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors
+            if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
                 
                 
                 if(isset($_POST["saveTemplateCheck"])){
@@ -126,7 +126,8 @@ class ControllerOperation extends Mycontroller{
                                             "tricount"=> $tricount, 
                                             "participants" => $participants,
                                             "participants_and_weights" => $participants_and_weights,
-                                            "repartition_templates"=>$repartition_templates,                                            "selected_repartition" => $selected_repartition,
+                                            "repartition_templates"=>$repartition_templates,
+                                            "selected_repartition" => $selected_repartition,
                                             "user"=>$user]);
         }else{
             $this->redirect("main");
@@ -141,21 +142,21 @@ class ControllerOperation extends Mycontroller{
         $errorsCheckboxes= [];
         $errorsSaveTemplate = [];
         $selected_repartition = 0;
-        if ($this->validate_url()) {
+        if ($this->validate_url()) { //vérifie l'url (si user fait partie du tricount et si l'url est valide, numérique etc) sinon redirige vers l'index
             $operation = Operation::get_operation_byid($_GET["param2"]);
             $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
             $participants_and_weights = [];
-            foreach($participants as $participant){
+            foreach($participants as $participant){ //récupère un tableau avec les participants ainsi que leur poids sur l'opération et détermine si le participant participe dans cette opération ou non
                 $participants_and_weights[] = [$participant, $operation->get_weight($participant->id) == null ? 1 : $operation->get_weight($participant->id),$operation->user_participates($participant->id)];
             }
             $repartition_templates = $tricount->get_repartition_templates();
 
-            if(isset($_POST["repartitionTemplates"]) && $_POST["repartitionTemplates"] != "customRepartition"){
+            if(isset($_POST["repartitionTemplates"]) && $_POST["repartitionTemplates"] != "customRepartition"){ //exécute ceci si on applique un template
                 $template = Template::get_template_by_id($_POST["repartitionTemplates"]);
                 $selected_repartition = $template->id;
                 $participants_and_weights = [];
-                foreach($participants as $participant){
+                foreach($participants as $participant){ //récupère un tableau avec les participants et leur poids du template sélectionné et détermine si le participant participe dans ce template ou non
                     $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
                 }
             }
@@ -166,13 +167,14 @@ class ControllerOperation extends Mycontroller{
                 $date = $_POST["date"];
                 $paidBy = $_POST["paidBy"];
             
-            
+                //partie concernant la gestion des erreurs
                 $errors=$this->get_add_operation_errors($tricount);
                 $errorsTitle = $errors["errorsTitle"];
                 $errorsAmount =$errors["errorsAmount"];
                 $errorsCheckboxes= $errors["errorsCheckboxes"];
                 $errorsSaveTemplate = $errors["errorsSaveTemplate"];
 
+                //si plus d'erreurs, fait la sauvegarde dans la BDD
                 if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { 
 
                     if(isset($_POST["saveTemplateCheck"])){
@@ -230,7 +232,7 @@ class ControllerOperation extends Mycontroller{
 
     public function delete_operation(){
         $user = $this->get_user_or_redirect();
-        if ($this->validate_url()) {
+        if ($this->validate_url()) { //exécute les vérifications sur l'url qui appelle cette méthode, sinon redirige vers l'index
             
             $tricount = Tricount::getTricountById(( $_GET["param1"]));
             $operation= Operation::get_operation_byid($_GET["param2"]);
