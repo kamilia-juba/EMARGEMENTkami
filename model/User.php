@@ -67,6 +67,7 @@ class User extends Model {
                             "full_name"=>$this->full_name,
                             "role"=>$this->role,
                             "iban"=>$this->iban]);
+        $this->id=Model::lastInsertId();
         return $this;
     }
     // verifie si l'utilisateur existe et le mot de passe est juste pour se connecter
