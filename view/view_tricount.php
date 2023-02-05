@@ -31,7 +31,7 @@
                 </li>
                 <li class="list-group-item ps-3">
                     <p>Click below to add your friends!</p>
-                    <p><a href='Tricount/editTricount/<?=$tricount->id?>' class='btn btn-primary'>Add friends</button></a></p>
+                    <p><a href='Tricount/editTricount/<?=$tricount->id?>' class='btn btn-primary'>Add friends</a></p>
                 </li>
             </ul>
         </div>
