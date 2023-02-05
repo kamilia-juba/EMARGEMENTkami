@@ -122,6 +122,10 @@
             $data = $query->fetch();
             return $data === false ? null : $data["weight"];
         }
+
+        public function remove_user_participation_on_template(int $userId){
+            self::execute("DELETE FROM repartition_template_items WHERE repartition_template =:id AND user=:userId ", ["id"=>$this->id,"userId"=>$userId]);
+        }
     }
 
     
