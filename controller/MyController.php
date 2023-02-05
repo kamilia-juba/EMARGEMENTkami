@@ -4,6 +4,7 @@ require_once "framework/Controller.php";
 
 abstract class Mycontroller extends Controller{
 
+    //vérifie si les poids qui sont dans le tableau donné en paramètre sont supérieurs à 0 sinon renvoie false
     public function weightsAreGreaterThanZero(array $weights): bool{
         for($i=0;$i<sizeof($weights);++$i){
             if($weights[$i]<=0){
@@ -13,6 +14,7 @@ abstract class Mycontroller extends Controller{
         return true;
     }
 
+    //vérifie si les poids qui sont dans le tableau donné en paramètre sont bien numériques
     public function weightsAreNumeric(array $weights): bool{
         for($i=0;$i<sizeof($weights);++$i){
             if(!is_numeric($weights[$i])){
@@ -22,6 +24,7 @@ abstract class Mycontroller extends Controller{
         return true;
     }
 
+    //méthode qui valide les règles métiers liées au title
     public function validate_title(String $title): array {
         $errors = [];
         if(strlen($title)<=0) {
@@ -33,6 +36,7 @@ abstract class Mycontroller extends Controller{
         return $errors;
     }
 
+    //méthode qui valide les règles métiers liées au montant
     public function validate_amount(float $amount): array {
         $errors = [];
         if($amount<=0){
@@ -41,6 +45,7 @@ abstract class Mycontroller extends Controller{
         return $errors;
     }
 
+    //méthode qui valide les règles métiers liées à la description
     public function validate_description(string $description): array{
         $errors = [];
         if(strlen($description)!=0 && strlen($description)<3){
@@ -49,6 +54,7 @@ abstract class Mycontroller extends Controller{
         return $errors;
     }
     
+    //méthode qui fait la vérification liées aux URL. Renvoie false si les conditions ne sont pas respectées
     public function validate_url() :bool{
 
         $user = $this->get_user_or_redirect();
@@ -82,6 +88,7 @@ abstract class Mycontroller extends Controller{
         return $result;
     }
 
+    //méthode qui prend en paramètre une opération et renvoie un tableau contenant les participants et leurs montants dûs 
     public function get_users_and_their_operation_amounts(Operation $operation): array{
         $participants = $operation->get_participants();
         $users = [];
@@ -93,6 +100,7 @@ abstract class Mycontroller extends Controller{
         return $users;
     }
 
+    //méthode qui renvoie un tableau d'erreurs pour addOperation et editOperation
     public function get_add_operation_errors(Tricount $tricount): array{
 
         $title = trim($_POST['title']);
