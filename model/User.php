@@ -53,21 +53,22 @@ class User extends Model {
     }
         // sa permet de save l'user dans la base de donner 
         public function persist() : User {
-        if(self::get_user_by_mail($this->mail))
+        if(self::get_user_by_mail($this->mail)){
             self::execute("UPDATE Users SET  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE mail=:mail ", 
                             [ "mail"=>$this->mail,
                                 "hashed_password"=>$this->hashed_password,
                                 "full_name"=>$this->full_name,
                                 "role"=>$this->role,
                                 "iban"=>$this->iban]);
-        else
+        }else{
             self::execute("INSERT INTO Users(mail,hashed_password,full_name,role,iban) VALUES(:mail,:hashed_password,:full_name,:role,:iban)", 
                             [ "mail"=>$this->mail,
                             "hashed_password"=>$this->hashed_password,
                             "full_name"=>$this->full_name,
                             "role"=>$this->role,
                             "iban"=>$this->iban]);
-        $this->id=Model::lastInsertId();
+            $this->id=Model::lastInsertId();
+        }
         return $this;
     }
     // verifie si l'utilisateur existe et le mot de passe est juste pour se connecter
