@@ -6,7 +6,7 @@ require_once "model/Operation.php";
 
 class User extends Model {
 
-
+    // constructeur d'un user
     public function __construct(
         public string $mail, 
         public string $hashed_password, 
@@ -17,7 +17,7 @@ class User extends Model {
         public ?float $account=0){  
 
     }
-
+    // recupre le user selon l'id 
     public static function get_user_by_id(int $id) : User|false {
         $query = self::execute("SELECT * FROM Users where id = :id", ["id"=>$id]);
         $data = $query->fetch(); // un seul résultat au maximum
@@ -27,7 +27,7 @@ class User extends Model {
             return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"], $data["id"]);
         }
     }
-
+    // recupere le user selon le mail 
     public static function get_user_by_mail(String $mail) : User|false {
         $query = self::execute("SELECT * FROM Users where mail = :mail", ["mail"=>$mail]);
         $data = $query->fetch(); // un seul résultat au maximum
@@ -39,7 +39,7 @@ class User extends Model {
 
         }
     } 
-
+    // recupere tout les utilisateurs 
     public static function get_users() : array {
         $query = self::execute("SELECT * FROM Users", []);
         $data = $query->fetchAll();
@@ -51,7 +51,7 @@ class User extends Model {
         }
         return $results;
     }
-
+        // sa permet de save l'user dans la base de donner 
         public function persist() : User {
         if(self::get_user_by_mail($this->mail))
             self::execute("UPDATE Users SET  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE mail=:mail ", 
@@ -69,7 +69,7 @@ class User extends Model {
                             "iban"=>$this->iban]);
         return $this;
     }
-
+    // verifie si l'utilisateur existe et le mot de passe est juste pour se connecter
     public static function validate_login(string $mail, string $password) : array {
         $errors = [];
         $user = User::get_user_by_mail($mail);
@@ -89,6 +89,7 @@ class User extends Model {
     private static function check_password(string $clear_password, string $hash) : bool {
         return $hash === Tools::my_hash($clear_password);
     }
+    // recupere les utilisateurs participant a un tricount
     public function get_user_tricounts() : array {
         $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId)", 
             ["userId" => $this->id]);
@@ -100,7 +101,7 @@ class User extends Model {
 
         return $results;
     }
-// SAADAYACINECHAKER
+    // verifie si le string full name respercte les condition
     public static function validate_full_name(string $full_name) : array {
         $errors = [];
         if (!strlen($full_name) > 0) {
@@ -116,6 +117,7 @@ class User extends Model {
         }*/
         return $errors;
 }
+    // verifie si le string full name respercte les condition(forme d'un mail)
     public static function validate_mail(string $mail) : array {
         $errors = [];
         if (!preg_match("/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/",$mail)) {
@@ -123,7 +125,7 @@ class User extends Model {
         }
         return $errors;
     }
-
+    // verifie si le string IBAN respercte les condition(forme d'un IBAN)
    public static function validate_IBAN(string $IBAN) : array {
         $errors = [];
         $Countries = array(
@@ -159,7 +161,7 @@ class User extends Model {
         
         
     }
-
+    // verifie que le mail doit etre unique 
     public static function validate_unicity(string $mail) : array {
         $errors = [];
         $user = self::get_user_by_mail($mail);
@@ -169,7 +171,7 @@ class User extends Model {
         return $errors;
     }
 
-  
+    // verifie que le password resple condition
     private static function validate_password(string $password) : array {
         $errors = [];
         if (strlen($password) < 8 || strlen($password) > 16) {
@@ -179,7 +181,7 @@ class User extends Model {
         }
         return $errors;
     }
-
+    //verifie que le password resple condition et d'il soit identique au password
     public static function validate_passwords(string $password, string $password_confirm) : array {
         $errors = User::validate_password($password);
         if ($password != $password_confirm) {
@@ -202,14 +204,14 @@ class User extends Model {
         $data = $query->fetch();
         return !(empty($data));
     }
-    
+    // recupere le user creator du tricount
     public static function get_creator_of_tricount(int $tricountID) : User {
         $query = self::execute("select * from users where id in (select creator from tricounts where id=:tricountID) ", ["tricountID"=>$tricountID]);
         $data = $query->fetch();
 
         return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"],$data["id"]);
     }
-
+    //recupere les utilisateur qui non pas particite au tricpount
     public static function get_users_not_sub_to_a_tricount(int $tricountId) : array {
         $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId)", ["tricountId"=>$tricountId]);
         $data = $query->fetchAll();
@@ -222,14 +224,14 @@ class User extends Model {
         return $results;
     }
 
-
+    //recupere les utilisateur qui on participer a un template 
     public function isSubscribedToTemplate(int $templateId): bool{
         $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId and repartition_template=:templateId", ["userId" => $this->id, "templateId" => $templateId]);
         $data = $query->fetch();
         return !(empty($data));
 
     }
-
+    // recupere tout les user d'un template 
     public function user_participates_to_repartition(int $templateId){
         $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template=:templateId and user=:userId",["templateId" => $templateId, "userId" => $this->id]);
         $data = $query->fetch();
@@ -241,14 +243,14 @@ class User extends Model {
         $lastInserted = Model::lastInsertId();
         self::execute("INSERT INTO subscriptions(tricount,user) VALUES(:lastInserted, :user)", ["lastInserted" => $lastInserted, "user" => $this->id]);
     }
-
+    // recuper les utilisateurs qui ont des participe au moins une fois
     public function has_already_paid(int $tricountId): bool{
         $query = self::execute("SELECT * FROM operations WHERE initiator=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $tricountId]);
         $data = $query->fetch();
         return !(empty($data));
 
     }
-
+    // recupere les erreurs lors d'un signup
     public static function getSignupErrors(string $mail, string $full_name, string $iban, string $password, string $password_confirm ): array{
         $errors = [];
         $errors = User::validate_unicity($mail);
