@@ -17,10 +17,28 @@
     <div class="container min-vh-100 pt-2">
         <form id="editOperationForm" action="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>" method="post">
             <input class="form-control mb-2" id="title" name="title" value="<?=$operation->title?>">
+            <?php if (count($errorsTitle) != 0): ?>
+                <div class='text-danger'>
+                    <ul>
+                        <?php foreach ($errorsTitle as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
             <div class="input-group mb-2">
                 <input class="form-control" type="number" step="0.01" id="amount" min="0" name ="amount" value="<?=$operation->amount?>">
                 <span class="input-group-text" style="background-color: #E9ECEF">EUR</span>
             </div>
+            <?php if (count($errorsAmount) != 0): ?>
+                <div class='text-danger'>
+                    <ul>
+                        <?php foreach ($errorsAmount as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
             Date
             <input class="form-control mb-2" id="date" name="date" type="date" value="<?=$operation->operation_date?>">
             Paid by
@@ -55,6 +73,15 @@
                     <input class="form-control" type="number" min="0" name="weight[]" value="<?=$participants_and_weights[$i][1]?>">
                 </div>
             <?php } ?>
+            <?php if (count($errorsCheckboxes) != 0): ?>
+                        <div class='text-danger'>
+                            <ul>
+                            <?php foreach ($errorsCheckboxes as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                            </ul>
+                        </div>
+            <?php endif; ?>
             Add a new repartition template
             <div class="input-group mb-2 pt-2 pb-2">
                 <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" name="saveTemplateCheck"></span>
@@ -62,14 +89,14 @@
                 <input class="form-control w-50" id="newTemplateName" name="newTemplateName">
             </div>
         </form>
-        <?php if (count($errors) != 0): ?>
-                <div class="text-danger">
-                    <ul class="list-inline">
-                    <?php foreach ($errors as $errors): ?>
-                            <li><?= $errors ?></li>
-                    <?php endforeach; ?>
-                    </ul>
-                </div>
+        <?php if (count($errorsSaveTemplate) != 0): ?>
+                        <div class='text-danger'>
+                            <ul>
+                            <?php foreach ($errorsSaveTemplate as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                            </ul>
+                        </div>
         <?php endif; ?>
         <a href="Operation/delete_operation/<?=$tricount->id?>/<?=$operation->id?>" class="btn btn-danger w-100">Delete Operation</a>
     </div>
