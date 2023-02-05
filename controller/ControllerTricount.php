@@ -116,11 +116,13 @@ class ControllerTricount extends MyController{
                 $title = trim($_POST['title']);
                 $description= trim($_POST['description']);
                 $errors = $this->validate_title($title);
+                $errors = array_merge($errors,$this->validate_description($description));
                 if (count($errors) == 0) { 
                     $tricount->title = $title;
                     $tricount->description = $description;
                     $tricount->persistUpdate();
                     $this->redirect("Tricount", "showTricount",$tricount->id) ;
+                    
                }   
             }           
             (new View("EditTricount"))->show(["user" => $creator,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success,"notSubParticipants"=>$notSubParticipants]);
@@ -171,7 +173,7 @@ class ControllerTricount extends MyController{
             $tricount = Tricount::getTricountById(( $_GET["param1"]));
         
 
-            if(isset($_POST["yes"])){
+            if(isset($_POST["yes"] )){
                 $tricount->delete_tricount($user->id);
                 $this->redirect("Tricount","yourTricounts");
             }
