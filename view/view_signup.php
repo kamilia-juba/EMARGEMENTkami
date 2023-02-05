@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-        <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css” >
+        <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css” />
         <link rel="stylesheet" href="https://kit.fontawesome.com/991f3da7c3.css" crossorigin="anonymous">
         <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
     </head>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="input-group mb-3 mt-3">
                     <span class="input-group-text" ><i class="fa-solid fa-user"></i></span>
-                    <input class="form-control" id="full_name" name="full_name" type="text"  value="<?= $full_name ?>" placeholder="full_name" >
+                    <input class="form-control" id="full_name" name="full_name" type="text"  value="<?= $full_name ?>" placeholder="Full Name" >
                 </div>
                 <div class="input-group mb-3 mt-3">
                     <span class="input-group-text" ><i class="fa-sharp fa-solid fa-credit-card"></i></span>
