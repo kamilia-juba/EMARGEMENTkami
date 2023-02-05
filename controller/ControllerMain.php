@@ -31,7 +31,7 @@ class ControllerMain extends MyController {
         }
         (new View("login"))->show(["mail" => $mail, "password" => $password, "errors" => $errors]);
     }
-
+    //gestion de l'inscription d'un nouvel utilisateur
     public function signup() : void {
         $mail = '';
         $full_name='';

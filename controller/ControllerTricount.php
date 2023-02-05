@@ -8,15 +8,15 @@ require_once 'model/Operation.php';
 
 class ControllerTricount extends MyController{
 
-    
-
-    public function yourTricounts(): void {
+     //si l'utilisateur est connecté, redirige vers la liste de ces tricounts .
+        //sinon, produit la vue d'accueil.
+        public function yourTricounts(): void {
         $user = $this->get_user_or_redirect();
         $tricounts = $user->get_user_tricounts();
         (new View("listTricounts"))->show(["tricounts" => $tricounts]);
     }
     
-    
+    //ajouter un tricount apré avoir verifier que les paramettre sont passer on post 
     public function addtricount () : void {
         $user = $this->get_user_or_redirect();
         $title='';
@@ -39,9 +39,9 @@ class ControllerTricount extends MyController{
             if(Tricount::tricountTitleAlreadyExists($title, $user)){
                 $errors[] = "You already have a tricount with this title. Choose another title";
             }
-            
+            // on verifie si y a pas d'erreurs et on sauve le tricount 
             if (count($errors) == 0) { 
-                $tricount->persist($creator); //sauve le tricount
+                $tricount->persist($creator); 
                 $user->add_subscription();
                 $this->redirect("Tricount", "yourTricounts");
 
@@ -52,7 +52,7 @@ class ControllerTricount extends MyController{
 
     public function index() : void {
           }
-
+        //afficher la liste des tricount d'un utilisateur 
     public function showTricount(): void{
         $user = $this->get_user_or_redirect();
         if ($this->validate_url()) {
@@ -76,16 +76,16 @@ class ControllerTricount extends MyController{
     
     public function showBalance(): void{
         $user=$this->get_user_or_redirect();
-        if ($this->validate_url()) {
-            $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
-            $participants = $tricount->get_balances();
+        if ($this->validate_url()) {    //validation url
+            $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);// recup tricount depuis l'id
+            $participants = $tricount->get_balances(); //recuperation de la balance de chacun
             $maxUser=$participants[0];
             $sum=0;
             for($i=0;$i<sizeof($participants);++$i){
-                if($participants[$i]>$maxUser){
+                if($participants[$i]>$maxUser){     // recuperation du user ayant payé le plus
                     $maxUser=$participants[$i];
                 }
-                if($participants[$i]->account>0){
+                if($participants[$i]->account>0){   //recup du total 
                     $sum+=$participants[$i]->account;
                 }
 
@@ -97,7 +97,7 @@ class ControllerTricount extends MyController{
         }
     }
 
-
+    //on fais des modification sur tricount 
     public function editTricount(): void{
         
         $user = $this->get_user_or_redirect();
@@ -132,7 +132,7 @@ class ControllerTricount extends MyController{
          $this->redirect("main");
        }
     }
-
+    // sa parmet d'ajount un utilisateur dans un tricount
     public function add_participant(){
         $user = $this->get_user_or_redirect();
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])){
@@ -146,26 +146,8 @@ class ControllerTricount extends MyController{
         $this->redirect("Tricount","editTricount",$tricount->id);
     }
 
-    // public function confirm_delete_tricount(): void{
-    //     $user = $this->get_user_or_redirect();
-    //     if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])) {
-    //         $tricount=Tricount::getTricountById(($_GET["param1"]));
-    //         (new View("delete_tricount_confirmation"))->show(["tricount"=>$tricount]);
-    //     }
-    //     else{
-    //         $this->redirect();
-    //     }
-    // }
-
-    // public function delete_tricountt(): void{
-    //     $user = $this->get_user_or_redirect();
-    //     if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])) {
-    //         $tricount = Tricount::getTricountById(( $_GET["param1"]));
-    //         $tricount->delete_tricount($user->id);
-    //         $this->redirect();
-    //     }
-    // }
-
+   
+    //sa permet de delete un tricount avec toutes ses operations et ses templates
     public function delete_tricount(){
         $user = $this->get_user_or_redirect();
         if ($this->validate_url()) {
@@ -187,7 +169,7 @@ class ControllerTricount extends MyController{
             $this->redirect();
         }
     }
-
+    //supprimer un participant d'un tricount si il n'a fait aucune transaction
     public function deleteParticipant():void{
         $user = $this->get_user_or_redirect();
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"])  && isset($_GET["param2"]) && $_GET["param2"] !== "" && is_numeric($_GET["param2"])) {
@@ -213,7 +195,7 @@ class ControllerTricount extends MyController{
         }
         $this->redirect();
     }
-
+    //sa parmet dafficher la liste des template d'un tricount 
     public function showTemplates(): void{
         $user=$this->get_user_or_redirect();
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])){
@@ -228,14 +210,14 @@ class ControllerTricount extends MyController{
             $this->redirect("Main");
         }
     }
-
+    // ajouter un template pour un tricount 
     public function addTemplate(): void{
-        $user = $this->get_user_or_redirect();
+        $user = $this->get_user_or_redirect(); //si l'utilisateur n'est pas connecter redirection vers la page d'acceuille
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])){
             $errors = [];
             $tricount = Tricount::getTricountById($_GET["param1"]);
             $participants = $tricount->get_participants();
-            if(isset($_POST["title"]) && $_POST["title"] != 0){
+            if(isset($_POST["title"]) && $_POST["title"] != ""){
                 $title = trim($_POST["title"]);
                 $errors = array_merge($errors, $this->validate_title($title));
 
@@ -248,11 +230,11 @@ class ControllerTricount extends MyController{
                         $errors[] = "You must select at least 1 participant";
                     }
                 }
-
+                // verifie si l'URL est correct si non rederige vers index
                 if($tricount->template_name_exists($_POST["title"])){
                     $errors[] = "You already have a template with this title. Choose another title";
                 }
-
+                // verifie si y a pas d'erreurs rajoute le template et rederige vers la page suivante
                 if(count($errors)==0){
                     $checkboxes = $_POST["checkboxParticipants"];
                     $template = Template::add_repartition_template($title,$tricount->id);
