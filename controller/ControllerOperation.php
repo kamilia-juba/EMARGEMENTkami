@@ -10,15 +10,15 @@ class ControllerOperation extends Mycontroller{
     }
 
     public function showOperation(): void {
-        $user = $this->get_user_or_redirect();
-        if ($this->validate_url()) {
-            $operation = Operation::get_operation_byid($_GET["param2"]);
-            $tricount = Tricount::getTricountById($operation->tricount,$user->mail);
-            $paidBy = User::get_user_by_id($operation->initiator);
-            $user_participates = $operation->user_participates($user->id);
-            $users = $this->get_users_and_their_operation_amounts($operation);
-            $operations = Operation::get_operations_by_tricountid($tricount->id);
-            $currentIndex = $this->getCurrentIndex($operations, $operation);
+        $user = $this->get_user_or_redirect();                                      //redirect a ll'index si l'user n'est pas connecté
+        if ($this->validate_url()) {                                                // appel de la méthode vérifiant l'url
+            $operation = Operation::get_operation_byid($_GET["param2"]);            // récuperation de l'id à partir l'url    
+            $tricount = Tricount::getTricountById($operation->tricount,$user->mail);    //récupération du tricount à partir de l'id tricount sur operation et du mail de l'user connecté
+            $paidBy = User::get_user_by_id($operation->initiator);                  //recuperation de l'initiator
+            $user_participates = $operation->user_participates($user->id);          //récuperation pour voir si l'utilisateur connecté a participé
+            $users = $this->get_users_and_their_operation_amounts($operation);      // recuperation des user et de leur amount
+            $operations = Operation::get_operations_by_tricountid($tricount->id);   //recuperation de toutes les opération sur tricount
+            $currentIndex = $this->getCurrentIndex($operations, $operation);        //récuperation de l'index courante
             (new View("operation"))->show(
                                         ["user" => $user, 
                                         "operation" => $operation, 
@@ -38,8 +38,8 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         $selected_repartition = 0;
         
-        if ($this->validate_url()) {
-        $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
+        if ($this->validate_url()) {                                                // validation url si true exectue le code sinon redirect vers l'index
+        $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);        //recupération de toutes les informations et initialisation afin de pouvoir les utilisé dans le show
         $title = "";
         $amount = "";
         $date = "";
@@ -51,13 +51,13 @@ class ControllerOperation extends Mycontroller{
         $errorsSaveTemplate = [];
         $participants = $tricount->get_participants();
         $participants_and_weights = [];
-        foreach($participants as $participant){
+        foreach($participants as $participant){                                     // initialisation des participants, checkbox et leur poids à 1
                 $participants_and_weights[] = [$participant, 1, true];
         }
-        $repartition_templates = $tricount->get_repartition_templates();
+        $repartition_templates = $tricount->get_repartition_templates();            // reprends template de la base de donnée
 
 
-        if(isset($_POST["repartitionTemplates"]) && $_POST["repartitionTemplates"] != "customRepartition"){
+        if(isset($_POST["repartitionTemplates"]) && $_POST["repartitionTemplates"] != "customRepartition"){ //si un template est appliqué, il execute ce code qui réinistialise la page avec les données du template
             $template = Template::get_template_by_id($_POST["repartitionTemplates"]);
             $selected_repartition = $template->id;
             $participants_and_weights = [];
@@ -75,14 +75,14 @@ class ControllerOperation extends Mycontroller{
             $paidBy = trim($_POST['paidBy']);
 
 
-            if(isset($_POST["saveTemplateCheck"])){
+            if(isset($_POST["saveTemplateCheck"])){                                                         //execute ce code si l'utilisateur check save template
                 $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
                 $weights = $_POST["weight"];
-                if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){
-                    if(!$tricount->template_name_exists($_POST["newTemplateName"])){
+                if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){                              //verifie si le nom est entré et n'est pas vide
+                    if(!$tricount->template_name_exists($_POST["newTemplateName"])){                        //verifie si le nom existe déjà et sinon il sauvegarde chaque item dans la bdd et ajoute le template
                         $newTemplate = $tricount->add_template($newTemplateName);
                         for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
-                            for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){
+                            for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){                    
                                 if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
                                     $participants_and_weights[$i][1] = $weights[$i];
                                     $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
@@ -95,13 +95,13 @@ class ControllerOperation extends Mycontroller{
                 }
             }           
             
-            $errors=$this->get_add_operation_errors($tricount);
+            $errors=$this->get_add_operation_errors($tricount);                                            //recupération du reste des erreurs
             $errorsTitle = $errors["errorsTitle"];
             $errorsAmount =$errors["errorsAmount"];
             $errorsCheckboxes= $errors["errorsCheckboxes"];
             $errorsSaveTemplate = $errors["errorsSaveTemplate"];
 
-            if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { 
+            if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors
                 $operationss = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d H:i:s"), $date);
                 $operation=$operationss->persist();
                 $checkboxes = $_POST["checkboxParticipants"];
