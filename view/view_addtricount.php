@@ -18,11 +18,11 @@
     <form id="addTricount" action="Tricount/addtricount" method="post">
         <div class="form-group pt-3 ps-3 pe-3 pb-3">
              <label class="pb-3">Title :</label>
-             <input class="form-control" id="title" name="title" type="text" size="16" value="<?= $title ?>" placeholder="entrez le titre">
+             <input class="form-control" id="title" name="title" type="text" size="16" value="<?= $title ?>" placeholder="Enter a title">
         </div>
         <div class="form-group pt-3 ps-3 pe-3 pb-3">
-             <label class="pb-3">Description(Optionel):</label>
-             <input class="form-control" id="description" name="description" type="text" size="32" value="<?= $description ?>" placeholder="entrez la discription">
+             <label class="pb-3">Description (optional) :</label>
+             <input class="form-control" id="description" name="description" type="text" size="32" value="<?= $description ?>">
         </div>     
        
     </form> 
