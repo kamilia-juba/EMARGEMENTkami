@@ -248,6 +248,11 @@ class ControllerTricount extends MyController{
                         $errors[] = "You must select at least 1 participant";
                     }
                 }
+
+                if($tricount->template_name_exists($_POST["title"])){
+                    $errors[] = "You already have a template with this title. Choose another title";
+                }
+
                 if(count($errors)==0){
                     $checkboxes = $_POST["checkboxParticipants"];
                     $template = Template::add_repartition_template($title,$tricount->id);
