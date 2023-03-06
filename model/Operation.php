@@ -47,7 +47,7 @@ class Operation extends Model {
     //méthode statique qui récupère toutes les opérations d'un tricount par rapport à un id donné en paramètre
     public static function get_operations_by_tricountid(int $tricountId) : array{
 
-        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId order by created_at DESC", ["tricountId" => $tricountId]);
+        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId order by operation_date DESC, id DESC", ["tricountId" => $tricountId]);
         $data = $query->fetchAll();
         $operations = [];
         foreach ($data as $row) {
