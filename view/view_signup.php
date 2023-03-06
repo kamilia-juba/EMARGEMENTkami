@@ -55,7 +55,7 @@
                     <br><br><p>Please correct the following error(s) :</p>
                     <ul >
                         <?php foreach ($errors as $error): ?>
-                            <li class="list-inline-item"><?= $error ?></li>
+                            <br><br><li class="list-inline-item"><div class='error-item'><span>&#8226;</span><?= $error ?></li>
                         <?php endforeach; ?>
                     </ul>
                 </div>

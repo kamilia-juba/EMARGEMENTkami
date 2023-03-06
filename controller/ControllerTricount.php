@@ -117,6 +117,10 @@ class ControllerTricount extends MyController{
                 $description= trim($_POST['description']);
                 $errors = $this->validate_title($title);
                 $errors = array_merge($errors,$this->validate_description($description));
+
+                if(Tricount::tricountTitleAlreadyExists($title, $user)){
+                    $errors[] = "You already have a tricount with this title. Choose another title";
+                }
                 if (count($errors) == 0) { 
                     $tricount->title = $title;
                     $tricount->description = $description;
