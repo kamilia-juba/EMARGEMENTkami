@@ -93,7 +93,7 @@ class User extends Model {
     }
     // recupere les utilisateurs participant a un tricount
     public function get_user_tricounts() : array {
-        $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId)", 
+        $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId) order by created_at DESC", 
             ["userId" => $this->id]);
         $data = $query->fetchAll();
         $results = [];

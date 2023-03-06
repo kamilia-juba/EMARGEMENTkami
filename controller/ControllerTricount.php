@@ -9,8 +9,8 @@ require_once 'model/Operation.php';
 class ControllerTricount extends MyController{
 
      //si l'utilisateur est connecté, redirige vers la liste de ces tricounts .
-        //sinon, produit la vue d'accueil.
-        public function yourTricounts(): void {
+    //sinon, produit la vue d'accueil.
+    public function yourTricounts(): void {
         $user = $this->get_user_or_redirect();
         $tricounts = $user->get_user_tricounts();
         (new View("listTricounts"))->show(["tricounts" => $tricounts]);
