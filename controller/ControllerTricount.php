@@ -9,8 +9,8 @@ require_once 'model/Operation.php';
 class ControllerTricount extends MyController{
 
      //si l'utilisateur est connecté, redirige vers la liste de ces tricounts .
-        //sinon, produit la vue d'accueil.
-        public function yourTricounts(): void {
+    //sinon, produit la vue d'accueil.
+    public function yourTricounts(): void {
         $user = $this->get_user_or_redirect();
         $tricounts = $user->get_user_tricounts();
         (new View("listTricounts"))->show(["tricounts" => $tricounts]);
@@ -213,6 +213,7 @@ class ControllerTricount extends MyController{
     // ajouter un template pour un tricount 
     public function addTemplate(): void{
         $user = $this->get_user_or_redirect(); //si l'utilisateur n'est pas connecter redirection vers la page d'acceuille
+        $title = "";
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])){
             $errors = [];
             $tricount = Tricount::getTricountById($_GET["param1"]);
@@ -252,7 +253,8 @@ class ControllerTricount extends MyController{
                     $this->redirect("Tricount","showTemplates",$tricount->id);
                 }
             }
-            (new View("add_template"))->show(["tricount" => $tricount,
+            (new View("add_template"))->show(["title" => $title,
+                                            "tricount" => $tricount,
                                             "participants" => $participants,
                                             "errors" => $errors]
             );

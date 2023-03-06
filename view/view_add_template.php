@@ -20,16 +20,12 @@
         <div class="container">
         <form id="addtemplateForm" action="Tricount/addTemplate/<?=$tricount->id?>" method="post">
             Title : 
-            <input class="form-control mb-2" id="title" name="title" type="text" placeholder="Title">
+            <input class="form-control mb-2" id="title" name="title" type="text" placeholder="Title" value="<?=$title?>">
             Template items :
                 <?php foreach($participants as $participant) { ?>
                     <div class="input-group mb-2 mt-2">
                         <span class="form-control" style="background-color: #E9ECEF">
-                        
-                        <input type="checkbox" name="checkboxParticipants[]" value="<?=$participant->id?>" checked>
-                            
-                        
-                        
+                            <input type="checkbox" name="checkboxParticipants[]" value="<?=$participant->id?>" checked>
                         </span>  
                         <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participant->full_name?></span>
                         <input class="form-control" type="number" min="0" name="weight[]" value="1">

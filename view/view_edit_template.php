@@ -16,7 +16,7 @@
         <div class="container min-vh-100 pt-2">
             <form id="applyTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post">
                 Title : 
-                <input class="form-control mb-2" id="title" name="title" type="text" value="<?= $template->title?>" placeholder="Title">
+                <input class="form-control mb-2" id="title" name="title" type="text" value="<?=$title?>" placeholder="Title">
                 Template items :
                 <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){  ?>
                     <div class="input-group mb-2 mt-2">

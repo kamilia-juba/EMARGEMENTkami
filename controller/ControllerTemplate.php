@@ -40,6 +40,7 @@ class ControllerTemplate extends Mycontroller{
             $template = Template::get_template_by_id($_GET["param2"]);// recupere le template 
             $participants = $tricount->get_participants(); // recupere les participant du tricount 
             $participants_and_weights = [];
+            $title = $template->title;
             foreach($participants as $participant){
                 // renseigne le poid de chaque participant dans le tricount 
                 $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
@@ -91,7 +92,8 @@ class ControllerTemplate extends Mycontroller{
                                                  "errors" => $errors,
                                                  "template"=>$template,
                                                  "tricount"=>$tricount,
-                                                 "user"=>$user]
+                                                 "user"=>$user,
+                                                 "title"=>$title]
             );
 
         }else{

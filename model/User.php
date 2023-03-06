@@ -93,7 +93,7 @@ class User extends Model {
     }
     // recupere les utilisateurs participant a un tricount
     public function get_user_tricounts() : array {
-        $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId)", 
+        $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId) order by created_at DESC", 
             ["userId" => $this->id]);
         $data = $query->fetchAll();
         $results = [];
@@ -217,7 +217,7 @@ class User extends Model {
     }
     //recupere les utilisateur qui non pas particite au tricpount
     public static function get_users_not_sub_to_a_tricount(int $tricountId) : array {
-        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId)", ["tricountId"=>$tricountId]);
+        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId) ORDER BY full_name", ["tricountId"=>$tricountId]);
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row) {
