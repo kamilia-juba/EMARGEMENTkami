@@ -40,7 +40,7 @@ class ControllerMain extends MyController {
         $password_confirm = '';
         $errors = [];
 
-        if (isset($_POST['mail']) && isset($_POST['full_name']) && isset($_POST['IBAN']) && 
+        if (isset($_POST['mail']) && isset($_POST['full_name']) && 
             isset($_POST['password']) && isset($_POST['password_confirm'])) {
            
             $mail = Tools::sanitize($_POST['mail']);
@@ -48,9 +48,10 @@ class ControllerMain extends MyController {
             $IBAN = Tools::sanitize($_POST['IBAN']);
             $password = Tools::sanitize($_POST['password']);
             $password_confirm = Tools::sanitize($_POST['password_confirm']);
+            
 
-            $errors = User::getSignupErrors($mail,$full_name,$IBAN,$password,$password_confirm);
-         
+            $errors =array_merge($errors, User::getSignupErrors($mail,$full_name,$IBAN,$password,$password_confirm));
+            
             if (count($errors) == 0) { 
                 $user = new User($mail ,Tools::my_hash($password), $full_name , "user" ,$IBAN );
                 $user->persist(); //sauve l'utilisateur

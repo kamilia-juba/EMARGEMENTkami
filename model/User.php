@@ -146,17 +146,19 @@ class User extends Model {
             $pays = substr($IBAN,0, 2);
         
             // Vérifier que les deux premiers caractères sont des lettres et que le pays est reconnu
-            if (!ctype_alpha($pays)) {
+            if (!ctype_alpha($pays) && strlen($IBAN)!=0) {
             $errors[] = "2 first characters are not letters";
             } 
-            if(array_key_exists(strtolower($pays),$Countries)){
-                if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
-                {
-                    $errors[] = "Wrong IBAN size";
+            if(strlen($IBAN)!=0){
+                 if(array_key_exists(strtolower($pays),$Countries)){
+                     if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
+                        {
+                             $errors[] = "Wrong IBAN size";
+                         }
+                 }
+                else {
+                    $errors[] = "Unknown country";
                 }
-            }
-            else{
-                $errors[] = "Unknown country";
             }
         
         return $errors;
