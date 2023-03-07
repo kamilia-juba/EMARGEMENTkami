@@ -23,17 +23,26 @@ class ControllerUser extends MyController {
         $errors = [];
         $success = "";
 
+        $full_name=$user->full_name;
+        $iban=$user->iban;
+        $mail=$user->mail;
+        
+
 
         if (isset($_POST['full_name']) || isset($_POST['IBAN']) ) {
             $full_name = Tools::sanitize($_POST['full_name']);
             $iban = Tools::sanitize($_POST['iban']);
+            $mail = Tools::sanitize($_POST['mail']);
         
             $errors = array_merge($errors, User::validate_IBAN($iban));
             $errors = array_merge($errors, User::validate_full_name($full_name));
+            $errors = array_merge($errors, User::validate_mail($mail));
+
 
             if (count($errors) == 0) { 
                 $user->full_name = $full_name;
                 $user->iban = $iban;
+                $user->mail=$mail;
                 $user->persist();
                 $this->redirect("user","settings");
                     
@@ -50,7 +59,7 @@ class ControllerUser extends MyController {
         $success = "Your profile has been successfully updated.";
         }
 
-        (new View("edit_profile"))->show(["iban" => $user->iban, "full_name" => $user->full_name , "errors" => $errors, "success" => $success]);
+        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errors" => $errors, "success" => $success]);
     }
 
     public function change_password() : void {

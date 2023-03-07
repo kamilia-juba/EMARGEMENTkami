@@ -15,6 +15,10 @@
         </div>
         <form id="changeProfileForm" action="user/edit_profile" method="post">
             <div class="form-group pt-3 ps-3 pe-3 pb-3">
+                    <label class="pb-3">Mail :</label>
+                    <input class="form-control" id="mail" name="mail" type="text" size="16" value="<?= $mail ?>">
+            </div>
+            <div class="form-group pt-3 ps-3 pe-3 pb-3">
                     <label class="pb-3">Full name :</label>
                     <input class="form-control" id="full_name" name="full_name" type="text" size="16" value="<?= $full_name ?>" placeholder="Enter your name">
             </div>
