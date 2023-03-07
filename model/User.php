@@ -177,12 +177,14 @@ class User extends Model {
 
     // verifie que le password resple condition
     private static function validate_password(string $password) : array {
+        $user= 
         $errors = [];
         if (strlen($password) < 8 || strlen($password) > 16) {
             $errors[] = "Password length must be between 8 and 16.";
         } if (!((preg_match("/[A-Z]/", $password)) && preg_match("/\d/", $password) && preg_match("/['\";:,.\/?!\\-]/", $password))) {
             $errors[] = "Password must contain one uppercase letter, one number and one punctuation mark.";
         }
+
         return $errors;
     }
     //verifie que le password resple condition et d'il soit identique au password
@@ -193,6 +195,22 @@ class User extends Model {
         }
         return $errors;
     }
+
+    public static function validate_password_unicity(string $password, User $user, string $new_password): array{
+        $errors = [];
+        
+        if(self::check_password($password,$user->hashed_password)){
+            if($password==$new_password){
+                $errors[] = "Same password as the actual one.";
+            }
+        }
+        else{
+            $errors[] = "Wrong password. Please try again.";
+        }
+
+        return $errors;
+    }
+
 
     //vérifie si l'user fait partie du tricount donné en paramètre
     public function isSubscribedToTricount(int $id): bool{
