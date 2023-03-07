@@ -68,7 +68,7 @@ class ControllerUser extends MyController {
             $password_confirm = $_POST['password_confirm'];
 
             $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
-            $errors = array_merge($errors, User::validate_password_unicity($password,$user));
+            $errors = array_merge($errors, User::validate_password_unicity($actual_password,$user,$password));
 
             if (count($errors) == 0) { 
                 $user->hashed_password = Tools::my_hash($password);

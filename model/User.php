@@ -196,11 +196,16 @@ class User extends Model {
         return $errors;
     }
 
-    public static function validate_password_unicity(string $password, User $user): array{
+    public static function validate_password_unicity(string $password, User $user, string $new_password): array{
         $errors = [];
         
-        if(tools::my_hash($password)==$user->hashed_password){
-            $errors[] = "Same password as the actual one.";
+        if(self::check_password($password,$user->hashed_password)){
+            if($password==$new_password){
+                $errors[] = "Same password as the actual one.";
+            }
+        }
+        else{
+            $errors[] = "Wrong password. Please try again.";
         }
 
         return $errors;
