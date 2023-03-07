@@ -15,11 +15,15 @@
         </div>
         <form id="changeMotdepasseForm" action="user/change_password" method="post">
             <div class="form-group pt-3 ps-3 pe-3 pb-3">
-                <label class="pb-3">Password :</label>
+                <label class="pb-3">Actual Password :</label>
+                <input class="form-control" id="actual_password" name="actual_password" type="password" size="16" value="">
+            </div>
+            <div class="form-group pt-3 ps-3 pe-3 pb-3">
+                <label class="pb-3">New Password :</label>
                 <input class="form-control" id="password" name="password" type="password" size="16" value="">
             </div>
             <div class="form-group pt-3 ps-3 pe-3 pb-3">
-                <label class="pb-3">Confirm Password: :</label>
+                <label class="pb-3">Confirm New Password: :</label>
                 <input class="form-control" id="password_confirm" name="password_confirm" type="password" size="16" value="">
             </div>
         </form>
