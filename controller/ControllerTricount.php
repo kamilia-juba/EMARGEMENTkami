@@ -104,6 +104,8 @@ class ControllerTricount extends MyController{
         $errors = [];
         $success = "";
         $participants = [];
+        $errorsTitle=[];
+        $errorsDescription=[];
         
         
         
@@ -117,15 +119,15 @@ class ControllerTricount extends MyController{
             if(isset($_POST['title'])){
                 $title = trim($_POST['title']);
                 $description= trim($_POST['description']);
-              
-                $errors = $this->validate_title($title);
-                $errors = array_merge($errors,$this->validate_description($description));
+                
+                $errorsTitle = $this->validate_title($title);
+                $errorsDescription = $this->validate_description($description);
 
                 if(Tricount::tricountTitleAlreadyExists($title, $user)){
                     $errors[] = "You already have a tricount with this title. Choose another title";
                 }
               
-                if (count($errors) == 0) { 
+                if (count($errorsTitle) == 0 && count($errorsDescription) == 0) { 
                     $tricount->title = $title;
                     $tricount->description = $description;
                     $tricount->persistUpdate();
@@ -133,7 +135,7 @@ class ControllerTricount extends MyController{
                     
                }   
             }           
-            (new View("EditTricount"))->show(["user" => $creator,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success,"notSubParticipants"=>$notSubParticipants,"title"=>$title,"description"=>$description]);
+            (new View("EditTricount"))->show(["user" => $creator,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success,"notSubParticipants"=>$notSubParticipants,"title"=>$title,"description"=>$description,"errorsDescription"=>$errorsDescription,"errorsTitle"=>$errorsTitle]);
 
         }
         else{

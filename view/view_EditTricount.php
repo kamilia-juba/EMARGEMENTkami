@@ -24,10 +24,29 @@
             <div class="form-group p-1 ms-2 me-2 mb-2">
                     <label class="pb-1">Title :</label>
                     <input class="form-control" type="text" id="title" name="title" value="<?= $title?>">
+                    <?php if (count($errorsTitle) != 0): ?>
+                    <div class='text-danger'>
+                        <ul>
+                            <?php foreach ($errorsTitle as $errors): ?>
+                                 <li><?= $errors ?></li>
+                             <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <?php endif; ?>
             </div>
             <div class="form-group p-1 ms-2 me-2 mb-2">
                     <label class="pb-1">Descripition (optional) :</label>
                     <input class="form-control" type="text" id="description" name="description" value="<?=$description?>">
+                    <?php if (count($errorsDescription) != 0): ?>
+                    <div class='text-danger'>
+                        <ul>
+                            <?php foreach ($errorsDescription as $errors): ?>
+                                 <li><?= $errors ?></li>
+                             <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <?php endif; ?>
+                    
             </div>
         </form>
 
@@ -72,15 +91,7 @@
 
     
 
-        <?php if (count($errors) != 0): ?>
-                <div class="text-danger p-1 ms-2 me-2 mb-2">
-                    <ul class="list-inline ">
-                    <?php foreach ($errors as $errors): ?>
-                            <li><?= $errors ?></li>
-                    <?php endforeach; ?>
-                    </ul>
-                </div>
-        <?php endif; ?>
+      
          
 
 
