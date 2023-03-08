@@ -43,7 +43,7 @@ class ControllerTemplate extends Mycontroller{
             $title = $template->title;
             foreach($participants as $participant){
                 // renseigne le poid de chaque participant dans le tricount 
-                $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
+                $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant), $participant->user_participates_to_repartition($template)];
             }
             if(isset($_POST["title"])){
                 $title = trim($_POST["title"]);

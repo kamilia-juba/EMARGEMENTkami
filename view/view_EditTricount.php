@@ -23,11 +23,11 @@
         <form action="Tricount/EditTricount/<?= $tricount->id?>" id="editTricountForm" method="post">
             <div class="form-group p-1 ms-2 me-2 mb-2">
                     <label class="pb-1">Title :</label>
-                    <input class="form-control" type="text" id="title" name="title" value="<?= $tricount->title?>">
+                    <input class="form-control" type="text" id="title" name="title" value="<?= $title?>">
             </div>
             <div class="form-group p-1 ms-2 me-2 mb-2">
                     <label class="pb-1">Descripition (optional) :</label>
-                    <input class="form-control" type="text" id="description" name="description" value="<?=$tricount->description?>">
+                    <input class="form-control" type="text" id="description" name="description" value="<?=$description?>">
             </div>
         </form>
 
@@ -37,7 +37,7 @@
     <ul class="list-group p-1 ms-2 me-2 mb-2">
         <?php foreach($participants as $participant){
                 if($participant->id==$user->id){
-                    if($participant->has_already_paid($tricount->id)|| $tricount->has_already_paid($participant->id)){// a changer si on ne peut supprimer le createur
+                    if($participant->has_already_paid($tricount)|| $tricount->has_already_paid($participant)){// a changer si on ne peut supprimer le createur
                         echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name." (creator)</p></li>";
                     }
                     else{ 
@@ -46,7 +46,7 @@
                         </p></li>";
                     }
                 }else
-                    if($participant->has_already_paid($tricount->id)||$tricount->has_already_paid($participant->id)){
+                    if($participant->has_already_paid($tricount)||$tricount->has_already_paid($participant)){
                         echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name."</p></li>";
                     }
                     else{ 

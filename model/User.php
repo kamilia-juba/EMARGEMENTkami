@@ -196,10 +196,10 @@ class User extends Model {
         return $errors;
     }
 
-    public static function validate_password_unicity(string $password, User $user, string $new_password): array{
+    public  function validate_password_unicity(string $password, string $new_password): array{
         $errors = [];
         
-        if(self::check_password($password,$user->hashed_password)){
+        if(self::check_password($password,$this->hashed_password)){
             if($password==$new_password){
                 $errors[] = "Same password as the actual one.";
             }
@@ -219,23 +219,17 @@ class User extends Model {
         return !(empty($data));
     }
 
-    //vérifie si l'user fait partie de l'opération donnée en paramètre
-    //Pourrait ne pas être utilisé. A voir
-    public function participatesToOperation(int $operationId): bool{
-        $query = self::execute("SELECT * FROM repartitions WHERE operation=:operationId AND user=:userId",["operationId"=>$operationId,"userId"=>$this->id]);
-        $data = $query->fetch();
-        return !(empty($data));
-    }
+   
     // recupere le user creator du tricount
-    public static function get_creator_of_tricount(int $tricountID) : User {
-        $query = self::execute("select * from users where id in (select creator from tricounts where id=:tricountID) ", ["tricountID"=>$tricountID]);
+    public static function get_creator_of_tricount(Tricount $tricount) : User {
+        $query = self::execute("select * from users where id in (select creator from tricounts where id=:tricountID) ", ["tricountID"=>$tricount->id]);
         $data = $query->fetch();
 
         return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"],$data["id"]);
     }
     //recupere les utilisateur qui non pas particite au tricpount
-    public static function get_users_not_sub_to_a_tricount(int $tricountId) : array {
-        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId) ORDER BY full_name", ["tricountId"=>$tricountId]);
+    public static function get_users_not_sub_to_a_tricount(Tricount $tricount) : array {
+        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId) ORDER BY full_name", ["tricountId"=>$tricount->id]);
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row) {
@@ -247,15 +241,15 @@ class User extends Model {
     }
 
     //recupere les utilisateur qui on participer a un template 
-    public function isSubscribedToTemplate(int $templateId): bool{
-        $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId and repartition_template=:templateId", ["userId" => $this->id, "templateId" => $templateId]);
+    public function isSubscribedToTemplate(Template $template): bool{
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId and repartition_template=:templateId", ["userId" => $this->id, "templateId" => $template->id]);
         $data = $query->fetch();
         return !(empty($data));
 
     }
     // recupere tout les user d'un template 
-    public function user_participates_to_repartition(int $templateId){
-        $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template=:templateId and user=:userId",["templateId" => $templateId, "userId" => $this->id]);
+    public function user_participates_to_repartition(Template $template){
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template=:templateId and user=:userId",["templateId" => $template->id, "userId" => $this->id]);
         $data = $query->fetch();
         return !empty($data);
     }
@@ -266,8 +260,8 @@ class User extends Model {
         self::execute("INSERT INTO subscriptions(tricount,user) VALUES(:lastInserted, :user)", ["lastInserted" => $lastInserted, "user" => $this->id]);
     }
     // recuper les utilisateurs qui ont des participe au moins une fois
-    public function has_already_paid(int $tricountId): bool{
-        $query = self::execute("SELECT * FROM operations WHERE initiator=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $tricountId]);
+    public function has_already_paid(Tricount $tricount): bool{
+        $query = self::execute("SELECT * FROM operations WHERE initiator=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $tricount->id]);
         $data = $query->fetch();
         return !(empty($data));
 

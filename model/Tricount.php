@@ -72,6 +72,20 @@ class Tricount extends Model{
         return round($data["total"],2);
     }
 
+    
+    //méthode statique qui récupère toutes les opérations d'un tricount par rapport à un id donné en paramètre
+    public  function get_operations() : array{
+
+        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId order by operation_date DESC, id DESC", ["tricountId" => $this->id]);
+        $data = $query->fetchAll();
+        $operations = [];
+        foreach ($data as $row) {
+            $operations[] = new Operation($row['title'],$row['tricount'], round($row['amount'],2), $row['initiator'], $row['created_at'], $row['operation_date'],$row['id']);
+        }
+        return $operations;
+
+    }
+
     public function get_all_tricount_participants() : array{    // recupere tout les participants d'un tricount
         $query = self::execute("SELECT * from users where id in (select user from subscriptions where tricount = :tricountId)",["tricountId"=>$this->id]);
         $data= $query->fetchAll();
@@ -89,23 +103,23 @@ class Tricount extends Model{
         $operations=[];
         $participant=[];
     
-        $operations = Operation::get_operations_by_tricountid($this->id); //recupartion de toute les operation d'un tricount
+        $operations = $this->get_operations(); //recupartion de toute les operation d'un tricount
         $participants = $this->get_participants();  // recuperation de tout les participatns d'un tricount
 
 
         foreach($operations as $operation){
 
-            $totalWeight=Operation::get_total_weights($operation->id);      // pour chaque operation recupere le poids total ainsi que le celui qui a payé
+            $totalWeight=$operation->get_total_weights();      // pour chaque operation recupere le poids total ainsi que le celui qui a payé
             $payer=$operation->get_payer();
             $sum=$operation->amount;    // recuperation du total afin de calculé le montant d'une seule part 
 
             $individualAmout= $sum/$totalWeight; //calcul d'une part
 
             foreach($participants as $participant){
-                if($operation->user_participates($participant->id)){ //si le user participe alors recupere son id ainsi que celui qui a payé l'operation
+                if($operation->user_participates($participant)){ //si le user participe alors recupere son id ainsi que celui qui a payé l'operation
                     $participantId=$participant->id;
                     $payerID=$payer->id;
-                    $myWeight=$operation->get_weight($participantId);
+                    $myWeight=$operation->get_weight(User::get_user_by_id($participantId));
                     if($payerID==$participantId){                   // si le user en question a payé alors
                         $participant->account+=$sum-($myWeight*$individualAmout); //ajout de la somme moins son poids multiplié par une part
                     }
@@ -118,25 +132,25 @@ class Tricount extends Model{
         return $participants;
     }
 
-    public function get_my_total(int $userId):float{ // recupere le total d'un user
+    public function get_my_total(User $user):float{ // recupere le total d'un user
         $operations=[];
         $participant=[];
         $res=0;
     
-        $operations = Operation::get_operations_by_tricountid($this->id);
+        $operations =  $this->get_operations();
         $participants = $this->get_participants();
 
 
         foreach($operations as $operation){
 
-            $totalWeight=Operation::get_total_weights($operation->id);
+            $totalWeight=$operation->get_total_weights();  
             $sum=$operation->amount;
-            $myWeight=$operation->get_weight($userId);
+            $myWeight=$operation->get_weight($user);
             $individualAmout= $sum/$totalWeight;
 
             foreach($participants as $participant){
-                if($operation->user_participates($participant->id)){
-                    if($participant->id==$userId){
+                if($operation->user_participates($participant)){
+                    if($participant==$user){
                         $res+=$individualAmout*$myWeight;
                     }
                 }
@@ -195,10 +209,10 @@ class Tricount extends Model{
     
     }
 
-    public function add_subscriber(int $userId){ // ajoute un sub au tricount
+    public function add_subscriber(User $user){ // ajoute un sub au tricount
         self::execute("INSERT INTO subscriptions VALUES (:tricountId,:userId)",
         ["tricountId" => $this->id, 
-        "userId" =>$userId]);
+        "userId" =>$user->id]);
     }
 
 
@@ -213,8 +227,8 @@ class Tricount extends Model{
     }
 
 
-    public function delete_tricount(int $userID):void{ // supprime un tricount
-        $operations=Operation::get_operations_by_tricountid($this->id);
+    public function delete_tricount(User $user):void{ // supprime un tricount
+        $operations= $this->get_operations();
         $participants=$this->get_all_tricount_participants();
         foreach($operations as $operation){
             $operation->delete_operation();
@@ -231,12 +245,12 @@ class Tricount extends Model{
         self::execute("delete from subscriptions where tricount =:tricountID and user=:userID",["tricountID" => $this->id,"userID"=>$userID]);
     }
 
-    public function has_already_paid(int $userId):bool{ // verifie si un user a deja participé une fois sur un tricount 
-        $operations=Operation::get_operations_by_tricountid($this->id);
+    public function has_already_paid(User $user):bool{ // verifie si un user a deja participé une fois sur un tricount 
+        $operations= $this->get_operations();
         $result=false;
 
         foreach($operations as $operation){
-            if($operation->user_participates($userId)){
+            if($operation->user_participates($user)){
                 return true;
             }
         }
