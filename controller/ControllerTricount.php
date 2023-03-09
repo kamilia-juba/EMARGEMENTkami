@@ -51,8 +51,12 @@ class ControllerTricount extends MyController{
     }
 
     public function index() : void {
+            $this->get_user_or_redirect();
+
+            $this->redirect("Tricount", "yourTricounts");
           }
         //afficher la liste des tricount d'un utilisateur 
+
     public function showTricount(): void{
         $user = $this->get_user_or_redirect();
         if ($this->validate_url()) {

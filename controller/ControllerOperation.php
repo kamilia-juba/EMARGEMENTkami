@@ -7,6 +7,9 @@ require_once 'model/Tricount.php';
 class ControllerOperation extends Mycontroller{
 
     public function index() : void {
+        $this->get_user_or_redirect();
+
+        $this->redirect("Tricount", "yourTricounts");
     }
 
     public function showOperation(): void {

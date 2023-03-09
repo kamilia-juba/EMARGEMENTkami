@@ -5,7 +5,11 @@ require_once 'framework/View.php';
 require_once 'controller/MyController.php';
 
 class ControllerUser extends MyController {
-    public function index() : void {}
+    public function index() : void {
+        $this->get_user_or_redirect();
+
+        $this->redirect("Tricount", "yourTricounts");
+    }
 
     public function settings() : void {
         if (!$this->user_logged()) {

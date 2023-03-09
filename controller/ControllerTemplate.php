@@ -7,6 +7,9 @@ require_once 'model/Tricount.php';
 class ControllerTemplate extends Mycontroller{
 
     public function index() : void {
+        $this->get_user_or_redirect();
+
+        $this->redirect("Tricount", "yourTricounts");
     }
     //verifie si l'utilisateur est connecter il suprime le template si non rediriger vers index 
     public function deleteTemplate(){
