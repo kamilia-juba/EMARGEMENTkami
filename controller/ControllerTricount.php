@@ -151,9 +151,13 @@ class ControllerTricount extends MyController{
                 $participantId= $_POST['participant'];
                 $participant=User::get_user_by_id($participantId);  
                 $tricount->add_subscriber($participant);
+                $this->redirect("Tricount","editTricount",$tricount->id);
             }
         }
-        $this->redirect("Tricount","editTricount",$tricount->id);
+        else{
+            $this->redirect("Tricount","yourTricounts");
+        }
+        
     }
 
    
