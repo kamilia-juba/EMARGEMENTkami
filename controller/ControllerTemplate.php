@@ -61,11 +61,6 @@ class ControllerTemplate extends Mycontroller{
                         $errors[] = "You must select at least 1 participant";
                     }
                 }
-                if(isset($_POST["checkboxParticipants"])){
-                    if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
-                         $errors[] = "Weights must be greater than 0";
-                    }
-                }
 
                 if(!$this->weightsAreNumeric($_POST["weight"])){
                     $errors[] = "Weights must be numeric";
@@ -81,8 +76,10 @@ class ControllerTemplate extends Mycontroller{
                     for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                         for($j = 0; $j<sizeof($checkboxes);++$j){
                             if($participants_and_weights[$i][0]->id==$checkboxes[$j]){
-                                $participants_and_weights[$i][1] = $weights[$i];
-                                $template->add_items($participants_and_weights[$i][0],$participants_and_weights[$i][1]);
+                                if($weights[$i]>0){
+                                    $participants_and_weights[$i][1] = $weights[$i];
+                                    $template->add_items($participants_and_weights[$i][0],$participants_and_weights[$i][1]);
+                                }
                             }
                         }
                     }
