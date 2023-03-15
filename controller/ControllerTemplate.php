@@ -15,7 +15,7 @@ class ControllerTemplate extends Mycontroller{
     public function deleteTemplate(){
         $user = $this->get_user_or_redirect();
         if($this->validate_url()){
-            $tricount = Tricount::getTricountById($_GET["param1"],$user->mail);// recupere le tricount 
+            $tricount = Tricount::get_tricount_by_id($_GET["param1"],$user->mail);// recupere le tricount 
             $template = Template::get_template_by_id($_GET["param2"]);// recupere le template 
             if(isset($_POST["yes"])){
                 $template->remove_template();
@@ -39,7 +39,7 @@ class ControllerTemplate extends Mycontroller{
         $errors = [];
 
         if ($this->validate_url()){
-            $tricount = Tricount::getTricountById($_GET["param1"]); // recuper le tricount 
+            $tricount = Tricount::get_tricount_by_id($_GET["param1"]); // recuper le tricount 
             $template = Template::get_template_by_id($_GET["param2"]);// recupere le template 
             $participants = $tricount->get_participants(); // recupere les participant du tricount 
             $participants_and_weights = [];
