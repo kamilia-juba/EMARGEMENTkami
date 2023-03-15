@@ -20,7 +20,7 @@
                         <h4><?= $templates_items[$i][1]->title ?></h4>
                         <ul>
                             <?php foreach($templates_items[$i][0] as $user) { ?>
-                                 <li ><?=$user->full_name?> (<?=$templates_items[$i][1]->get_repartition_user_weight($user->id)?>/<?=$templates_items[$i][1]->get_repartition_total_weight()?>)</li>
+                                 <li ><?=$user->full_name?> (<?=$templates_items[$i][1]->get_repartition_user_weight($user)?>/<?=$templates_items[$i][1]->get_repartition_total_weight()?>)</li>
                              <?php } ?>
                         </ul>
                     </div>

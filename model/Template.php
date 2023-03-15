@@ -63,8 +63,8 @@
             return $results;
         }
 
-        public function get_repartition_user_weight(int $userId):int{ //recupere le poids d'un user
-            $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId AND repartition_template=:templateId", ["userId" => $userId, "templateId" => $this->id]);
+        public function get_repartition_user_weight(user $user):int{ //recupere le poids d'un user
+            $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId AND repartition_template=:templateId", ["userId" => $user->id, "templateId" => $this->id]);
             $data = $query->fetch();
             return $data["weight"];
         }
@@ -75,11 +75,11 @@
             return $data["total"];
         }
 
-        public function user_participates(int $userId):bool{ //return true si le user participe a un template
+        public function user_participates(User $user):bool{ //return true si le user participe a un template
             $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template = :templateId",["templateId" => $this->id]);
             $data = $query->fetchAll();
             foreach($data as $row){
-                if($row["user"]==$userId){
+                if($row["user"]==$user->id){
                     return true;
                 }
             }
@@ -107,8 +107,8 @@
         return new Template($title,$this->id,Model::lastInsertId());
         }
 
-        public static function add_repartition_template(string $title, int $tricountId): Template{ //ajoute un template
-            self::execute("INSERT INTO repartition_templates(title,tricount) VALUES(:title,:tricount)", ["title" => $title, "tricount" => $tricountId]);
+        public static function add_repartition_template(string $title, Tricount $tricount): Template{ //ajoute un template
+            self::execute("INSERT INTO repartition_templates(title,tricount) VALUES(:title,:tricount)", ["title" => $title, "tricount" => $tricount->id]);
             $lastId = Model::lastInsertId();
             return Template::get_template_by_id($lastId);
         }
@@ -117,14 +117,14 @@
             self::execute("UPDATE repartition_templates SET title=:title WHERE id=:id", ["title" => $title, "id" => $this->id]);
         }
 
-        public static function get_weight_from_template(User $participant, Template $template){ // recupere le poids d'un user d'un template
-            $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
+        public  function get_weight_from_template(User $participant){ // recupere le poids d'un user d'un template
+            $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $this->id]);
             $data = $query->fetch();
             return $data === false ? null : $data["weight"];
         }
 
-        public function remove_user_participation_on_template(int $userId){ //supprime un user et son poids de la table repartition template items
-            self::execute("DELETE FROM repartition_template_items WHERE repartition_template =:id AND user=:userId ", ["id"=>$this->id,"userId"=>$userId]);
+        public function remove_user_participation_on_template(User $user){ //supprime un user et son poids de la table repartition template items
+            self::execute("DELETE FROM repartition_template_items WHERE repartition_template =:id AND user=:userId ", ["id"=>$this->id,"userId"=>$user->id]);
         }
     }
 

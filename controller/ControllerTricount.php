@@ -9,8 +9,8 @@ require_once 'model/Operation.php';
 class ControllerTricount extends MyController{
 
      //si l'utilisateur est connecté, redirige vers la liste de ces tricounts .
-        //sinon, produit la vue d'accueil.
-        public function yourTricounts(): void {
+    //sinon, produit la vue d'accueil.
+    public function yourTricounts(): void {
         $user = $this->get_user_or_redirect();
         $tricounts = $user->get_user_tricounts();
         (new View("listTricounts"))->show(["tricounts" => $tricounts]);
@@ -51,13 +51,17 @@ class ControllerTricount extends MyController{
     }
 
     public function index() : void {
+            $this->get_user_or_redirect();
+
+            $this->redirect("Tricount", "yourTricounts");
           }
         //afficher la liste des tricount d'un utilisateur 
+
     public function showTricount(): void{
         $user = $this->get_user_or_redirect();
         if ($this->validate_url()) {
             $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);
-            $operations = Operation::get_operations_by_tricountid($tricount->id);
+            $operations =  $tricount->get_operations();
             $alone = false;
             $noExpenses = false;
             $participants = $tricount->get_participants();
@@ -67,7 +71,7 @@ class ControllerTricount extends MyController{
             if(empty($operations)){
                 $noExpenses = true;
             }
-            $myBalance=$tricount->get_my_total($user->id);
+            $myBalance=$tricount->get_my_total($user);
             (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations,"user"=>$user, "alone" => $alone, "noExpenses" => $noExpenses,"myBalance"=>$myBalance]);
         } else{
             $this->redirect("Main");
@@ -104,20 +108,30 @@ class ControllerTricount extends MyController{
         $errors = [];
         $success = "";
         $participants = [];
+        $errorsTitle=[];
+        $errorsDescription=[];
+        
         
         
        if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->isSubscribedToTricount($_GET["param1"])) {
         $tricount=Tricount::getTricountById($_GET["param1"]);
         $participants= $tricount->get_participants();
-        $creator=$user->get_creator_of_tricount($tricount->id);
-        $notSubParticipants=User::get_users_not_sub_to_a_tricount($tricount->id);
-       
+        $creator=$user->get_creator_of_tricount($tricount);
+        $notSubParticipants=User::get_users_not_sub_to_a_tricount($tricount);
+        $title=$tricount->title;
+        $description=$tricount->description;
             if(isset($_POST['title'])){
                 $title = trim($_POST['title']);
                 $description= trim($_POST['description']);
-                $errors = $this->validate_title($title);
-                $errors = array_merge($errors,$this->validate_description($description));
-                if (count($errors) == 0) { 
+                
+                $errorsTitle = $this->validate_title($title);
+                $errorsDescription = $this->validate_description($description);
+
+                if(Tricount::tricountTitleAlreadyExists($title, $user)){
+                    $errors[] = "You already have a tricount with this title. Choose another title";
+                }
+              
+                if (count($errorsTitle) == 0 && count($errorsDescription) == 0) { 
                     $tricount->title = $title;
                     $tricount->description = $description;
                     $tricount->persistUpdate();
@@ -125,7 +139,7 @@ class ControllerTricount extends MyController{
                     
                }   
             }           
-            (new View("EditTricount"))->show(["user" => $creator,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success,"notSubParticipants"=>$notSubParticipants]);
+            (new View("EditTricount"))->show(["user" => $creator,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success,"notSubParticipants"=>$notSubParticipants,"title"=>$title,"description"=>$description,"errorsDescription"=>$errorsDescription,"errorsTitle"=>$errorsTitle]);
 
         }
         else{
@@ -140,10 +154,14 @@ class ControllerTricount extends MyController{
             if(isset($_POST['participant'])){
                 $participantId= $_POST['participant'];
                 $participant=User::get_user_by_id($participantId);  
-                $tricount->add_subscriber($participant->id);
+                $tricount->add_subscriber($participant);
+                $this->redirect("Tricount","editTricount",$tricount->id);
             }
         }
-        $this->redirect("Tricount","editTricount",$tricount->id);
+        else{
+            $this->redirect("Tricount","yourTricounts");
+        }
+        
     }
 
    
@@ -156,7 +174,7 @@ class ControllerTricount extends MyController{
         
 
             if(isset($_POST["yes"] )){
-                $tricount->delete_tricount($user->id);
+                $tricount->delete_tricount($user);
                 $this->redirect("Tricount","yourTricounts");
             }
             if(isset($_POST["no"])){
@@ -177,9 +195,9 @@ class ControllerTricount extends MyController{
             if($participant->isSubscribedToTricount($_GET["param1"])){
 
                 $tricount=Tricount::getTricountById($_GET["param1"]);
-                $creatorOfTricount=$participant->get_creator_of_tricount($tricount->id);
+                $creatorOfTricount=$participant->get_creator_of_tricount($tricount);
 
-                if(!$participant->has_already_paid($tricount->id)&&!$tricount->has_already_paid($participant->id)&&$participant->id!=$creatorOfTricount->id){ // a renommer pour le premier en has already paid et l'autre en has already participated
+                if(!$participant->has_already_paid($tricount)&&!$tricount->has_already_paid($participant)&&$participant->id!=$creatorOfTricount->id){ // a renommer pour le premier en has already paid et l'autre en has already participated
                     $tricount->delete_participation($participant->id);
                     $templates=$tricount->get_repartition_templates();
                     foreach($templates as $template){
@@ -238,7 +256,7 @@ class ControllerTricount extends MyController{
                 // verifie si y a pas d'erreurs rajoute le template et rederige vers la page suivante
                 if(count($errors)==0){
                     $checkboxes = $_POST["checkboxParticipants"];
-                    $template = Template::add_repartition_template($title,$tricount->id);
+                    $template = Template::add_repartition_template($title,$tricount);
                     $weight = $_POST["weight"];
                     var_dump($checkboxes);
                     var_dump($weight);

@@ -53,9 +53,10 @@ class User extends Model {
     }
         // sa permet de save l'user dans la base de donner 
         public function persist() : User {
-        if(self::get_user_by_mail($this->mail)){
-            self::execute("UPDATE Users SET  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE mail=:mail ", 
-                            [ "mail"=>$this->mail,
+        if(self::get_user_by_id($this->id)){
+            self::execute("UPDATE Users SET mail=:mail,  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE id=:id ", 
+                            [   "id"=>$this->id,
+                                "mail"=>$this->mail,
                                 "hashed_password"=>$this->hashed_password,
                                 "full_name"=>$this->full_name,
                                 "role"=>$this->role,
@@ -93,7 +94,7 @@ class User extends Model {
     }
     // recupere les utilisateurs participant a un tricount
     public function get_user_tricounts() : array {
-        $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId)", 
+        $query = self::execute("select * from tricounts where id in (select tricount from subscriptions where user = :userId) order by created_at DESC", 
             ["userId" => $this->id]);
         $data = $query->fetchAll();
         $results = [];
@@ -146,17 +147,19 @@ class User extends Model {
             $pays = substr($IBAN,0, 2);
         
             // Vérifier que les deux premiers caractères sont des lettres et que le pays est reconnu
-            if (!ctype_alpha($pays)) {
+            if (!ctype_alpha($pays) && strlen($IBAN)!=0) {
             $errors[] = "2 first characters are not letters";
             } 
-            if(array_key_exists(strtolower($pays),$Countries)){
-                if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
-                {
-                    $errors[] = "Wrong IBAN size";
+            if(strlen($IBAN)!=0){
+                 if(array_key_exists(strtolower($pays),$Countries)){
+                     if (strlen($IBAN) != $Countries[ strtolower(substr($IBAN,0,2)) ])
+                        {
+                             $errors[] = "Wrong IBAN size";
+                         }
+                 }
+                else {
+                    $errors[] = "Unknown country";
                 }
-            }
-            else{
-                $errors[] = "Unknown country";
             }
         
         return $errors;
@@ -175,12 +178,14 @@ class User extends Model {
 
     // verifie que le password resple condition
     private static function validate_password(string $password) : array {
+        $user= 
         $errors = [];
         if (strlen($password) < 8 || strlen($password) > 16) {
             $errors[] = "Password length must be between 8 and 16.";
         } if (!((preg_match("/[A-Z]/", $password)) && preg_match("/\d/", $password) && preg_match("/['\";:,.\/?!\\-]/", $password))) {
             $errors[] = "Password must contain one uppercase letter, one number and one punctuation mark.";
         }
+
         return $errors;
     }
     //verifie que le password resple condition et d'il soit identique au password
@@ -192,6 +197,22 @@ class User extends Model {
         return $errors;
     }
 
+    public  function validate_password_unicity(string $password, string $new_password): array{
+        $errors = [];
+        
+        if(self::check_password($password,$this->hashed_password)){
+            if($password==$new_password){
+                $errors[] = "Same password as the actual one.";
+            }
+        }
+        else{
+            $errors[] = "Wrong password. Please try again.";
+        }
+
+        return $errors;
+    }
+
+
     //vérifie si l'user fait partie du tricount donné en paramètre
     public function isSubscribedToTricount(int $id): bool{
         $query = self::execute("SELECT * FROM subscriptions WHERE user=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $id]);
@@ -199,23 +220,17 @@ class User extends Model {
         return !(empty($data));
     }
 
-    //vérifie si l'user fait partie de l'opération donnée en paramètre
-    //Pourrait ne pas être utilisé. A voir
-    public function participatesToOperation(int $operationId): bool{
-        $query = self::execute("SELECT * FROM repartitions WHERE operation=:operationId AND user=:userId",["operationId"=>$operationId,"userId"=>$this->id]);
-        $data = $query->fetch();
-        return !(empty($data));
-    }
+   
     // recupere le user creator du tricount
-    public static function get_creator_of_tricount(int $tricountID) : User {
-        $query = self::execute("select * from users where id in (select creator from tricounts where id=:tricountID) ", ["tricountID"=>$tricountID]);
+    public static function get_creator_of_tricount(Tricount $tricount) : User {
+        $query = self::execute("select * from users where id in (select creator from tricounts where id=:tricountID) ", ["tricountID"=>$tricount->id]);
         $data = $query->fetch();
 
         return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"],$data["id"]);
     }
     //recupere les utilisateur qui non pas particite au tricpount
-    public static function get_users_not_sub_to_a_tricount(int $tricountId) : array {
-        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId)", ["tricountId"=>$tricountId]);
+    public static function get_users_not_sub_to_a_tricount(Tricount $tricount) : array {
+        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId) ORDER BY full_name", ["tricountId"=>$tricount->id]);
         $data = $query->fetchAll();
         $results = [];
         foreach ($data as $row) {
@@ -227,15 +242,15 @@ class User extends Model {
     }
 
     //recupere les utilisateur qui on participer a un template 
-    public function isSubscribedToTemplate(int $templateId): bool{
-        $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId and repartition_template=:templateId", ["userId" => $this->id, "templateId" => $templateId]);
+    public function isSubscribedToTemplate(Template $template): bool{
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId and repartition_template=:templateId", ["userId" => $this->id, "templateId" => $template->id]);
         $data = $query->fetch();
         return !(empty($data));
 
     }
     // recupere tout les user d'un template 
-    public function user_participates_to_repartition(int $templateId){
-        $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template=:templateId and user=:userId",["templateId" => $templateId, "userId" => $this->id]);
+    public function user_participates_to_repartition(Template $template){
+        $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template=:templateId and user=:userId",["templateId" => $template->id, "userId" => $this->id]);
         $data = $query->fetch();
         return !empty($data);
     }
@@ -246,8 +261,8 @@ class User extends Model {
         self::execute("INSERT INTO subscriptions(tricount,user) VALUES(:lastInserted, :user)", ["lastInserted" => $lastInserted, "user" => $this->id]);
     }
     // recuper les utilisateurs qui ont des participe au moins une fois
-    public function has_already_paid(int $tricountId): bool{
-        $query = self::execute("SELECT * FROM operations WHERE initiator=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $tricountId]);
+    public function has_already_paid(Tricount $tricount): bool{
+        $query = self::execute("SELECT * FROM operations WHERE initiator=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $tricount->id]);
         $data = $query->fetch();
         return !(empty($data));
 

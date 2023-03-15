@@ -7,6 +7,9 @@ require_once 'model/Tricount.php';
 class ControllerOperation extends Mycontroller{
 
     public function index() : void {
+        $this->get_user_or_redirect();
+
+        $this->redirect("Tricount", "yourTricounts");
     }
 
     public function showOperation(): void {
@@ -15,9 +18,9 @@ class ControllerOperation extends Mycontroller{
             $operation = Operation::get_operation_byid($_GET["param2"]);            // récuperation de l'id à partir l'url    
             $tricount = Tricount::getTricountById($operation->tricount,$user->mail);    //récupération du tricount à partir de l'id tricount sur operation et du mail de l'user connecté
             $paidBy = User::get_user_by_id($operation->initiator);                  //recuperation de l'initiator
-            $user_participates = $operation->user_participates($user->id);          //récuperation pour voir si l'utilisateur connecté a participé
+            $user_participates = $operation->user_participates($user);          //récuperation pour voir si l'utilisateur connecté a participé
             $users = $this->get_users_and_their_operation_amounts($operation);      // recuperation des user et de leur amount
-            $operations = Operation::get_operations_by_tricountid($tricount->id);   //recuperation de toutes les opération sur tricount
+            $operations =  $tricount->get_operations();   //recuperation de toutes les opération sur tricount
             $currentIndex = $this->getCurrentIndex($operations, $operation);        //récuperation de l'index courante
             (new View("operation"))->show(
                                         ["user" => $user, 
@@ -62,7 +65,7 @@ class ControllerOperation extends Mycontroller{
             $selected_repartition = $template->id;
             $participants_and_weights = [];
             foreach($participants as $participant){
-                    $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
+                    $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant), $participant->user_participates_to_repartition($template->id)];
             }
         }
 
@@ -148,7 +151,7 @@ class ControllerOperation extends Mycontroller{
             $participants = $tricount->get_participants();
             $participants_and_weights = [];
             foreach($participants as $participant){ //récupère un tableau avec les participants ainsi que leur poids sur l'opération et détermine si le participant participe dans cette opération ou non
-                $participants_and_weights[] = [$participant, $operation->get_weight($participant->id) == null ? 1 : $operation->get_weight($participant->id),$operation->user_participates($participant->id)];
+                $participants_and_weights[] = [$participant, $operation->get_weight(User::get_user_by_id($participant->id)) == null ? 1 : $operation->get_weight(User::get_user_by_id($participant->id)),$operation->user_participates($participant)];
             }
             $repartition_templates = $tricount->get_repartition_templates();
 
@@ -157,7 +160,7 @@ class ControllerOperation extends Mycontroller{
                 $selected_repartition = $template->id;
                 $participants_and_weights = [];
                 foreach($participants as $participant){ //récupère un tableau avec les participants et leur poids du template sélectionné et détermine si le participant participe dans ce template ou non
-                    $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
+                    $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant), $participant->user_participates_to_repartition($template->id)];
                 }
             }
 

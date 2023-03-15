@@ -36,26 +36,6 @@ class Operation extends Model {
         return $errors;
     }
 
-    //méthode statique qui récupère une opération par rapport à un id donné en paramètre
-    public static function get_operation_by_id(int $id) : Operation{
-        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId",["tricountId"=>$id]);
-        $data = $query->fetch();
-        return new Operation($data["mail"],$data["hashed_password"],$data["full_name"],$data["role"],$data["iban"], $data["id"]);
-
-    }
-
-    //méthode statique qui récupère toutes les opérations d'un tricount par rapport à un id donné en paramètre
-    public static function get_operations_by_tricountid(int $tricountId) : array{
-
-        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId order by operation_date DESC, id DESC", ["tricountId" => $tricountId]);
-        $data = $query->fetchAll();
-        $operations = [];
-        foreach ($data as $row) {
-            $operations[] = new Operation($row['title'],$row['tricount'], round($row['amount'],2), $row['initiator'], $row['created_at'], $row['operation_date'],$row['id']);
-        }
-        return $operations;
-
-    }
 
     //méthode qui renvoie l'user qui a payé l'opération
     public function get_payer(): User{
@@ -64,40 +44,32 @@ class Operation extends Model {
         return new User($data["mail"],$data["hashed_password"],$data["full_name"],$data["role"],$data["iban"], $data["id"]);
     }
 
-    //méthode statique qui récupère le poids total de l'opération
-    public static function get_total_weights(int $id): int{
-        $query = self::execute("SELECT sum(weight) total from repartitions WHERE operation=:operationId",["operationId" => $id]);
+    //méthode  qui récupère le poids total de l'opération
+    public  function get_total_weights(): int{
+        $query = self::execute("SELECT sum(weight) total from repartitions WHERE operation=:operationId",["operationId" => $this->id]);
         $data = $query->fetch();
         return $data["total"];
     }
 
     //méthode qui récupère le poids sur l'opération d'un user par rapport à son id donné en paramètre
-    public function get_weight(int $userId): int | null {
-        $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId and user = :userId",["operationId" => $this->id, "userId" => $userId]);
+    public function get_weight(User $user): int | null {
+        $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId and user = :userId",["operationId" => $this->id, "userId" => $user->id]);
         $data = $query->fetch();
         return $data === false ? null : $data["weight"];
-    }
-
-    //méthode statique qui récupère le poids d'un User d'un Template
-    public static function get_weight_from_template_static(User $participant, Template $template){ // a changer pour rendre l'autre static
-        $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
-        $data = $query->fetch();
-        return $data === false ? null : $data["weight"];
-
     }
 
     //méthode qui détermine si un user participe à l'opération ou non
-    public function user_participates(int $userId):bool{
+    public function user_participates(User $user):bool{
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId",["operationId" => $this->id]);
         $data = $query->fetchAll();
         foreach($data as $row){
-            if($row["user"]==$userId){
+            if($row["user"]==$user->id){
                 return true;
             }
         }
         return false;
     }
-
+   
     //méthode statique qui récupère une opération par son id
     public static function get_operation_byid(int $id):Operation{
         $query = self::execute("SELECT * FROM operations WHERE id = :id",["id"=>$id]);

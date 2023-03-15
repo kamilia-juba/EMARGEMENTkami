@@ -92,9 +92,9 @@ abstract class Mycontroller extends Controller{
     public function get_users_and_their_operation_amounts(Operation $operation): array{
         $participants = $operation->get_participants();
         $users = [];
-        $total_weight = Operation::get_total_weights($operation->id);
+        $total_weight = $operation->get_total_weights();  
         foreach($participants as $participant){
-            $weight = $operation->get_weight($participant);
+            $weight = $operation->get_weight(User::get_user_by_id($participant));
             $users[] = [User::get_user_by_id($participant),round(($operation->amount/$total_weight)*$weight,2)];
         }
         return $users;

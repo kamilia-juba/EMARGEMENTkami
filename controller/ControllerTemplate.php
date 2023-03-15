@@ -7,6 +7,9 @@ require_once 'model/Tricount.php';
 class ControllerTemplate extends Mycontroller{
 
     public function index() : void {
+        $this->get_user_or_redirect();
+
+        $this->redirect("Tricount", "yourTricounts");
     }
     //verifie si l'utilisateur est connecter il suprime le template si non rediriger vers index 
     public function deleteTemplate(){
@@ -40,9 +43,10 @@ class ControllerTemplate extends Mycontroller{
             $template = Template::get_template_by_id($_GET["param2"]);// recupere le template 
             $participants = $tricount->get_participants(); // recupere les participant du tricount 
             $participants_and_weights = [];
+            $title = $template->title;
             foreach($participants as $participant){
                 // renseigne le poid de chaque participant dans le tricount 
-                $participants_and_weights[] = [$participant, Template::get_weight_from_template($participant, $template) == null ? 0 : Template::get_weight_from_template($participant, $template), $participant->user_participates_to_repartition($template->id)];
+                $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant), $participant->user_participates_to_repartition($template)];
             }
             if(isset($_POST["title"])){
                 $title = trim($_POST["title"]);
@@ -91,7 +95,8 @@ class ControllerTemplate extends Mycontroller{
                                                  "errors" => $errors,
                                                  "template"=>$template,
                                                  "tricount"=>$tricount,
-                                                 "user"=>$user]
+                                                 "user"=>$user,
+                                                 "title"=>$title]
             );
 
         }else{
