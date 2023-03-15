@@ -15,8 +15,8 @@ class ControllerOperation extends Mycontroller{
     public function showOperation(): void {
         $user = $this->get_user_or_redirect();                                      //redirect a ll'index si l'user n'est pas connecté
         if ($this->validate_url()) {                                                // appel de la méthode vérifiant l'url
-            $operation = Operation::get_operation_byid($_GET["param2"]);            // récuperation de l'id à partir l'url    
-            $tricount = Tricount::getTricountById($operation->tricount,$user->mail);    //récupération du tricount à partir de l'id tricount sur operation et du mail de l'user connecté
+            $operation = Operation::get_operation_by_id($_GET["param2"]);            // récuperation de l'id à partir l'url    
+            $tricount = Tricount::get_tricount_by_id($operation->tricount,$user->mail);    //récupération du tricount à partir de l'id tricount sur operation et du mail de l'user connecté
             $paidBy = User::get_user_by_id($operation->initiator);                  //recuperation de l'initiator
             $user_participates = $operation->user_participates($user);          //récuperation pour voir si l'utilisateur connecté a participé
             $users = $this->get_users_and_their_operation_amounts($operation);      // recuperation des user et de leur amount
@@ -42,7 +42,7 @@ class ControllerOperation extends Mycontroller{
         $selected_repartition = 0;
         
         if ($this->validate_url()) {                                                // validation url si true exectue le code sinon redirect vers l'index
-        $tricount = Tricount::getTricountById($_GET["param1"], $user->mail);        //recupération de toutes les informations et initialisation afin de pouvoir les utilisé dans le show
+        $tricount = Tricount::get_tricount_by_id($_GET["param1"], $user->mail);        //recupération de toutes les informations et initialisation afin de pouvoir les utilisé dans le show
         $title = "";
         $amount = "";
         $date = "";
@@ -146,8 +146,8 @@ class ControllerOperation extends Mycontroller{
         $errorsSaveTemplate = [];
         $selected_repartition = 0;
         if ($this->validate_url()) { //vérifie l'url (si user fait partie du tricount et si l'url est valide, numérique etc) sinon redirige vers l'index
-            $operation = Operation::get_operation_byid($_GET["param2"]);
-            $tricount = Tricount::getTricountById($operation->tricount, $user->mail);
+            $operation = Operation::get_operation_by_id($_GET["param2"]);
+            $tricount = Tricount::get_tricount_by_id($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
             $participants_and_weights = [];
             foreach($participants as $participant){ //récupère un tableau avec les participants ainsi que leur poids sur l'opération et détermine si le participant participe dans cette opération ou non
@@ -199,7 +199,7 @@ class ControllerOperation extends Mycontroller{
                     $operation->amount = $amount;
                     $operation->operation_date = $date;
                     $operation->initiator = $paidBy;
-                    $operation->updateOperation();
+                    $operation->update_operation();
                     $operation->delete_repartitions();
                     //change les poids dans la liste globale des participants du tricount si ils ont été checkés dans la view 
                     $checkboxes = $_POST["checkboxParticipants"];
@@ -237,8 +237,8 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         if ($this->validate_url()) { //exécute les vérifications sur l'url qui appelle cette méthode, sinon redirige vers l'index
             
-            $tricount = Tricount::getTricountById(( $_GET["param1"]));
-            $operation= Operation::get_operation_byid($_GET["param2"]);
+            $tricount = Tricount::get_tricount_by_id(( $_GET["param1"]));
+            $operation= Operation::get_operation_by_id($_GET["param2"]);
 
             if(isset($_POST["yes"])){
                 $operation->delete_operation();

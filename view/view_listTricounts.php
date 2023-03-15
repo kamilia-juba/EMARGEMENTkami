@@ -17,12 +17,12 @@
                     <li class="list-group-item ps-3"><a href="Tricount/showTricount/<?= $tricount->id?>" class="text-decoration-none text-dark">
                         <div class="d-flex justify-content-between">
                             <h1><?=$tricount->title;?></h1>
-                            <?php if($tricount->nbParticipantsTricount()==0){
+                            <?php if($tricount->nb_participants_tricount()==0){
                                 echo "You're alone";
-                            } else if ($tricount->nbParticipantsTricount()==1){
-                                echo "With ".$tricount->nbParticipantsTricount()." friend";
+                            } else if ($tricount->nb_participants_tricount()==1){
+                                echo "With ".$tricount->nb_participants_tricount()." friend";
                             } else {
-                                echo "With ".$tricount->nbParticipantsTricount()." friends";
+                                echo "With ".$tricount->nb_participants_tricount()." friends";
                             }
                             ?>
                         </div>

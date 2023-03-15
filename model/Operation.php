@@ -71,7 +71,7 @@ class Operation extends Model {
     }
    
     //méthode statique qui récupère une opération par son id
-    public static function get_operation_byid(int $id):Operation{
+    public static function get_operation_by_id(int $id):Operation{
         $query = self::execute("SELECT * FROM operations WHERE id = :id",["id"=>$id]);
         $data = $query->fetch();
         return new Operation(
@@ -112,7 +112,7 @@ class Operation extends Model {
     }
 
     //méthode qui met à jour une opération dans la BDD
-    public function updateOperation(){
+    public function update_operation(){
         self::execute("UPDATE operations SET title=:title, amount=:amount, operation_date=:operation_date, initiator=:initiator WHERE id=:id",
                         ["id" => $this->id, 
                         "title" => $this->title, 
