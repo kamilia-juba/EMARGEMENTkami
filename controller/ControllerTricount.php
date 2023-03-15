@@ -263,7 +263,9 @@ class ControllerTricount extends MyController{
                     for($i=0; $i<sizeof($participants); ++$i){
                         for($j = 0; $j<sizeof($checkboxes);++$j){
                             if($participants[$i]->id==$checkboxes[$j]){
-                                $template->add_items($participants[$i], $weight[$i]);
+                                if($weight[$i]>0){
+                                    $template->add_items($participants[$i], $weight[$i]);
+                                }
                             }
                         }
                         
