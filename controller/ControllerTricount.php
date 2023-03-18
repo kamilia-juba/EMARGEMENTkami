@@ -65,6 +65,7 @@ class ControllerTricount extends MyController{
             $alone = false;
             $noExpenses = false;
             $participants = $tricount->get_participants();
+            $operations_json = $tricount->get_operations_as_json();
             if(count($participants)==1){
                 $alone = true;
             }
@@ -72,7 +73,13 @@ class ControllerTricount extends MyController{
                 $noExpenses = true;
             }
             $myBalance=$tricount->get_my_total($user);
-            (new View("tricount"))->show(["tricount" => $tricount, "operations" => $operations,"user"=>$user, "alone" => $alone, "noExpenses" => $noExpenses,"myBalance"=>$myBalance]);
+            (new View("tricount"))->show([  "tricount" => $tricount, 
+                                            "operations" => $operations,
+                                            "user"=>$user, 
+                                            "alone" => $alone, 
+                                            "noExpenses" => $noExpenses,
+                                            "myBalance"=>$myBalance,
+                                            "operations_json"=>$operations_json]);
         } else{
             $this->redirect("Main");
         }
