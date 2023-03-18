@@ -5,6 +5,73 @@
     <base href="<?= $web_root ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+    <script>
+            
+        let operations = <?=$operations_json?>;
+        let sortColumn ='created_at';
+        let sortAscending = false;
+        let tblOperations;
+
+
+        $(function(){
+                tblOperations = $('#operations_ul');
+                tblOperations.html("<tr><td>Loading...</td></tr>");
+                getOperations();
+            });
+        
+
+        async function getOperations() {
+                    
+            try {
+                sortOperations();
+                displayOperations();
+            } catch(e) {
+                alert("Une erreur s'est produite: " + e.message);
+                tblOperations.html("<tr><td>Error encountered while retrieving the expanses!</td></tr>");
+            }
+        }
+
+        function sortOperations() {
+                operations.sort(function (a,b) {
+                    if (a[sortColumn] < b[sortColumn])
+                        return sortAscending ? -1 : 1;
+                    if (a[sortColumn] > b[sortColumn])
+                        return sortAscending ? 1 : -1;
+                    return 0;
+                });
+            }
+
+        function sort(field) {
+            /* if (field === sortColumn)
+                sortAscending = !sortAscending;
+            else {
+                sortColumn = field;
+                sortAscending = true;
+            } */
+            sortOperations();
+            displayOperations();
+        }
+
+        function displayOperations(){
+            let html="";
+            for (let operation of operations) {
+                html += '<li class="list-group-item ps-3"><a class="text-decoration-none text-dark" href="Operation/showOperation/' + <?=$tricount->id?> + '/' + operation.id + '">' +
+                        '<div class="d-flex justify-content-between">' +
+                        '<h1>' + operation.title + '</h1>' +
+                        '<h1>' + operation.amount + ' €</h1>' +
+                        '</div>' +
+                        '<div class="d-flex justify-content-between">' +
+                        '<p>Paid by ' + operation.initiator + '</p>' +
+                        '<p>' + operation.created_at + '</p>' +
+                        '</div>' +
+                        '</a></li>'
+            }
+            tblOperations.html(html);
+            $('#col_' + sortColumn).append(sortAscending ? ' &#9650;' : ' &#9660;');
+        }    
+    </script>
+    
     <title><?=$tricount->title?></title>
     <style>
 		.btn-circle.btn-xl {
@@ -51,7 +118,23 @@
         <div class="container">
             <a href="Tricount/showBalance/<?= $tricount->id?>" class="btn btn-success w-100 mt-2 mb-2">&#8644; View balance</a>
         </div>
-        <ul class="list-group p-2">
+
+        <label for="sort">Order expenses by :</label>
+        <select name="sort" id="sort">
+        <option onclick="sort('amount'), sortAscending=true" value="amount-asc">&#9650; Amount</option>
+        <option onclick="sort('amount'), sortAscending=false" value="amount-desc">&#9660; Amount</option>
+        <option onclick="sort('date'), sortAscending=true" value="date-asc">&#9650; Date</option>
+        <option onclick="sort('date'), sortAscending=false" value="date-desc">&#9660; Date</option>
+        <option onclick="sort('initiator'), sortAscending=true" value="initiator-asc">&#9650; Initiator</option>
+        <option onclick="sort('initiator'), sortAscending=false" value="initiator-desc">&#9660; Initiator</option>
+        <option onclick="sort('title'), sortAscending=true" value="title-asc">&#9650; Title</option>
+        <option onclick="sort('title'), sortAscending=false" value="title-desc">&#9660; Title</option>
+        </select>
+        <div>
+
+
+        </div>
+        <ul id="operations_ul" class="list-group p-2">
        <?php foreach($operations as $operation){ ?>
                 <li class="list-group-item ps-3"><a class="text-decoration-none text-dark" href="Operation/showOperation/<?=$tricount->id?>/<?=$operation->id?>">
                     <div class="d-flex justify-content-between">
