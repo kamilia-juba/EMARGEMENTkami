@@ -101,6 +101,16 @@ class ControllerTemplate extends Mycontroller{
         }
     }
 
+    public function template_exists_service(){
+        $res = "false";
+        if(isset($_GET["param1"]) && $_GET["param1"]!== ""){
+            $template = Template::get_template_by_name($_GET["param1"]);
+            if($template){
+                $res = "true";
+            }
+        }
+        echo $res;
+    }
 }
 
 ?>
