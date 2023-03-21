@@ -57,7 +57,7 @@ class ControllerMain extends MyController {
                 $password_confirm = Tools::sanitize($_POST['password_confirm']);
                 
     
-                $errors =array_merge($errors, User::getSignupErrors($mail,$full_name,$IBAN,$password,$password_confirm));
+                $errors =array_merge($errors, User::get_signup_errors($mail,$full_name,$IBAN,$password,$password_confirm));
                 
                 if (count($errors) == 0) { 
                     $user = new User($mail ,Tools::my_hash($password), $full_name , "user" ,$IBAN );

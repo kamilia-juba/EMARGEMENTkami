@@ -10,27 +10,17 @@ class Tricount extends Model{
         
     }
 
-    public function nbParticipantsTricount(): int { // recuperation du nb de participants d'un tricount
+    public function nb_participants_tricount(): int { // recuperation du nb de participants d'un tricount
         $query = self::execute("select count(*) from subscriptions where tricount = :tricountID", ["tricountID" => $this->id]);
         $data = $query->fetch();
         return $data[0]-1;
-    }
-
-    public function get_tricount_by_id() : Tricount|false { // recup d'un tricount avec l'id tu tricount courant
-        $query = self::execute("SELECT * FROM tricounts where id = :id", ["id"=>$this->id]);
-        $data = $query->fetch(); // un seul résultat au maximum
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            return new Tricount($data["title"], $data["created_at"], $data["creator"], $data["description"], $data["id"]);
-        }
     }
 
     public function persist(int $id) : Tricount { //sauvegarde le tricount
         $T = time();
         $D = date("y-m-d h:m:s", $T);
        
-       if(self::get_tricount_by_id()) // si il existe déjà update sinon le sauve
+       if(self::get_tricount_by_id($id)) // si il existe déjà update sinon le sauve
             self::execute("UPDATE tricounts SET   title=:title, description=:description 
                            WHERE id=:id ", 
                             [ 
@@ -48,7 +38,7 @@ class Tricount extends Model{
         return $this;
     }
 
-    public static function getTricountById(int $id): Tricount{ // recupere un tricount depuis une id passée en paramètre
+    public static function get_tricount_by_id(int $id): Tricount{ // recupere un tricount depuis une id passée en paramètre
         $query = self::execute("SELECT * FROM tricounts WHERE id = :id", ["id"=>$id]);
         $data = $query->fetch();
         return new Tricount($data["title"],$data["created_at"],$data["creator"],$data["description"],$data["id"]);
@@ -199,7 +189,7 @@ class Tricount extends Model{
         return new Template($title,$this->id,Model::lastInsertId());
     }
 
-    public function persistUpdate(){ // update un tricount en bddd
+    public function persist_update(){ // update un tricount en bdd
         self::execute("UPDATE tricounts SET title=:title, description=:description where id=:id",
     
                      ["id"=> $this->id,
@@ -258,7 +248,7 @@ class Tricount extends Model{
     }
 
     //returns true if there's already a combination of a title and a user given as parameters
-    public static function tricountTitleAlreadyExists(string $title, User $user){
+    public static function tricount_title_already_exists(string $title, User $user){
         $query = self::execute("SELECT * FROM tricounts WHERE title=:title and creator=:user", ["title" => $title, "user" => $user->id]);
         $data = $query->fetch();
         return !empty($data);

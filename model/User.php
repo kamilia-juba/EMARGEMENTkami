@@ -214,7 +214,7 @@ class User extends Model {
 
 
     //vérifie si l'user fait partie du tricount donné en paramètre
-    public function isSubscribedToTricount(int $id): bool{
+    public function is_subscribed_to_tricount(int $id): bool{
         $query = self::execute("SELECT * FROM subscriptions WHERE user=:userId and tricount=:tricountId", ["userId" => $this->id, "tricountId" => $id]);
         $data = $query->fetch();
         return !(empty($data));
@@ -242,7 +242,7 @@ class User extends Model {
     }
 
     //recupere les utilisateur qui on participer a un template 
-    public function isSubscribedToTemplate(Template $template): bool{
+    public function is_subscribed_to_template(Template $template): bool{
         $query = self::execute("SELECT * FROM repartition_template_items WHERE user=:userId and repartition_template=:templateId", ["userId" => $this->id, "templateId" => $template->id]);
         $data = $query->fetch();
         return !(empty($data));
@@ -268,7 +268,7 @@ class User extends Model {
 
     }
     // recupere les erreurs lors d'un signup
-    public static function getSignupErrors(string $mail, string $full_name, string $iban, string $password, string $password_confirm ): array{
+    public static function get_signup_errors(string $mail, string $full_name, string $iban, string $password, string $password_confirm ): array{
         $errors = [];
         $errors = User::validate_unicity($mail);
         $errors = array_merge($errors, User::validate_full_name($full_name));
