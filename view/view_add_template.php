@@ -21,6 +21,15 @@
         <form id="addtemplateForm" action="Tricount/addTemplate/<?=$tricount->id?>" method="post">
             Title : 
             <input class="form-control mb-2" id="title" name="title" type="text" placeholder="Title" value="<?=$title?>">
+            <?php if (count($errorsTitle) != 0): ?>
+                <div class='text-danger'>
+                    <ul>
+                        <?php foreach ($errorsTitle as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
             Template items :
                 <?php foreach($participants as $participant) { ?>
                     <div class="input-group mb-2 mt-2">
@@ -31,16 +40,16 @@
                         <input class="form-control" type="number" min="0" name="weight[]" value="1">
                     </div>
                 <?php } ?>
-        </form>        
-        <?php if (count($errors) != 0): ?>
-            <div class="text-danger">
-                        <ul>
-                            <?php foreach ($errors as $error): ?>
-                                <li><?= $error ?></li>
+                <?php if (count($errorsCheckboxes) != 0): ?>
+                        <div class='text-danger'>
+                            <ul>
+                            <?php foreach ($errorsCheckboxes as $errors): ?>
+                                <li><?= $errors ?></li>
                             <?php endforeach; ?>
-                        </ul>
-            </div>
-         <?php endif; ?> 
+                            </ul>
+                        </div>
+                <?php endif; ?>
+        </form>
         </div>
     </body>
 </html>

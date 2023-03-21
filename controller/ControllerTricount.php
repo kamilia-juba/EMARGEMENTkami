@@ -234,25 +234,28 @@ class ControllerTricount extends MyController{
         $title = "";
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->is_subscribed_to_tricount($_GET["param1"])){
             $errors = [];
+            $errorsTitle = [];
+            $errorsCheckBoxes = [];
             $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
             $participants = $tricount->get_participants();
             if(isset($_POST["title"]) && $_POST["title"] != ""){
                 $title = trim($_POST["title"]);
-                $errors = array_merge($errors, $this->validate_title($title));
-
+                $errorsTitle = $this->validate_title($title);
                 if(!$this->weightsAreNumeric($_POST["weight"])){
-                    $errors[] = "Weights must be numeric";
+                    $errorsCheckBoxes[] = "Weights must be numeric";
                 }
 
                 if(!isset($_POST["checkboxParticipants"])){
                     if(isset($_POST["weight"])){
-                        $errors[] = "You must select at least 1 participant";
+                        $errorsCheckBoxes[] = "You must select at least 1 participant";
                     }
                 }
                 // verifie si l'URL est correct si non rederige vers index
                 if($tricount->template_name_exists($_POST["title"])){
-                    $errors[] = "You already have a template with this title. Choose another title";
+                    $errorsTitle[] = "You already have a template with this title. Choose another title";
                 }
+                $errors = array_merge($errors, $errorsTitle);
+                $errors = array_merge($errors, $errorsCheckBoxes);
                 // verifie si y a pas d'erreurs rajoute le template et rederige vers la page suivante
                 if(count($errors)==0){
                     $checkboxes = $_POST["checkboxParticipants"];
@@ -276,7 +279,8 @@ class ControllerTricount extends MyController{
             (new View("add_template"))->show(["title" => $title,
                                             "tricount" => $tricount,
                                             "participants" => $participants,
-                                            "errors" => $errors]
+                                            "errorsTitle" => $errorsTitle,
+                                            "errorsCheckboxes" => $errorsCheckBoxes]
             );
         }else{
             $this->redirect("Main");
