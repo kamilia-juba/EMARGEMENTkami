@@ -144,8 +144,8 @@
             </ul>
         </div>
     <?php }else{ ?>
-        <div class="container">
-            <a href="Tricount/showBalance/<?= $tricount->id?>" class="btn btn-success w-100 mt-2 mb-2">&#8644; View balance</a>
+        <div class=" d-flex justify-content-between p-2">
+            <a href="Tricount/showBalance/<?= $tricount->id?>" class="btn btn-success w-100 mt-2 mb-1">&#8644; View balance</a>
         </div>
         <div class="p-2">
         <label for="sort" class="mb-2">Order expenses by :</label>
@@ -160,10 +160,7 @@
                 <option value="title-desc">&#9660; Title</option>
             </select>
         </div>
-        <div>
-
-
-        </div>
+        
         <ul id="operations_ul" class="list-group p-2">
        <?php foreach($operations as $operation){ ?>
                 <li class="list-group-item ps-3"><a class="text-decoration-none text-dark" href="Operation/showOperation/<?=$tricount->id?>/<?=$operation->id?>">
