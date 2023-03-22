@@ -8,13 +8,19 @@ function checkTitle(){
         ok = false;
     }
     changeTitleView();
+    return ok;
 }
 
 async function checkTitleExists(){
-    const data = await $.getJSON("template/template_exists_service/" + title.val());
-    if(data){
-        errTitle.append("<p>There's already an existing template with this title. Choose another title</p>");
+    const data = await $.post("template/template_exists_service", {newTitle : title.val()}, "json");
+    //const data = await $.getJSON("template/template_exists_service/" + title.val());
+    console.log(data);
+    if(data==="true"){
+        errTitle.html("<p>There's already an existing template with this title. Choose another title</p>");
+    }else{
+        errTitle.html("");
     }
+    changeTitleView();
 }
 
 function changeTitleView(){
