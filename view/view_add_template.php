@@ -35,15 +35,15 @@
                 </div>
             <?php endif; ?>
             Template items :
-                <?php foreach($participants as $participant) { ?>
+                <?php foreach($participants as $participant):  ?>
                     <div class="input-group mb-2 mt-2">
                         <span class="form-control" style="background-color: #E9ECEF">
-                            <input type="checkbox" name="checkboxParticipants[]" value="<?=$participant->id?>" checked>
+                            <input type="checkbox" name="checkboxParticipants[]" id="<?=$participant->id?>" value="<?=$participant->id?>" checked>
                         </span>  
                         <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participant->full_name?></span>
-                        <input class="form-control" type="number" min="0" name="weight[]" value="1">
+                        <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participant->id?>_weight" value="1">
                     </div>
-                <?php } ?>
+                <?php endforeach; ?>
                 <?php if (count($errorsCheckboxes) != 0): ?>
                         <div class='text-danger'>
                             <ul>

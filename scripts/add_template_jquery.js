@@ -32,12 +32,32 @@ function changeTitleView(){
     }
 }
 
+function checkWeight(){
+    $("input[type='number']").on("input", function(){
+        var checkboxes = $("input[type='checkbox']").map(function(){
+            return this.id;
+        }).get();
+    
+        for(var i=0; i<checkboxes.length; ++i){
+            var checkbox = $("#" + checkboxes[i]);
+            var weight = $("#" + checkboxes[i] + "_weight");
+            if(weight.val() <= "0"){
+                checkbox.prop("checked", false);
+            }else{
+                checkbox.prop("checked", true);
+            }
+        }
+    })
+}
+
 $(function(){
     title = $("#title");
     errTitle = $("#errTitle");
 
     title.bind("input", checkTitle);
     title.bind("blur", checkTitleExists);
+
+    checkWeight();
 
     $("input:text:first").focus();
 });
