@@ -12,7 +12,35 @@
         let sortColumn ='created_at';
         let sortAscending = false;
         let tblOperations;
+        
+        function sortt(){
 
+            // Sélectionnez la balise <select> par son ID
+            const selectElement = document.getElementById("sortt");
+
+            let field = selectElement.value;
+
+            switch (field){
+                case "amount-asc" : sort('amount', true);
+                break;
+                case "amount-desc" : sort('amount', false);
+                break;
+                case "date-asc" : sort('created_at', true);
+                break;
+                case "date-desc" : sort('created_at', false);
+                break;
+                case "initiator-asc" : sort('initiator', true);
+                break;
+                case "initiator-desc" : sort('initiator', false);
+                break;
+                case "title-asc" : sort('title', true);
+                break;
+                case "title-desc" : sort('title', false);
+                break;
+            }
+
+        }
+        
 
         $(function(){
                 tblOperations = $('#operations_ul');
@@ -42,13 +70,15 @@
                 });
             }
 
-        function sort(field) {
+        function sort(field, ascending) {
             /* if (field === sortColumn)
                 sortAscending = !sortAscending;
             else {
                 sortColumn = field;
                 sortAscending = true;
             } */
+            sortAscending = ascending;
+            sortColumn = field;
             sortOperations();
             displayOperations();
         }
@@ -68,7 +98,7 @@
                         '</a></li>'
             }
             tblOperations.html(html);
-            $('#col_' + sortColumn).append(sortAscending ? ' &#9650;' : ' &#9660;');
+            //$('#col_' + sortColumn).append(sortAscending ? ' &#9650;' : ' &#9660;');
         }    
     </script>
     
@@ -120,15 +150,15 @@
         </div>
 
         <label for="sort">Order expenses by :</label>
-        <select name="sort" id="sort">
-        <option onclick="sort('amount'), sortAscending=true" value="amount-asc">&#9650; Amount</option>
-        <option onclick="sort('amount'), sortAscending=false" value="amount-desc">&#9660; Amount</option>
-        <option onclick="sort('date'), sortAscending=true" value="date-asc">&#9650; Date</option>
-        <option onclick="sort('date'), sortAscending=false" value="date-desc">&#9660; Date</option>
-        <option onclick="sort('initiator'), sortAscending=true" value="initiator-asc">&#9650; Initiator</option>
-        <option onclick="sort('initiator'), sortAscending=false" value="initiator-desc">&#9660; Initiator</option>
-        <option onclick="sort('title'), sortAscending=true" value="title-asc">&#9650; Title</option>
-        <option onclick="sort('title'), sortAscending=false" value="title-desc">&#9660; Title</option>
+        <select onchange="sortt()" name="sortt" id="sortt">
+            <option value="amount-asc">&#9650; Amount</option>
+            <option value="amount-desc">&#9660; Amount</option>
+            <option value="date-asc">&#9650; Date</option>
+            <option value="date-desc">&#9660; Date</option>
+            <option value="initiator-asc">&#9650; Initiator</option>
+            <option value="initiator-desc">&#9660; Initiator</option>
+            <option value="title-asc">&#9650; Title</option>
+            <option value="title-desc">&#9660; Title</option>
         </select>
         <div>
 
