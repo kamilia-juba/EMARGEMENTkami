@@ -16,7 +16,7 @@
         function sort(){
 
             // Sélectionne la balise <select> par son ID
-            const selectElement = document.getElementById("sortt");
+            const selectElement = document.getElementById("sort");
 
             let field = selectElement.value;
 
@@ -147,18 +147,19 @@
         <div class="container">
             <a href="Tricount/showBalance/<?= $tricount->id?>" class="btn btn-success w-100 mt-2 mb-2">&#8644; View balance</a>
         </div>
-
-        <label for="sort">Order expenses by :</label>
-        <select onchange="sort()" name="sortt" id="sortt" >
-            <option value="amount-asc">&#9650; Amount</option>
-            <option value="amount-desc">&#9660; Amount</option>
-            <option value="date-asc">&#9650; Date</option>
-            <option value="date-desc" selected>&#9660; Date</option>
-            <option value="initiator-asc">&#9650; Initiator</option>
-            <option value="initiator-desc">&#9660; Initiator</option>
-            <option value="title-asc">&#9650; Title</option>
-            <option value="title-desc">&#9660; Title</option>
-        </select>
+        <div class="p-2">
+        <label for="sort" class="mb-2">Order expenses by :</label>
+            <select onchange="sort()" name="sort" id="sort" class="form-select">
+                <option value="amount-asc">&#9650; Amount</option>
+                <option value="amount-desc">&#9660; Amount</option>
+                <option value="date-asc">&#9650; Date</option>
+                <option value="date-desc" selected>&#9660; Date</option>
+                <option value="initiator-asc">&#9650; Initiator</option>
+                <option value="initiator-desc">&#9660; Initiator</option>
+                <option value="title-asc">&#9650; Title</option>
+                <option value="title-desc">&#9660; Title</option>
+            </select>
+        </div>
         <div>
 
 
