@@ -13,29 +13,29 @@
         let sortAscending = false;
         let tblOperations;
         
-        function sortt(){
+        function sort(){
 
-            // Sélectionnez la balise <select> par son ID
+            // Sélectionne la balise <select> par son ID
             const selectElement = document.getElementById("sortt");
 
             let field = selectElement.value;
 
             switch (field){
-                case "amount-asc" : sort('amount', true);
+                case "amount-asc" : sortByField('amount', true);
                 break;
-                case "amount-desc" : sort('amount', false);
+                case "amount-desc" : sortByField('amount', false);
                 break;
-                case "date-asc" : sort('created_at', true);
+                case "date-asc" : sortByField('created_at', true);
                 break;
-                case "date-desc" : sort('created_at', false);
+                case "date-desc" : sortByField('created_at', false);
                 break;
-                case "initiator-asc" : sort('initiator', true);
+                case "initiator-asc" : sortByField('initiator', true);
                 break;
-                case "initiator-desc" : sort('initiator', false);
+                case "initiator-desc" : sortByField('initiator', false);
                 break;
-                case "title-asc" : sort('title', true);
+                case "title-asc" : sortByField('title', true);
                 break;
-                case "title-desc" : sort('title', false);
+                case "title-desc" : sortByField('title', false);
                 break;
             }
 
@@ -61,22 +61,17 @@
         }
 
         function sortOperations() {
-                operations.sort(function (a,b) {
-                    if (a[sortColumn] < b[sortColumn])
-                        return sortAscending ? -1 : 1;
-                    if (a[sortColumn] > b[sortColumn])
-                        return sortAscending ? 1 : -1;
-                    return 0;
-                });
-            }
+            operations.sort(function (a,b) {
+                if (a[sortColumn] < b[sortColumn])
+                    return sortAscending ? -1 : 1;
+                if (a[sortColumn] > b[sortColumn])
+                    return sortAscending ? 1 : -1;
+                return 0;
+            });
+        }
 
-        function sort(field, ascending) {
-            /* if (field === sortColumn)
-                sortAscending = !sortAscending;
-            else {
-                sortColumn = field;
-                sortAscending = true;
-            } */
+        function sortByField(field, ascending) {
+
             sortAscending = ascending;
             sortColumn = field;
             sortOperations();
@@ -103,7 +98,6 @@
                         '</a></li>'
             }
             tblOperations.html(html);
-            //$('#col_' + sortColumn).append(sortAscending ? ' &#9650;' : ' &#9660;');
         }    
     </script>
     
@@ -155,7 +149,7 @@
         </div>
 
         <label for="sort">Order expenses by :</label>
-        <select onchange="sortt()" name="sortt" id="sortt" >
+        <select onchange="sort()" name="sortt" id="sortt" >
             <option value="amount-asc">&#9650; Amount</option>
             <option value="amount-desc">&#9660; Amount</option>
             <option value="date-asc">&#9650; Date</option>
