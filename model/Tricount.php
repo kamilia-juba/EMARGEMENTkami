@@ -261,16 +261,19 @@ class Tricount extends Model{
         $table = [];
 
         foreach ($operations as $operation) {
+            
+            $payer = User::get_user_by_id($operation->initiator);
 
-                $row = [];
-                $row["id"] = $operation->id;
-                $row["title"] = $operation->title;
-                $row["tricount"] = $operation->tricount;
-                $row["amount"] = $operation->amount;
-                $row["operation_date"] = $operation->operation_date;
-                $row["initiator"] = $operation->initiator;
-                $row["created_at"] = $operation->created_at;
-                $table[] = $row;
+
+            $row = [];
+            $row["id"] = $operation->id;
+            $row["title"] = $operation->title;
+            $row["tricount"] = $operation->tricount;
+            $row["amount"] = $operation->amount;
+            $row["operation_date"] = $operation->operation_date;
+            $row["initiator"] = $payer->full_name;
+            $row["created_at"] = $operation->created_at;
+            $table[] = $row;
         }
         return json_encode($table);
     }
