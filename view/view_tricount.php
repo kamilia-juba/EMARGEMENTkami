@@ -86,6 +86,11 @@
         function displayOperations(){
             let html="";
             for (let operation of operations) {
+                const date = new Date(operation.created_at);
+                const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                const formattedDate = date.toLocaleDateString('fr-FR', options);
+                console.log(formattedDate); 
+
                 html += '<li class="list-group-item ps-3"><a class="text-decoration-none text-dark" href="Operation/showOperation/' + <?=$tricount->id?> + '/' + operation.id + '">' +
                         '<div class="d-flex justify-content-between">' +
                         '<h1>' + operation.title + '</h1>' +
@@ -93,7 +98,7 @@
                         '</div>' +
                         '<div class="d-flex justify-content-between">' +
                         '<p>Paid by ' + operation.initiator + '</p>' +
-                        '<p>' + operation.created_at + '</p>' +
+                        '<p>' + formattedDate + '</p>' +
                         '</div>' +
                         '</a></li>'
             }
@@ -150,11 +155,11 @@
         </div>
 
         <label for="sort">Order expenses by :</label>
-        <select onchange="sortt()" name="sortt" id="sortt">
+        <select onchange="sortt()" name="sortt" id="sortt" >
             <option value="amount-asc">&#9650; Amount</option>
             <option value="amount-desc">&#9660; Amount</option>
             <option value="date-asc">&#9650; Date</option>
-            <option value="date-desc">&#9660; Date</option>
+            <option value="date-desc" selected>&#9660; Date</option>
             <option value="initiator-asc">&#9650; Initiator</option>
             <option value="initiator-desc">&#9660; Initiator</option>
             <option value="title-asc">&#9650; Title</option>
