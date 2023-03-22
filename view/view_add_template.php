@@ -16,11 +16,11 @@
         
         <div class="pt-2 ps-3 pe-3 pb-2 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
             <a href="Tricount/showTemplates/<?=$tricount->id?>" class="btn btn-outline-danger" >Cancel</a>
-            <?=$tricount->title?> &#8594; ew template
+            <?=$tricount->title?> &#8594; New template
             <input type="submit" class="btn btn-primary" value="Save" form="addtemplateForm">
         </div> 
         <div class="container">
-        <form id="addtemplateForm" action="Tricount/addTemplate/<?=$tricount->id?>" method="post">
+        <form id="addtemplateForm" action="Tricount/addTemplate/<?=$tricount->id?>" method="post" onsubmit="return checkAll();">
             Title : 
             <input class="form-control mb-2" id="title" name="title" type="text" placeholder="Title" value="<?=$title?>">
             <div class='text-danger' id='errTitle'></div>
@@ -44,6 +44,8 @@
                         <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participant->id?>_weight" value="1">
                     </div>
                 <?php endforeach; ?>
+                <div class='text-danger' id='errWeights'></div>
+                <div class='text-success' id='okWeights'></div>
                 <?php if (count($errorsCheckboxes) != 0): ?>
                         <div class='text-danger'>
                             <ul>

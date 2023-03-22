@@ -1,4 +1,4 @@
-let title, errTitle;
+let title, errTitle, errWeights;
 
 function checkTitle(){
     let ok = true;
@@ -33,11 +33,13 @@ function changeTitleView(){
 }
 
 function checkWeight(){
+    let ok = true;
     $("input[type='number']").on("input", function(){
         var checkboxes = $("input[type='checkbox']").map(function(){
             return this.id;
         }).get();
-    
+        errWeights.html("");
+        okWeights.html("Looks good");
         for(var i=0; i<checkboxes.length; ++i){
             var checkbox = $("#" + checkboxes[i]);
             var weight = $("#" + checkboxes[i] + "_weight");
@@ -46,13 +48,29 @@ function checkWeight(){
             }else{
                 checkbox.prop("checked", true);
             }
+            if(weight.val() === ""){
+                errWeights.html("<p>Weights cannot be empty</p>");
+                ok = false;
+                okWeights.html("");
+            }
         }
     })
+    return ok;
+}
+
+
+
+function checkAll(){
+    let ok = checkTitle();
+    ok = checkWeight() && ok;
+    return ok;
 }
 
 $(function(){
     title = $("#title");
     errTitle = $("#errTitle");
+    errWeights = $("#errWeights");
+    okWeights = $("#okWeights");
 
     title.bind("input", checkTitle);
     title.bind("blur", checkTitleExists);
