@@ -126,6 +126,16 @@
         public function remove_user_participation_on_template(User $user){ //supprime un user et son poids de la table repartition template items
             self::execute("DELETE FROM repartition_template_items WHERE repartition_template =:id AND user=:userId ", ["id"=>$this->id,"userId"=>$user->id]);
         }
+
+        public static function get_template_by_name(string $title): Template|false{
+            $query = self::execute("SELECT * FROM repartition_templates WHERE title=:title",["title"=>$title]);
+            $data = $query->fetch();
+            if($query->rowCount() == 0){
+                return false;
+            }else{
+                return new Template($data["title"],$data["tricount"],$data["id"]);
+            }
+        }
     }
 
     
