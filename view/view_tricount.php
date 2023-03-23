@@ -79,12 +79,24 @@
         }
 
         function displayOperations(){
-            let html="";
+            let html=
+            `<div class="p-2">
+                <label for="sort" class="mb-2">Order expenses by :</label>
+                <select onchange="sort()" name="sort" id="sort" class="form-select">
+                    <option value="amount-asc">&#9650; Amount</option>
+                    <option value="amount-desc">&#9660; Amount</option>
+                    <option value="date-asc">&#9650; Date</option>
+                    <option value="date-desc" selected>&#9660; Date</option>
+                    <option value="initiator-asc">&#9650; Initiator</option>
+                    <option value="initiator-desc">&#9660; Initiator</option>
+                    <option value="title-asc">&#9650; Title</option>
+                    <option value="title-desc">&#9660; Title</option>
+                </select>
+            </div>`;
             for (let operation of operations) {
                 const date = new Date(operation.created_at);
                 const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
                 const formattedDate = date.toLocaleDateString('fr-FR', options);
-                console.log(formattedDate); 
 
                 html += '<li class="list-group-item ps-3"><a class="text-decoration-none text-dark" href="Operation/showOperation/' + <?=$tricount->id?> + '/' + operation.id + '">' +
                         '<div class="d-flex justify-content-between">' +
@@ -147,19 +159,7 @@
         <div class=" d-flex justify-content-between p-2">
             <a href="Tricount/showBalance/<?= $tricount->id?>" class="btn btn-success w-100 mt-2 mb-1">&#8644; View balance</a>
         </div>
-        <div class="p-2">
-        <label for="sort" class="mb-2">Order expenses by :</label>
-            <select onchange="sort()" name="sort" id="sort" class="form-select">
-                <option value="amount-asc">&#9650; Amount</option>
-                <option value="amount-desc">&#9660; Amount</option>
-                <option value="date-asc">&#9650; Date</option>
-                <option value="date-desc" selected>&#9660; Date</option>
-                <option value="initiator-asc">&#9650; Initiator</option>
-                <option value="initiator-desc">&#9660; Initiator</option>
-                <option value="title-asc">&#9650; Title</option>
-                <option value="title-desc">&#9660; Title</option>
-            </select>
-        </div>
+
         
         <ul id="operations_ul" class="list-group p-2">
        <?php foreach($operations as $operation){ ?>
