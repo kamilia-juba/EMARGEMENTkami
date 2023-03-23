@@ -3,9 +3,15 @@ let title, errTitle, errWeights;
 function checkTitle(){
     let ok = true;
     errTitle.html("");
-    if(!(/^.{3,255}$/).test(title.val())){
-        errTitle.append("<p>Title must have at least 3 characters.</p>");
+
+    if(title.val().trim().length === 0){
+        errTitle.append("<p>Title cannot be empty.</p>");
         ok = false;
+    }else{
+        if(!(/^.{3,255}$/).test(title.val())){
+            errTitle.append("<p>Title must have at least 3 characters.</p>");
+            ok = false;
+        }
     }
     changeTitleView();
     return ok;
@@ -16,8 +22,6 @@ async function checkTitleExists(){
     //const data = await $.getJSON("template/template_exists_service/" + title.val());
     if(data){
         errTitle.html("<p>There's already an existing template with this title. Choose another title</p>");
-    }else{
-        errTitle.html("");
     }
     changeTitleView();
 }
@@ -73,7 +77,7 @@ $(function(){
     okWeights = $("#okWeights");
 
     title.bind("input", checkTitle);
-    title.bind("blur", checkTitleExists);
+    title.bind("input", checkTitleExists);
 
     checkWeight();
 
