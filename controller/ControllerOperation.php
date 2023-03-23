@@ -94,8 +94,10 @@ class ControllerOperation extends Mycontroller{
                     for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                         for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){                    
                             if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
-                                $participants_and_weights[$i][1] = $weights[$i];
-                                $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
+                                if($weights[$i]>0){
+                                    $participants_and_weights[$i][1] = $weights[$i];
+                                    $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);    
+                                }
                             }
                         }
                     }
@@ -108,8 +110,10 @@ class ControllerOperation extends Mycontroller{
                 for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                     for($j = 0; $j<sizeof($checkboxes);++$j){
                         if($participants_and_weights[$i][0]->id==$checkboxes[$j]){
-                            $participants_and_weights[$i][1] = $weights[$i];
-                            $operation->add_repartitions($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
+                            if($weights[$i]>0){
+                                $participants_and_weights[$i][1] = $weights[$i];
+                                $operation->add_repartitions($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
+                            }
                         }
                     }
                 }
@@ -188,8 +192,10 @@ class ControllerOperation extends Mycontroller{
                         for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                             for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){                    
                                 if($participants_and_weights[$i][0]->id==$_POST["checkboxParticipants"][$j]){
-                                    $participants_and_weights[$i][1] = $weights[$i];
-                                    $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
+                                    if($weights[$i]>0){
+                                        $participants_and_weights[$i][1] = $weights[$i];
+                                        $newTemplate->add_items($participants_and_weights[$i][0], $participants_and_weights[$i][1]);    
+                                    }
                                 }
                             }
                         }
@@ -207,8 +213,10 @@ class ControllerOperation extends Mycontroller{
                     for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
                         for($j = 0; $j<sizeof($checkboxes);++$j){
                             if($participants_and_weights[$i][0]->id==$checkboxes[$j]){
-                                $participants_and_weights[$i][1] = $weights[$i];
-                                $operation->add_repartitions($participants_and_weights[$i][0], $participants_and_weights[$i][1]);
+                                if($weights[$i]>0){
+                                    $participants_and_weights[$i][1] = $weights[$i];
+                                    $operation->add_repartitions($participants_and_weights[$i][0], $participants_and_weights[$i][1]);    
+                                }
                             }
                         }
                     }
