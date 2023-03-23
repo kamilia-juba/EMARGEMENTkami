@@ -127,8 +127,8 @@
             self::execute("DELETE FROM repartition_template_items WHERE repartition_template =:id AND user=:userId ", ["id"=>$this->id,"userId"=>$user->id]);
         }
 
-        public static function get_template_by_name(string $title): Template|false{
-            $query = self::execute("SELECT * FROM repartition_templates WHERE title=:title",["title"=>$title]);
+        public static function get_template_by_name_and_tricountId(string $title, int $tricountId): Template|false{
+            $query = self::execute("SELECT * FROM repartition_templates WHERE title=:title and tricount=:id",["title"=>$title, "id"=>$tricountId]);
             $data = $query->fetch();
             if($query->rowCount() == 0){
                 return false;

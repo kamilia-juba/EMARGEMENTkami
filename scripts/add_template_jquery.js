@@ -1,5 +1,6 @@
 let title, errTitle, errWeights;
 
+
 function checkTitle(){
     let ok = true;
     errTitle.html("");
@@ -18,8 +19,7 @@ function checkTitle(){
 }
 
 async function checkTitleExists(){
-    const data = await $.post("template/template_exists_service", {newTitle : title.val()},null, "json");
-    //const data = await $.getJSON("template/template_exists_service/" + title.val());
+    const data = await $.post("template/template_exists_service", {newTitle : title.val(), tricountId : tricountId},null, "json");
     if(data){
         errTitle.html("<p>There's already an existing template with this title. Choose another title</p>");
     }

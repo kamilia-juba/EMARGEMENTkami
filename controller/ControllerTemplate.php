@@ -103,7 +103,7 @@ class ControllerTemplate extends Mycontroller{
 
     public function template_exists_service(){
         $res = "false";
-        $template = Template::get_template_by_name($_POST["newTitle"]);
+        $template = Template::get_template_by_name_and_tricountId($_POST["newTitle"], $_POST["tricountId"]);
         if($template){
             $res = "true";
         }
