@@ -7,6 +7,8 @@
         <title>addtricount</title>
         <base href="<?= $web_root ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+        <script src="scripts/add_tricount_jquery.js"></script>
     </head>
     <body>
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">   
@@ -19,10 +21,12 @@
         <div class="form-group pt-3 ps-3 pe-3 pb-3">
              <label class="pb-3">Title :</label>
              <input class="form-control" id="title" name="title" type="text" size="16" value="<?= $title ?>" placeholder="Enter a title">
+            <div class = "text-danger" id = "errorTitle"></div> 
         </div>
         <div class="form-group pt-3 ps-3 pe-3 pb-3">
              <label class="pb-3">Description (optional) :</label>
              <input class="form-control" id="description" name="description" type="text" size="32" value="<?= $description ?>">
+             <div class = "text-danger" id = "errorDescription"></div> 
         </div>     
        
     </form> 
