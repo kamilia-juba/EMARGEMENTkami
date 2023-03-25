@@ -8,8 +8,87 @@
         <base href="<?= $web_root ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
-        <script src="scripts/add_tricount_jquery.js"></script>
+        <script>
+            
+            let title ;
+            let errorTitle;
+            let description;
+            let errorDescription;
+
+            function checkTitle(){
+                let verification= true;
+                errorTitle.html("");
+                if(title.val().length === 0){
+                    errorTitle.append("<p>Title cannot be empty.</p>");
+                    verification=false;
+                }
+                else {
+                    if(title.val().length<3 || title.val().length>16){
+                        errorTitle.append("<p>Title length must be between 3 and 16.</p>");
+                        verification=false;
+                    }
+
+                }
+            
+                console.log(title);
+                return verification; 
+            
+            }
+
+            function checkDescription(){
+                let verification= true;
+                errorDescription.html("");
+                
+                if(description.val().length>0){
+                    if(description.val().length<3 || description.val().length>16){
+                        errorDescription.append("<p>Description length must be between 3 and 16.</p>");
+                        verification=false;
+                    }
+
+                }
+                return verification ;
+            }
+
+         
+
+            async function checkTitleExists(){
+               
+                const data = await $.post("tricount/tricount_exists_service/", {newTitle : title.val()},null, "json");
+                if(data){
+                    errorTitle.append("<p>Title already exists. please choice another</p>");
+                }
+               
+                console.log();
+
+            }
+
+
+            function checkAll(){
+                let verification = checkTitle();
+                verification = checkDescription() && verification; 
+                return verification;
+            }
+
+            $(function(){
+                title = $("#title");
+                errorTitle = $("#errorTitle");
+                description = $("#description");
+                errorDescription = $("#errorDescription");
+
+                title.bind("input", checkTitle);
+                title.bind("input", checkTitleExists);
+                description.bind("input", checkDescription);
+                
+
+                $("input:text:first").focus();
+            }
+
+            );
+
+
+        </script>
     </head>
+
     <body>
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">   
             <a href = "Tricount/yourTricounts/"  class="btn btn-outline-danger" >Cancel</a>
@@ -17,7 +96,7 @@
        
             <button form="addTricount" class="btn btn-primary" type="submit">Save</button>
     </div> 
-    <form id="addTricount" action="Tricount/addtricount" method="post">
+    <form id="addTricount" action="Tricount/addtricount" method="post" onsubmit="return checkAll();">
         <div class="form-group pt-3 ps-3 pe-3 pb-3">
              <label class="pb-3">Title :</label>
              <input class="form-control" id="title" name="title" type="text" size="16" value="<?= $title ?>" placeholder="Enter a title">

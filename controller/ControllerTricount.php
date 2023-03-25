@@ -293,5 +293,17 @@ class ControllerTricount extends MyController{
             $this->redirect("Main");
         }
     }
+
+    public function tricount_exists_service(){
+        $res = "false";
+        $user = $this->get_user_or_redirect();
+        if(isset($_POST["newTitle"]) && $_POST["newTitle"] !== ""){
+            $tricount = Tricount::tricount_title_already_exists($_POST["newTitle"],$user);
+            if($tricount){
+             $res = "true";
+             }
+         }
+        echo $res;
+    }
 }
 ?>
