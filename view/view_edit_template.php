@@ -6,6 +6,59 @@
         <base href="<?= $web_root ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <script src="lib/jquery-3.6.4.js" type="text/javascript"></script>
+        <script>
+            var templateId = <?= $template->id ?>;
+            let title,errTitle,okTitle,errWeights,okWeights;
+
+            function checkTitle(){
+                let ok = true;
+                errTitle.html("");
+
+                if(title.val().trim().length === 0){
+                    errTitle.append("<p>Title cannot be empty.</p>");
+                    ok = false;
+                }else{
+                    if(!(/^.{3,255}$/).test(title.val())){
+                        errTitle.append("<p>Title must have at least 3 characters.</p>");
+                        ok = false;
+                    }
+                }
+                changeTitleView();
+                return ok;
+            }
+
+            async function checkTitleExists(){
+                const data = await $.post("template/template_title_other_exists_service", {newTitle : title.val(), templateId : templateId }, null, "json");
+                if(data){
+                    errTitle.html("<p>There's already an existing template with this title. Choose another title</p>");
+                }
+                changeTitleView();
+            }
+
+            function changeTitleView(){
+                if (errTitle.text() == ""){
+                    okTitle.html("Looks good");
+                    title.attr("class", "form-control mb-2 is-valid");
+                }else{
+                    okTitle.html("");
+                    title.attr("class", "form-control mb-2 is-invalid");
+                }
+            }
+
+            $(function() {
+                title = $("#title");
+                errTitle = $("#errTitle");
+                errWeights = $("#errWeights");
+                okTitle = $("#okTitle");
+                okWeights = $("#okWeights");
+
+                title.bind("input", checkTitle);
+                title.bind("input", checkTitleExists);
+
+                $("input:text:first");
+            })
+        </script>
     </head>
     <body>
         <div class="pt-2 ps-3 pe-3 pb-2 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
@@ -17,6 +70,8 @@
             <form id="applyTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post">
                 Title : 
                 <input class="form-control mb-2" id="title" name="title" type="text" value="<?=$title?>" placeholder="Title">
+                <div class='text-danger' id='errTitle'></div>
+                <div class='text-success' id='okTitle'></div>
                 <?php if (count($errorsTitle) != 0): ?>
                     <div class='text-danger'>
                         <ul>
@@ -42,6 +97,8 @@
                         <input class="form-control" type="number" min="0" name="weight[]" value="<?=$participants_and_weights[$i][1]?>">
                     </div>
                 <?php } ?> 
+                <div class='text-danger' id='errWeights'></div>
+                <div class='text-success' id='okWeights'></div>
                 <?php if (count($errorsCheckboxes) != 0): ?>
                         <div class='text-danger'>
                             <ul>

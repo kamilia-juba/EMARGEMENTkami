@@ -115,6 +115,16 @@ class ControllerTemplate extends Mycontroller{
         }
         echo $res;
     }
+
+    public function template_title_other_exists_service(){
+        $res = "false";
+        $template = Template::get_template_by_id($_POST["templateId"]);
+
+        if($template->template_name_exists($_POST["newTitle"])){
+            $res = "true";
+        }
+        echo $res;
+    }
 }
 
 ?>
