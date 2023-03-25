@@ -37,6 +37,8 @@ class ControllerTemplate extends Mycontroller{
     public function edit_template(){
         $user=$this->get_user_or_redirect();
         $errors = [];
+        $errorsTitle = [];
+        $errorsCheckboxes = [];
 
         if ($this->validate_url()){
             $tricount = Tricount::get_tricount_by_id($_GET["param1"]); // recuper le tricount 
@@ -52,19 +54,22 @@ class ControllerTemplate extends Mycontroller{
                 $title = trim($_POST["title"]);
 
                 if($template->template_name_exists($title)){
-                    $errors[] = "Choose another title, this title already exists";
+                    $errorsTitle[] = "Choose another title, this title already exists";
                 }
-                $errors = array_merge($errors,$this->validate_title($title));
+                $errorsTitle = array_merge($errorsTitle,$this->validate_title($title));
 
                 if(!isset($_POST["checkboxParticipants"])){
                     if(isset($_POST["weight"])){
-                        $errors[] = "You must select at least 1 participant";
+                        $errorsCheckboxes[] = "You must select at least 1 participant";
                     }
                 }
 
                 if(!$this->weightsAreNumeric($_POST["weight"])){
-                    $errors[] = "Weights must be numeric";
+                    $errorsCheckboxes[] = "Weights must be numeric";
                 }
+                $errors = array_merge($errors,$errorsTitle);
+                $errors = array_merge($errors, $errorsCheckboxes);
+
                 // verifie si ya pas d'erreurs des save les difications apporter
                 if(count($errors)==0){
                     $checkboxes = $_POST["checkboxParticipants"];
@@ -89,7 +94,8 @@ class ControllerTemplate extends Mycontroller{
 
             }
             (new View("edit_template"))->show(["participants_and_weights" => $participants_and_weights,
-                                                 "errors" => $errors,
+                                                 "errorsTitle" => $errorsTitle,
+                                                 "errorsCheckboxes" => $errorsCheckboxes,
                                                  "template"=>$template,
                                                  "tricount"=>$tricount,
                                                  "user"=>$user,
@@ -105,6 +111,16 @@ class ControllerTemplate extends Mycontroller{
         $res = "false";
         $template = Template::get_template_by_name_and_tricountId($_POST["newTitle"], $_POST["tricountId"]);
         if($template){
+            $res = "true";
+        }
+        echo $res;
+    }
+
+    public function template_title_other_exists_service(){
+        $res = "false";
+        $template = Template::get_template_by_id($_POST["templateId"]);
+
+        if($template->template_name_exists($_POST["newTitle"])){
             $res = "true";
         }
         echo $res;
