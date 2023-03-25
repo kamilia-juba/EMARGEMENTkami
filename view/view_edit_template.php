@@ -46,6 +46,32 @@
                 }
             }
 
+            function checkWeight(){
+                let ok = true;
+                $("input[type='number']").on("input", function(){
+                    var checkboxes = $("input[type='checkbox']").map(function(){
+                        return this.id;
+                    }).get();
+                    errWeights.html("");
+                    okWeights.html("Looks good");
+                    for(var i=0; i<checkboxes.length; ++i){
+                        var checkbox = $("#" + checkboxes[i]);
+                        var weight = $("#" + checkboxes[i] + "_weight");
+                        if(weight.val() <= "0"){
+                            checkbox.prop("checked", false);
+                        }else{
+                            checkbox.prop("checked", true);
+                        }
+                        if(weight.val() === ""){
+                            errWeights.html("<p>Weights cannot be empty</p>");
+                            ok = false;
+                            okWeights.html("");
+                        }
+                    }
+                })
+                return ok;
+            }
+
             $(function() {
                 title = $("#title");
                 errTitle = $("#errTitle");
@@ -56,7 +82,9 @@
                 title.bind("input", checkTitle);
                 title.bind("input", checkTitleExists);
 
-                $("input:text:first");
+                checkWeight();
+
+                $("input:text:first").focus();
             })
         </script>
     </head>
@@ -87,6 +115,7 @@
                         <span class="form-control" style="background-color: #E9ECEF">
                             <input type="checkbox" 
                                 name="checkboxParticipants[]" 
+                                id="<?=$participants_and_weights[$i][0]->id?>" 
                                 value ="<?=$participants_and_weights[$i][0]->id?>" 
                                 <?php if($participants_and_weights[$i][2]){ ?>
                                             checked
@@ -94,7 +123,7 @@
                             >
                         </span>
                         <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants_and_weights[$i][0]->full_name?></span>
-                        <input class="form-control" type="number" min="0" name="weight[]" value="<?=$participants_and_weights[$i][1]?>">
+                        <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participants_and_weights[$i][0]->id?>_weight" value="<?=$participants_and_weights[$i][1]?>">
                     </div>
                 <?php } ?> 
                 <div class='text-danger' id='errWeights'></div>
