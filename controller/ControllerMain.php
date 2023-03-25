@@ -17,51 +17,60 @@ class ControllerMain extends MyController {
 
     //gestion de la connexion d'un utilisateur
     public function login() : void {
-        $pseudo = '';
-        $password = '';
-        $errors = [];
-        if (isset($_POST['mail']) && isset($_POST['password'])) { //note : pourraient contenir des chaînes vides
-            $mail = $_POST['mail'];
-            $password = $_POST['password'];
-
-            $errors = User::validate_login($mail, $password);
-            if (empty($errors)) {
-                $this->log_user(User::get_user_by_mail($mail));
+        if($this->user_logged() || (isset($_GET["param1"]) && $_GET["param1"] != "")){
+            $this->redirect("Tricount","yourTricounts");
+        }else {
+            $password = '';
+            $mail = "";
+            $errors = [];
+            if (isset($_POST['mail']) && isset($_POST['password'])) { 
+                $mail = Tools::sanitize($_POST['mail']);
+                $password = Tools::sanitize($_POST['password']);
+    
+                $errors = User::validate_login($mail, $password);
+                if (empty($errors)) {
+                    $this->log_user(User::get_user_by_mail($mail));
+                }
             }
+            (new View("login"))->show(["mail" => $mail, "password" => $password, "errors" => $errors]);
         }
-        (new View("login"))->show(["mail" => $mail, "password" => $password, "errors" => $errors]);
     }
-
+    //gestion de l'inscription d'un nouvel utilisateur
     public function signup() : void {
-        $mail = '';
-        $full_name='';
-        $IBAN='';
-        $password = '';
-        $password_confirm = '';
-        $errors = [];
-        if (isset($_POST['mail']) && isset($_POST['full_name']) && isset($_POST['IBAN']) && 
-            isset($_POST['password']) && isset($_POST['password_confirm'])) {
-           
-            $mail = trim($_POST['mail']);
-            $full_name = trim($_POST['full_name']);
-            $IBAN = trim($_POST['IBAN']);
-            $password = $_POST['password'];
-            $password_confirm = $_POST['password_confirm'];
-
-            $errors = User::validate_unicity($mail);
-            $errors = array_merge($errors, User::validate_full_name($full_name));
-            $errors = array_merge($errors, User::validate_mail($mail));
-            $errors = array_merge($errors, User::validate_IBAN($IBAN));
-            $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
-
-            if (count($errors) == 0) { 
-                $user = new User($mail ,Tools::my_hash($password), $full_name , "user" ,$IBAN );
-                $user->persist(); //sauve l'utilisateur
-                $this->log_user($user);
+        if($this->user_logged() || (isset($_GET["param1"]) && $_GET["param1"] != "")){
+            $this->redirect("Tricount","yourTricounts");
+        }else{
+            $mail = '';
+            $full_name='';
+            $IBAN='';
+            $password = '';
+            $password_confirm = '';
+            $errors = [];
+    
+            if (isset($_POST['mail']) && isset($_POST['full_name']) && 
+                isset($_POST['password']) && isset($_POST['password_confirm'])) {
+               
+                $mail = Tools::sanitize($_POST['mail']);
+                $full_name = Tools::sanitize($_POST['full_name']);
+                $IBAN = Tools::sanitize($_POST['IBAN']);
+                $password = Tools::sanitize($_POST['password']);
+                $password_confirm = Tools::sanitize($_POST['password_confirm']);
+                
+    
+                $errors =array_merge($errors, User::get_signup_errors($mail,$full_name,$IBAN,$password,$password_confirm));
+                
+                if (count($errors) == 0) { 
+                    $user = new User($mail ,Tools::my_hash($password), $full_name , "user" ,$IBAN );
+                    $user->persist(); //sauve l'utilisateur
+                    $this->log_user($user);
+                }
             }
+        
+    
+            (new View("signup"))->show(["mail" => $mail, 'full_name'=> $full_name,'IBAN'=> $IBAN, "password" => $password, 
+                                             "password_confirm" => $password_confirm, "errors" => $errors]);
         }
-        (new View("signup"))->show(["mail" => $mail, 'full_name'=> $full_name,'IBAN'=> $IBAN, "password" => $password, 
-                                         "password_confirm" => $password_confirm, "errors" => $errors]);
+        
     }
 
 }
