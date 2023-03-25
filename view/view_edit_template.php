@@ -17,6 +17,15 @@
             <form id="applyTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post">
                 Title : 
                 <input class="form-control mb-2" id="title" name="title" type="text" value="<?=$title?>" placeholder="Title">
+                <?php if (count($errorsTitle) != 0): ?>
+                    <div class='text-danger'>
+                        <ul>
+                            <?php foreach ($errorsTitle as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
                 Template items :
                 <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){  ?>
                     <div class="input-group mb-2 mt-2">
@@ -33,16 +42,16 @@
                         <input class="form-control" type="number" min="0" name="weight[]" value="<?=$participants_and_weights[$i][1]?>">
                     </div>
                 <?php } ?> 
+                <?php if (count($errorsCheckboxes) != 0): ?>
+                        <div class='text-danger'>
+                            <ul>
+                            <?php foreach ($errorsCheckboxes as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                            </ul>
+                        </div>
+                <?php endif; ?>
             </form>
-            <?php if (count($errors) != 0): ?>
-                <div class="text-danger">
-                    <ul class="list-inline">
-                    <?php foreach ($errors as $errors): ?>
-                            <li><?= $errors ?></li>
-                    <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
             <a href="Template/deleteTemplate/<?=$tricount->id?>/<?=$template->id?>" class="btn btn-danger w-100">Delete Template</a> 
         </div>
     </body>
