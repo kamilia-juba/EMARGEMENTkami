@@ -72,6 +72,12 @@
                 return ok;
             }
 
+            function checkAll(){
+                let ok = checkTitle();
+                ok = checkWeight() && ok;
+                return ok;
+            }
+
             $(function() {
                 title = $("#title");
                 errTitle = $("#errTitle");
@@ -95,7 +101,7 @@
             <input type="submit" class="btn btn-primary" form="applyTemplateForm" value="Save">
         </div>
         <div class="container min-vh-100 pt-2">
-            <form id="applyTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post">
+            <form id="applyTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post" onsubmit="return checkAll();">
                 Title : 
                 <input class="form-control mb-2" id="title" name="title" type="text" value="<?=$title?>" placeholder="Title">
                 <div class='text-danger' id='errTitle'></div>
