@@ -43,9 +43,12 @@
                     if(description.val().length<3 || description.val().length>16){
                         errorDescription.append("<p>Description length must be between 3 and 16.</p>");
                         verification=false;
+                        
+                        
                     }
-
+                    changeDescriptionView();
                 }
+                changeDescriptionView();
                 return verification ;
             }
 
@@ -57,9 +60,30 @@
                 if(data){
                     errorTitle.append("<p>Title already exists. please choice another</p>");
                 }
-               
+                changeTitleView();
                 console.log();
 
+            }
+
+            function changeTitleView(){
+                if(errorTitle.text() == ""){
+                    $("#verificationTitle").html(" • Looks good");
+                    $("#title").attr("class","form-control mb-2 is-valid");
+                }else{
+                    $("#verificationTitle").html("");
+                    $("#").attr("class", "form-control mb-2 is-invalid");
+                }
+            }
+
+            function changeDescriptionView(){
+                if(errorDescription.text()==""){
+                    $("#verificationDescription").html(" • Looks good");
+                    $("#description").attr("class","form-control mb-2 is-valid");
+                }else{
+                    $("#verificationDescription").html("");
+                    $("#").attr("class", "form-control mb-2 is-invalid");
+                }
+                
             }
 
 
@@ -101,11 +125,13 @@
              <label class="pb-3">Title :</label>
              <input class="form-control" id="title" name="title" type="text" size="16" value="<?= $title ?>" placeholder="Enter a title">
             <div class = "text-danger" id = "errorTitle"></div> 
+            <div class='text-success' id='verificationTitle'></div>
         </div>
         <div class="form-group pt-3 ps-3 pe-3 pb-3">
              <label class="pb-3">Description (optional) :</label>
              <input class="form-control" id="description" name="description" type="text" size="32" value="<?= $description ?>">
              <div class = "text-danger" id = "errorDescription"></div> 
+             <div class='text-success' id='verificationDescription'></div>
         </div>     
        
     </form> 
