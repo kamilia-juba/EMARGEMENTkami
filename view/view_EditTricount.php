@@ -5,8 +5,67 @@
     <meta charset="UTF-8">
     <base href="<?= $web_root ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
+    <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+    <script>
+        
+        let subsJson = <?=$subs_json?>;
+        
+        let userId= <?=$user->id?>;
+        let listOfSubs;
+
+        $(function(){
+            listOfSubs = $('#subscription');
+            
+            displaySubs();
+        });
+
+        function isTheUser(sub){
+            return sub.id == userId;
+        }
+
+
+        function displaySubs(){
+            listOfSubs = $('#subscription');
+
+            html='';
+
+
+            for (let sub of subsJson) {
+                if(isTheUser(sub)){
+                    if(hasAlreadyPaid(sub)){
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + "</p></li>";
+                    } 
+                    else {
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + "</p></li>";
+                    }
+                }
+                else{
+                    html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + "</p></li>";
+                }
+            }
+
+            listOfSubs.html(html);
+        }
+
+        function displayNotSubs(){}
+
+        function addToDeleteJson(){}
+
+        function addToAddJson(){}
+
+
+
+
+
+
+
+
+
+
+
+    </script>
 </head>
 
 <body>
@@ -53,7 +112,7 @@
 
     <h2 class= "p-1 ms-2 me-2 mb-2">Subscriptions</h2>
 
-    <ul class="list-group p-1 ms-2 me-2 mb-2">
+    <ul id="subscription" class="list-group p-1 ms-2 me-2 mb-2">
         <?php foreach($participants as $participant){
                 if($participant->id==$user->id){
                     if($participant->has_already_paid($tricount)|| $tricount->has_already_paid($participant)){// a changer si on ne peut supprimer le createur
@@ -77,9 +136,10 @@
     </ul>
 
 
+
     <form action="Tricount/add_participant/<?= $tricount->id?>" id="addParticipantFrom" method="post">       
         <div class="input-group p-1 ms-2 me-2 mb-2">
-            <select class="form-select" name="participant" id="participant">
+            <select id="add_subscription_select" class="form-select" name="participant" id="participant">
                 <option value="" selected disabled hidden>--Add a new subscriber--</option>
                 <?php foreach ($notSubParticipants as $user){ ?>
                         <option value="<?=$user->id?>"> <?=$user->full_name?> </option>

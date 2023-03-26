@@ -124,9 +124,10 @@ class ControllerTricount extends MyController{
         $tricount=Tricount::get_tricount_by_id($_GET["param1"]);
         $participants= $tricount->get_participants();
         $creator=$user->get_creator_of_tricount($tricount);
-        $notSubParticipants=User::get_users_not_sub_to_a_tricount($tricount);
+        $notSubParticipants=$tricount->get_users_not_sub_to_a_tricount();
         $title=$tricount->title;
         $description=$tricount->description;
+        $subs_json=$tricount->get_subs_as_json();
             if(isset($_POST['title'])){
                 $title = trim($_POST['title']);
                 $description= trim($_POST['description']);
@@ -146,8 +147,17 @@ class ControllerTricount extends MyController{
                     
                }   
             }           
-            (new View("EditTricount"))->show(["user" => $creator,"tricount"=>$tricount,"participants"=>$participants, "errors" => $errors,"success"=>$success,"notSubParticipants"=>$notSubParticipants,"title"=>$title,"description"=>$description,"errorsDescription"=>$errorsDescription,"errorsTitle"=>$errorsTitle]);
-
+            (new View("EditTricount"))->show(["user" => $creator,
+                                            "tricount"=>$tricount,
+                                            "participants"=>$participants, 
+                                            "errors" => $errors,"success"=>$success,
+                                            "notSubParticipants"=>$notSubParticipants,
+                                            "title"=>$title,
+                                            "description"=>$description,
+                                            "errorsDescription"=>$errorsDescription,
+                                            "errorsTitle"=>$errorsTitle,
+                                            "subs_json"=>$subs_json
+                                        ]);
         }
         else{
          $this->redirect("main");
