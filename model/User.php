@@ -228,18 +228,7 @@ class User extends Model {
 
         return new User($data["mail"], $data["hashed_password"], $data["full_name"], $data["role"], $data["iban"],$data["id"]);
     }
-    //recupere les utilisateur qui non pas particite au tricpount
-    public static function get_users_not_sub_to_a_tricount(Tricount $tricount) : array {
-        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId) ORDER BY full_name", ["tricountId"=>$tricount->id]);
-        $data = $query->fetchAll();
-        $results = [];
-        foreach ($data as $row) {
 
-            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"],$row["id"]);
-
-        }
-        return $results;
-    }
 
     //recupere les utilisateur qui on participer a un template 
     public function is_subscribed_to_template(Template $template): bool{
