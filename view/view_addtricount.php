@@ -71,7 +71,7 @@
                     $("#title").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#verificationTitle").html("");
-                    $("#").attr("class", "form-control mb-2 is-invalid");
+                    $("#title").attr("class", "form-control mb-2 is-invalid");
                 }
             }
 
@@ -81,7 +81,7 @@
                     $("#description").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#verificationDescription").html("");
-                    $("#").attr("class", "form-control mb-2 is-invalid");
+                    $("#description").attr("class", "form-control mb-2 is-invalid");
                 }
                 
             }
