@@ -20,10 +20,10 @@ class Tricount extends Model{
         $T = time();
         $D = date("y-m-d h:m:s", $T);
        
-       if(self::get_tricount_by_id($id)) // si il existe déjà update sinon le sauve
+       if($this->id != null) // si il existe déjà update sinon le sauve
             self::execute("UPDATE tricounts SET   title=:title, description=:description 
                            WHERE id=:id ", 
-                            [ 
+                            [   "id"=>$this->id,
                                 "title"=>$this->title,
                                 "description"=>$this->description
                               
