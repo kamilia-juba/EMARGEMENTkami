@@ -9,20 +9,23 @@
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
 
         <script>
-            let totalAmount  ;
+            let totalAmount=0  ;
 
            function handleAmounts (){
+           
             var checkboxes = $("input[type='checkbox']").map(function(){
                         return this.id;
                     }).get();
-                    totalAmount=55;
-                    var sommeTotal = getTotalWeight();
-            var onePartAmount = totalAmount / sommeTotal;
+            var sommeTotal = getTotalWeight();
+            var onePartAmount = totalAmount.val() / sommeTotal;
             for (var i =0; i<checkboxes.length;++i){
                 var amount = $("#" + checkboxes[i]+"_amount")
                 var weight = $("#" + checkboxes[i]+  "_weight");
                 var individualAmount = onePartAmount * weight.val();
-                amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + sommeTotal + " €</span>")
+                if(amount==null){
+                    individualAmount=0;
+                }
+                amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + individualAmount + " €</span>")
             }
 
            }
@@ -34,7 +37,7 @@
                 var somme =0;
                 for (var i =0; i<checkboxes.length;++i){
                     var weight = $("#" + checkboxes[i]+  "_weight");
-                    somme+= weight.val();
+                    somme+= parseInt(weight.val(), 10) || 0;
                 }
                 return somme;
 
@@ -43,8 +46,10 @@
 
 
             $(function(){
+                
                 totalAmount=$("#amount");
-                totalAmount.bind("blur", handleAmounts());
+                totalAmount.bind("change", handleAmounts);
+               
 
             });
         </script>
@@ -69,7 +74,7 @@
                 </div>
             <?php endif; ?>
             <div class="input-group mb-2">           
-                <input class = "form-control" id="amount" name="amount" type="number" value="<?= $amount?>" placeholder="Amount">   
+                <input  class = "form-control" id="amount" name="amount" type="number" value="<?= $amount?>" placeholder="Amount">   
                 <span class="input-group-text" style="background-color: #E9ECEF">EUR</span>
             </div>
             <?php if (count($errorsAmount) != 0): ?>
