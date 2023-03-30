@@ -6,7 +6,48 @@
         <base href="<?= $web_root ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-        
+        <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+
+        <script>
+            let totalAmount  ;
+
+           function handleAmounts (){
+            var checkboxes = $("input[type='checkbox']").map(function(){
+                        return this.id;
+                    }).get();
+                    totalAmount=55;
+                    var sommeTotal = getTotalWeight();
+            var onePartAmount = totalAmount / sommeTotal;
+            for (var i =0; i<checkboxes.length;++i){
+                var amount = $("#" + checkboxes[i]+"_amount")
+                var weight = $("#" + checkboxes[i]+  "_weight");
+                var individualAmount = onePartAmount * weight.val();
+                amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + sommeTotal + " €</span>")
+            }
+
+           }
+           
+            function getTotalWeight(){
+                var checkboxes = $("input[type='checkbox']").map(function(){
+                        return this.id;
+                    }).get();
+                var somme =0;
+                for (var i =0; i<checkboxes.length;++i){
+                    var weight = $("#" + checkboxes[i]+  "_weight");
+                    somme+= weight.val();
+                }
+                return somme;
+
+            }
+
+
+
+            $(function(){
+                totalAmount=$("#amount");
+                totalAmount.bind("blur", handleAmounts());
+
+            });
+        </script>
     </head>
     <body>
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
@@ -64,6 +105,7 @@
                     <span class="form-control" style="background-color: #E9ECEF">
                         <input type="checkbox" 
                             name="checkboxParticipants[]" 
+                            id="<?=$participants_and_weights[$i][0]->id?>"
                             value ="<?=$participants_and_weights[$i][0]->id?>" 
                             <?php if($participants_and_weights[$i][2]){ ?>
                                         checked
@@ -71,7 +113,8 @@
                         >
                     </span>
                     <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants_and_weights[$i][0]->full_name?></span>
-                    <input class="form-control" type="number" min="0" name="weight[]" value="<?=$participants_and_weights[$i][1]?>">
+                    <span id="<?=$participants_and_weights[$i][0]->id?>_amount"> </span>
+                    <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participants_and_weights[$i][0]->id?>_weight" value="<?=$participants_and_weights[$i][1]?>">
                 </div>
             <?php } ?>
             <?php if (count($errorsCheckboxes) != 0): ?>
