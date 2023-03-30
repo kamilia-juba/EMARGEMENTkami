@@ -9,27 +9,29 @@
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
 
         <script>
-            let totalAmount=0  ;
+            let totalAmount  ;
 
-           function handleAmounts (){
-           
-            var checkboxes = $("input[type='checkbox']").map(function(){
-                        return this.id;
-                    }).get();
-            var sommeTotal = getTotalWeight();
-            var onePartAmount = totalAmount.val() / sommeTotal;
-            for (var i =0; i<checkboxes.length;++i){
-                var amount = $("#" + checkboxes[i]+"_amount")
-                var weight = $("#" + checkboxes[i]+  "_weight");
-                var individualAmount = onePartAmount * weight.val();
-                if(amount==null){
-                    individualAmount=0;
+            function handleAmounts (){
+                
+            
+                var checkboxes = $("input[type='checkbox']").map(function(){
+                            return this.id;
+                        }).get();
+                        
+                var sommeTotal = getTotalWeight();
+                var onePartAmount = totalAmount.val() / sommeTotal;
+                for (var i =0; i<checkboxes.length;++i){
+                    var amount = $("#" + checkboxes[i]+"_amount");
+                    var weight = $("#" + checkboxes[i]+  "_weight");
+                    var individualAmount = onePartAmount * weight.val();
+                    if(amount==null){
+                        individualAmount=0;
+                    }
+                    amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + individualAmount + " €</span>")
                 }
-                amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + individualAmount + " €</span>")
-            }
 
-           }
-           
+            }
+        
             function getTotalWeight(){
                 var checkboxes = $("input[type='checkbox']").map(function(){
                         return this.id;
@@ -46,10 +48,13 @@
 
 
             $(function(){
-                
                 totalAmount=$("#amount");
-                totalAmount.bind("change", handleAmounts);
-               
+                handleAmounts();                
+
+                $("input[type='number']").on("blur", function(){
+                    handleAmounts();
+                });
+                
 
             });
         </script>
