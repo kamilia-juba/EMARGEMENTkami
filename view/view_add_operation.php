@@ -34,6 +34,8 @@
                     else{
                         checkbox.prop("checked", true);
                     }
+                    
+                   
                     amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + individualAmount + " €</span>")
                 }
 
@@ -52,6 +54,30 @@
 
             }
 
+            function handleCheckbox(){
+                var checkboxes = $(".checkboxParticipant").map(function(){
+                            return this.id;
+                        }).get();
+                       
+                    for (var i =0; i<checkboxes.length;++i){
+                         var checkbox= $("#" + checkboxes[i]);
+                        
+                         var weight = $("#" + checkboxes[i]+  "_weight");
+                         
+                         
+                         if(checkbox.prop("checked")==false){
+                            weight.val("0");
+                        }
+                        
+                        if(checkbox.prop("checked")==true){
+                            weight.val("1");
+                        }
+                        
+                        
+                
+                    }
+
+            }
 
 
             $(function(){
@@ -60,7 +86,14 @@
 
                 $("input[type='number']").on("blur", function(){
                     handleAmounts();
+                });                
+                
+                $(".checkboxParticipant").change(function(){
+                   handleCheckbox();
+                   handleAmounts();
                 });
+
+               
                 
 
             });
@@ -163,3 +196,4 @@
         </div>
     </body>
 </html>
+                        
