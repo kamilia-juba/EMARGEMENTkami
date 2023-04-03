@@ -14,18 +14,25 @@
             function handleAmounts (){
                 
             
-                var checkboxes = $("input[type='checkbox']").map(function(){
+                var checkboxes = $(".checkboxParticipant").map(function(){
                             return this.id;
                         }).get();
                         
                 var sommeTotal = getTotalWeight();
                 var onePartAmount = totalAmount.val() / sommeTotal;
                 for (var i =0; i<checkboxes.length;++i){
+                    var checkbox= $("#" + checkboxes[i]);
                     var amount = $("#" + checkboxes[i]+"_amount");
                     var weight = $("#" + checkboxes[i]+  "_weight");
                     var individualAmount = onePartAmount * weight.val();
                     if(amount==null){
                         individualAmount=0;
+                    }
+                    if(weight.val()<="0"){
+                        checkbox.prop("checked", false);
+                    }
+                    else{
+                        checkbox.prop("checked", true);
                     }
                     amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + individualAmount + " €</span>")
                 }
@@ -33,7 +40,7 @@
             }
         
             function getTotalWeight(){
-                var checkboxes = $("input[type='checkbox']").map(function(){
+                var checkboxes = $(".checkboxParticipant").map(function(){
                         return this.id;
                     }).get();
                 var somme =0;
@@ -114,6 +121,7 @@
                 <div class="input-group mb-2 mt-2">
                     <span class="form-control" style="background-color: #E9ECEF">
                         <input type="checkbox" 
+                        class = "checkboxParticipant"
                             name="checkboxParticipants[]" 
                             id="<?=$participants_and_weights[$i][0]->id?>"
                             value ="<?=$participants_and_weights[$i][0]->id?>" 
