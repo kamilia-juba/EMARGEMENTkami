@@ -293,15 +293,25 @@ class Tricount extends Model{
 
     public function get_subs_as_json() : string {
         $participants = $this->get_participants();
-
+        
+        
         $table = [];
 
         foreach ($participants as $participant) {
-
-
+            $hasPaid=$this->has_already_paid($participant);
+            
             $row = [];
             $row["id"] = $participant->id;
             $row["full_name"] = $participant->full_name;
+            $row["has_paid"] = $hasPaid;
+            
+            if($participant->id==$this->creator){
+                $row["is_creator"] = true;
+            }
+            else{
+                $row["is_creator"] = false;
+            }
+
             $table[] = $row;
         }
         return json_encode($table);
