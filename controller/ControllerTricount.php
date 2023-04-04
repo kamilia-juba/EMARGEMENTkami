@@ -128,6 +128,7 @@ class ControllerTricount extends MyController{
         $title=$tricount->title;
         $description=$tricount->description;
         $subs_json=$tricount->get_subs_as_json();
+        $not_subs_json=$tricount->get_not_subs_as_json();
             if(isset($_POST['title'])){
                 $title = trim($_POST['title']);
                 $description= trim($_POST['description']);
@@ -156,7 +157,8 @@ class ControllerTricount extends MyController{
                                             "description"=>$description,
                                             "errorsDescription"=>$errorsDescription,
                                             "errorsTitle"=>$errorsTitle,
-                                            "subs_json"=>$subs_json
+                                            "subs_json"=>$subs_json,
+                                            "not_subs_json"=>$not_subs_json,
                                         ]);
         }
         else{
