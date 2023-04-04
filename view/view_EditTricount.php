@@ -11,19 +11,18 @@
     <script>
         
         let subsJson = <?=$subs_json?>;
+        let notSubJson = <?=$not_subs_json?>;
         
         let userId= <?=$user->id?>;
         let listOfSubs;
+        let selectNotSubs;
 
         $(function(){
             listOfSubs = $('#subscription');
             
             displaySubs();
+            displayNotSubs();
         });
-
-        function isTheUser(sub){
-            return sub.id == userId;
-        }
 
 
         function displaySubs(){
@@ -33,23 +32,48 @@
 
 
             for (let sub of subsJson) {
-                if(isTheUser(sub)){
-                    if(hasAlreadyPaid(sub)){
-                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + "</p></li>";
-                    } 
-                    else {
+                if(sub.has_paid){
+                    if(sub.is_creator){
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " (Creator)</p></li>";
+                    }
+                    else{
                         html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + "</p></li>";
                     }
-                }
-                else{
-                    html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + "</p></li>";
+
+                } else {
+                    if(sub.is_creator){
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " (Creator)</p></li>";
+                    }
+                    else{
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + "add to delete Json</p></li>";
+                    }
                 }
             }
-
             listOfSubs.html(html);
         }
 
-        function displayNotSubs(){}
+        function displayNotSubs(){
+            selectNotSubs = $('#add_subscription_select');
+
+            html='<select  class="form-select" name="participant" id="participant">'+
+                '<option value="" selected disabled hidden>--Add a new subscriber--</option>';
+            
+            for (let user of notSubJson) {
+                html+="<option value=" + user.id+ ">" + user.full_name + "</option>";
+            }
+
+
+            html+='</select>';
+            
+
+
+
+
+            //html+='<input class="me-3 btn btn-primary" type="submit"  value="Add"">";
+
+            selectNotSubs.html(html);
+
+        }
 
         function addToDeleteJson(){}
 
@@ -138,8 +162,8 @@
 
 
     <form action="Tricount/add_participant/<?= $tricount->id?>" id="addParticipantFrom" method="post">       
-        <div class="input-group p-1 ms-2 me-2 mb-2">
-            <select id="add_subscription_select" class="form-select" name="participant" id="participant">
+        <div id="add_subscription_select" class="input-group p-1 ms-2 me-2 mb-2">
+            <select  class="form-select" name="participant" id="participant">
                 <option value="" selected disabled hidden>--Add a new subscriber--</option>
                 <?php foreach ($notSubParticipants as $user){ ?>
                         <option value="<?=$user->id?>"> <?=$user->full_name?> </option>
