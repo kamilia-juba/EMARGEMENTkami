@@ -13,6 +13,7 @@
         let subsJson = <?=$subs_json?>;
         let notSubJson = <?=$not_subs_json?>;
         
+        let targetSubToAdd;
         let userId= <?=$user->id?>;
         let listOfSubs;
         let selectNotSubs;
@@ -53,31 +54,43 @@
         }
 
         function displayNotSubs(){
-            selectNotSubs = $('#add_subscription_select');
+            selectNotSubs = $('#add_subscription_selectdiv');
 
-            html='<select  class="form-select" name="participant" id="participant">'+
+            html='<div class="input-group p-1 ms-2 me-2 mb-2"> <select id="add_subscription_select" value="456" class="form-select" onchange="updateTargetSubToAdd()">'+
                 '<option value="" selected disabled hidden>--Add a new subscriber--</option>';
             
             for (let user of notSubJson) {
-                html+="<option value=" + user.id+ ">" + user.full_name + "</option>";
+                html += '<option value= {id: + user.id + ,"full_name":"' + user.full_name + '"}\'>'
+                + user.full_name + '</option>';
+                //console.log(user.id)    ;     
             }
 
 
             html+='</select>';
             
 
-
-
-
-            //html+='<input class="me-3 btn btn-primary" type="submit"  value="Add"">";
+            html+='<input class="me-3 btn btn-primary" type="button" onclick="addToAddJson()"  value="Add"></div>';
 
             selectNotSubs.html(html);
 
         }
 
-        function addToDeleteJson(){}
+        function addToDeleteJson(){
 
-        function addToAddJson(){}
+        }
+
+        function updateTargetSubToAdd(){
+            selectNotSubs = $('#add_subscription_select');
+            targetSubToAdd= selectNotSubs.val();
+            console.log(targetSubToAdd);
+
+            subsJson.push(targetSubToAdd);
+            console.log(subsJson);
+        }
+
+        function addToAddJson(){
+            
+        }
 
 
 
@@ -162,7 +175,7 @@
 
 
     <form action="Tricount/add_participant/<?= $tricount->id?>" id="addParticipantFrom" method="post">       
-        <div id="add_subscription_select" class="input-group p-1 ms-2 me-2 mb-2">
+        <div id="add_subscription_selectdiv" value ="hey" class="input-group p-1 ms-2 me-2 mb-2">
             <select  class="form-select" name="participant" id="participant">
                 <option value="" selected disabled hidden>--Add a new subscriber--</option>
                 <?php foreach ($notSubParticipants as $user){ ?>
