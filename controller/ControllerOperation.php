@@ -166,7 +166,7 @@ class ControllerOperation extends Mycontroller{
                 $selected_repartition = $template->id;
                 $participants_and_weights = [];
                 foreach($participants as $participant){ //récupère un tableau avec les participants et leur poids du template sélectionné et détermine si le participant participe dans ce template ou non
-                    $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant), $participant->user_participates_to_repartition($template->id)];
+                    $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant), $participant->user_participates_to_repartition($template)];
                 }
             }
 
