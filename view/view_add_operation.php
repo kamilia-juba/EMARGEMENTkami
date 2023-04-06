@@ -102,6 +102,7 @@
                         }).get();
                     for(var i =0; i<checkboxes.length;++i){
                         $("#" + checkboxes[i]).prop("checked", true);
+                        $("#" + checkboxes[i] + "_weight").val(1);
                     }
                 }
             }
@@ -112,10 +113,14 @@
                         }).get();
                 for(var i =0; i<checkboxes.length;++i){
                     const data = await $.post("template/user_participates_service", {userId : checkboxes[i] , templateId : template},null, "json");
+                    const weight = await $.post("template/get_user_weight_service", {userId : checkboxes[i], templateId: template}, null, "json");
                     if(data){
                         $("#" + checkboxes[i]).prop("checked", true);
+                        console.log(weight);
+                        $("#" + checkboxes[i] + "_weight").val(weight);
                     }else{
                         $("#" + checkboxes[i]).prop("checked", false);
+                        $("#" + checkboxes[i] + "_weight").val(0);
                     }
                 }
             }
@@ -136,6 +141,7 @@
                 
                 $("#applyTemplateSelect").change(function() {
                     applyItems();
+                    handleAmounts();
                 })
             });
         </script>
