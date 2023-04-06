@@ -29,7 +29,7 @@
         function displaySubs(){
             listOfSubs = $('#subscription');
 
-            html='';
+            html='<ul id="subscription" class="list-group p-1 ms-2 me-2 mb-2">';
 
 
             for (let sub of subsJson) {
@@ -46,27 +46,34 @@
                         html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " (Creator)</p></li>";
                     }
                     else{
-                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + "add to delete Json</p></li>";
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " </p>"
+                        html += "<p><a style='float:right'><i style='color:red' class='fa-regular fa-trash-can fa-xl'></i></a></p></li>";
                     }
                 }
             }
+
+            html+='</ul>'
             listOfSubs.html(html);
         }
 
         function displayNotSubs(){
             selectNotSubs = $('#add_subscription_selectdiv');
 
-            html='<div class="input-group p-1 ms-2 me-2 mb-2"> <select id="add_subscription_select" value="456" class="form-select" onchange="updateTargetSubToAdd()">'+
+            html='<div class="input-group p-1 ms-2 me-2 mb-2"> <select id="add_subscription_select" class="form-select" onchange="addParticipant()">'+
                 '<option value="" selected disabled hidden>--Add a new subscriber--</option>';
             
-            for (let user of notSubJson) {
-                html += '<option value= {id: + user.id + ,"full_name":"' + user.full_name + '"}\'>'
-                + user.full_name + '</option>';
-                //console.log(user.id)    ;     
-            }
+                for (let user of notSubJson) {
+                
+                // Convertir l'objet JSON en une chaîne de caractères JSON
+ 
+                var value = JSON.stringify({ id: user.id, full_name: user.full_name, has_paid: false, is_creator: false });
+  
+                 // Stocker la valeur de l'objet JSON dans la balise option
 
+                html += '<option value=\'' + value + '\'>' + user.full_name + '</option>';
+                }
 
-            html+='</select>';
+                html += '</select></div>';
             
 
             html+='<input class="me-3 btn btn-primary" type="button" onclick="addToAddJson()"  value="Add"></div>';
@@ -75,21 +82,39 @@
 
         }
 
-        function addToDeleteJson(){
-
+        function addParticipant(){
+            updateTargetSubToAdd();
+            addTargetToSubs(targetSubToAdd);
+            deleteFromNotSubs(targetSubToAdd.id);
+            displaySubs();
+            displayNotSubs();
         }
 
         function updateTargetSubToAdd(){
             selectNotSubs = $('#add_subscription_select');
-            targetSubToAdd= selectNotSubs.val();
-            console.log(targetSubToAdd);
-
-            subsJson.push(targetSubToAdd);
-            console.log(subsJson);
+            targetSubToAdd = JSON.parse(selectNotSubs.val());
         }
 
-        function addToAddJson(){
-            
+        function addTargetToSubs(){
+            subsJson.push(targetSubToAdd);
+        }
+        
+        function deleteFromNotSubs(id){
+            for (let i = 0; i < notSubJson.length; i++) {
+                if (notSubJson[i].id === id) {
+                    notSubJson.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+        function deleteFromSubs(id){
+            for (let i = 0; i < subsJson.length; i++) {
+                if (subsJson[i].id === id) {
+                    subsJson.splice(i, 1);
+                    break;
+                }
+            }
         }
 
 
