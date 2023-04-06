@@ -94,15 +94,16 @@
 
             function applyItems(){
                 var selectedTemplate = $("#applyTemplateSelect").val();
+                var checkboxes = $(".checkboxParticipant").map(function(){
+                            return this.id;
+                        }).get();
                 if(selectedTemplate != "customRepartition"){
                     checkUserParticipatesTemplate(selectedTemplate);
                 }else{
-                    var checkboxes = $(".checkboxParticipant").map(function(){
-                            return this.id;
-                        }).get();
                     for(var i =0; i<checkboxes.length;++i){
                         $("#" + checkboxes[i]).prop("checked", true);
                         $("#" + checkboxes[i] + "_weight").val(1);
+                        handleAmounts();
                     }
                 }
             }
@@ -116,12 +117,12 @@
                     const weight = await $.post("template/get_user_weight_service", {userId : checkboxes[i], templateId: template}, null, "json");
                     if(data){
                         $("#" + checkboxes[i]).prop("checked", true);
-                        console.log(weight);
                         $("#" + checkboxes[i] + "_weight").val(weight);
                     }else{
                         $("#" + checkboxes[i]).prop("checked", false);
                         $("#" + checkboxes[i] + "_weight").val(0);
                     }
+                    handleAmounts();
                 }
             }
             $(function(){
@@ -141,7 +142,6 @@
                 
                 $("#applyTemplateSelect").change(function() {
                     applyItems();
-                    handleAmounts();
                 })
             });
         </script>
