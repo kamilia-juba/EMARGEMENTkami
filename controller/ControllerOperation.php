@@ -54,6 +54,7 @@ class ControllerOperation extends Mycontroller{
         $errorsSaveTemplate = [];
         $participants = $tricount->get_participants();
         $participants_and_weights = [];
+        $templates_json = $tricount->get_templates_json();
         foreach($participants as $participant){                                     // initialisation des participants, checkbox et leur poids à 1
                 $participants_and_weights[] = [$participant, 1, true];
         }
@@ -135,6 +136,7 @@ class ControllerOperation extends Mycontroller{
                                             "participants_and_weights" => $participants_and_weights,
                                             "repartition_templates"=>$repartition_templates,
                                             "selected_repartition" => $selected_repartition,
+                                            "templates_json" => $templates_json,
                                             "user"=>$user]);
         }else{
             $this->redirect("main");

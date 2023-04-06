@@ -125,6 +125,17 @@ class ControllerTemplate extends Mycontroller{
         }
         echo $res;
     }
+
+    public function user_participates_service(){
+        $res = "false";
+        $template = Template::get_template_by_id($_POST["templateId"]);
+        $user = User::get_user_by_id($_POST["userId"]);
+
+        if($template->user_participates($user)){
+            $res = "true";
+        }
+        echo $res;
+    }
 }
 
 ?>

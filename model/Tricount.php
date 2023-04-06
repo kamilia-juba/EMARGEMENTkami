@@ -277,6 +277,21 @@ class Tricount extends Model{
         }
         return json_encode($table);
     }
+
+    public function  get_templates_json():string{
+        $templates = $this->get_repartition_templates();
+
+        $table = [];
+
+        foreach($templates as $template){
+            $row = [];
+            $row["id"] = $template->id;
+            $row["title"] = $template->title;
+            $row["tricount"] = $template->tricount;
+            $table[] = $row;
+        }
+        return json_encode($table);
+    }
 }
 
 ?>

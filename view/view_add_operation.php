@@ -9,7 +9,8 @@
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
 
         <script>
-            let totalAmount  ;
+            let totalAmount;
+            let template_json = <?=$templates_json?> ;
 
             function handleAmounts (){
                 
@@ -79,7 +80,45 @@
 
             }
 
+            function handleTemplates(){
+                $("#applyTemplateBtn").hide();
+                let applyTemplateSelect = $("#applyTemplateSelect");
+                let html = '<select class="form-select"  id="applyTemplateSelect" name="repartitionTemplates" form="applyTemplateForm">';
+                html += '<option value="customRepartition">No, i\'ll use custom repartition</option>';
+                for(let template of template_json){
+                    html+='<option value="'+ template.id +'">'+ template.title +'</option>';
+                }
+                html+="</select>";
+                applyTemplateSelect.html(html);
+            }
 
+            function applyItems(){
+                var selectedTemplate = $("#applyTemplateSelect").val();
+                if(selectedTemplate != "customRepartition"){
+                    checkUserParticipatesTemplate(selectedTemplate);
+                }else{
+                    var checkboxes = $(".checkboxParticipant").map(function(){
+                            return this.id;
+                        }).get();
+                    for(var i =0; i<checkboxes.length;++i){
+                        $("#" + checkboxes[i]).prop("checked", true);
+                    }
+                }
+            }
+
+            async function checkUserParticipatesTemplate(template){
+                var checkboxes = $(".checkboxParticipant").map(function(){
+                            return this.id;
+                        }).get();
+                for(var i =0; i<checkboxes.length;++i){
+                    const data = await $.post("template/user_participates_service", {userId : checkboxes[i] , templateId : template},null, "json");
+                    if(data){
+                        $("#" + checkboxes[i]).prop("checked", true);
+                    }else{
+                        $("#" + checkboxes[i]).prop("checked", false);
+                    }
+                }
+            }
             $(function(){
                 totalAmount=$("#amount");
                 handleAmounts();                
@@ -93,9 +132,11 @@
                    handleAmounts();
                 });
 
-               
+                handleTemplates();
                 
-
+                $("#applyTemplateSelect").change(function() {
+                    applyItems();
+                })
             });
         </script>
     </head>
@@ -141,13 +182,13 @@
             </select>
             Use repartition template (optional)
             <div class="input-group mb-2">
-                <select class="form-select" name="repartitionTemplates" form="applyTemplateForm">
+                <select class="form-select" id="applyTemplateSelect" name="repartitionTemplates" form="applyTemplateForm">
                     <option value="customRepartition">No, i'll use custom repartition</option>
                     <?php foreach($repartition_templates as $repartition){ ?>
                             <option value="<?=$repartition->id?>"<?=$repartition->id==$selected_repartition ? "selected" : "" ?>><?=$repartition->title?></option>
                     <?php } ?>
                 </select>
-                <input class="btn btn-outline-secondary" type="submit" name="ApplyTemplate" value="&#10226;" form="applyTemplateForm">
+                <input class="btn btn-outline-secondary" id="applyTemplateBtn" type="submit" name="ApplyTemplate" value="&#10226;" form="applyTemplateForm">
             </div>
             For whom ? (select at least one)
             <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
