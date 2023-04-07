@@ -14,15 +14,22 @@
         let notSubJson = <?=$not_subs_json?>;
         
         let targetSubToAdd;
+        let targetSubToDelete;
+
+        let tricountId= <?=$tricount->id?>;
         let userId= <?=$user->id?>;
         let listOfSubs;
         let selectNotSubs;
 
         $(function(){
             listOfSubs = $('#subscription');
+
             
             displaySubs();
             displayNotSubs();
+            hideSelectNotSubsIfNonSubJsonIsEmty();
+            $('#saveButton').attr('onclick', 'saveAll()');
+
         });
 
 
@@ -47,7 +54,7 @@
                     }
                     else{
                         html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " </p>"
-                        html += "<p><a style='float:right'><i style='color:red' class='fa-regular fa-trash-can fa-xl'></i></a></p></li>";
+                        html += "<p><a style='float:right'><i onclick='removeParticipant(" + sub.id + ",\"" + sub.full_name + "\")' style='color:red' class='fa-regular fa-trash-can fa-xl'></i></a></p></li>";
                     }
                 }
             }
@@ -59,7 +66,7 @@
         function displayNotSubs(){
             selectNotSubs = $('#add_subscription_selectdiv');
 
-            html='<div class="input-group p-1 ms-2 me-2 mb-2"> <select id="add_subscription_select" class="form-select" onchange="addParticipant()">'+
+            html='<div class="input-group p-1 ms-2 me-2 mb-2"> <select id="add_subscription_select" class="form-select">'+
                 '<option value="" selected disabled hidden>--Add a new subscriber--</option>';
             
                 for (let user of notSubJson) {
@@ -73,10 +80,10 @@
                 html += '<option value=\'' + value + '\'>' + user.full_name + '</option>';
                 }
 
-                html += '</select></div>';
+                html += '</select>';
             
 
-            html+='<input class="me-3 btn btn-primary" type="button" onclick="addToAddJson()"  value="Add"></div>';
+            html+='<input class="me-3 btn btn-primary" type="button" onclick="addParticipant()"  value="Add"></div>';
 
             selectNotSubs.html(html);
 
@@ -88,6 +95,37 @@
             deleteFromNotSubs(targetSubToAdd.id);
             displaySubs();
             displayNotSubs();
+
+            hideSelectNotSubsIfNonSubJsonIsEmty();
+
+        }
+
+        function hideSelectNotSubsIfNonSubJsonIsEmty(){
+            if(checkIfNonSubJsonIsEmpty()){
+                selectNotSubs.hide();
+            }
+        }
+
+        function removeParticipant(id,full_name){
+            let targetSub = {
+                "id" : id,
+                "full_name" : full_name,
+                "has_paid" : false,
+                "is_creator" : false
+            };
+            
+            deleteFromSubs(id);
+            addToNonSubs(targetSub);
+            displaySubs();
+            displayNotSubs();
+
+            selectNotSubs.show();
+
+  
+        }
+
+        function checkIfNonSubJsonIsEmpty(){
+            return notSubJson.length === 0;
         }
 
         function updateTargetSubToAdd(){
@@ -98,7 +136,11 @@
         function addTargetToSubs(){
             subsJson.push(targetSubToAdd);
         }
-        
+
+        function addToNonSubs(target){
+            notSubJson.push(target);
+        }
+
         function deleteFromNotSubs(id){
             for (let i = 0; i < notSubJson.length; i++) {
                 if (notSubJson[i].id === id) {
@@ -117,7 +159,40 @@
             }
         }
 
+        function saveSub(){
 
+            for (let user of subsJson) {
+                console.log("hey");
+                $.post('Tricount/add_subscriber_service/'+tricountId, { userId : user.id}, function(response) {
+                    // La méthode a été appelée avec succès et le résultat est retourné dans 'response'
+                    console.log(response);
+                }).fail(function(xhr, status, error) {
+                    // Une erreur s'est produite lors de l'appel de la méthode
+                    console.log('Erreur : ' + error);
+                });
+            }
+        }
+
+        function saveUnsub(){
+
+            for (let user of notSubJson) {
+                console.log("hey");
+                $.post('Tricount/remove_subscriber_service/'+tricountId, { userId : user.id}, function(response) {
+                    // La méthode a été appelée avec succès et le résultat est retourné dans 'response'
+                    console.log(response);
+                }).fail(function(xhr, status, error) {
+                    // Une erreur s'est produite lors de l'appel de la méthode
+                    console.log('Erreur : ' + error);
+                });
+            }
+        }
+
+        function saveAll(){
+            saveSub();
+            saveUnsub();
+        }
+
+        
 
 
 
@@ -136,7 +211,7 @@
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
         <a href="Tricount/showTricount/<?=$tricount->id?>/" class="btn btn-outline-danger">Back</a>
         <?=$tricount->title?> &#8594; Edit
-        <input type="submit" class="btn btn-primary" form="editTricountForm" name="saveButton" value="Save">
+        <input id=saveButton type="submit" class="btn btn-primary" form="editTricountForm" name="saveButton" value="Save">
     </div>
 
 
