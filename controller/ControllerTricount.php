@@ -308,7 +308,6 @@ class ControllerTricount extends MyController{
 
     public function tricount_exists_service(){
         $res = "false";
-        $user = $this->get_user_or_redirect();
         if(isset($_POST["newTitle"]) && $_POST["newTitle"] !== ""){
             $tricount = Tricount::tricount_title_already_exists($_POST["newTitle"],$user);
             if($tricount){
@@ -317,5 +316,28 @@ class ControllerTricount extends MyController{
          }
         echo $res;
     }
+
+    public function add_subscriber_service(){
+        $user = $this->get_user_or_redirect();
+
+        $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
+        $targetUser = User::get_user_by_id($_POST["userId"]);
+
+        if(!$targetUser->is_subscribed_to_tricount($tricount->id)){
+            $tricount->add_subscriber($targetUser);
+        }
+    }
+
+    public function remove_subscriber_service(){
+        $user = $this->get_user_or_redirect();
+
+        $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
+        $targetUser = User::get_user_by_id($_POST["userId"]);
+
+            $tricount->delete_participation($targetUser->id);
+        
+    }
+
+
 }
 ?>
