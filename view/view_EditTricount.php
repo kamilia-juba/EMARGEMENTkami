@@ -54,7 +54,7 @@
                     }
                     else{
                         html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " </p>"
-                        html += "<p><a style='float:right'><i onclick='removeParticipant(" + sub.id + ",\"" + sub.full_name + "\")' style='color:red' class='fa-regular fa-trash-can fa-xl'></i></a></p></li>";
+                        html += "<p><a style='float:right'><i onclick='removeParticipant(" + sub.id + ",\"" + sub.full_name + "\")' class='fa-regular fa-trash-can fa-xl'></i></a></p></li>";
                     }
                 }
             }
@@ -199,7 +199,7 @@
             jsonArray.sort(function(a, b) {
                 var nameA = a.full_name.toUpperCase(); // convertir le nom en majuscules pour la comparaison
                 var nameB = b.full_name.toUpperCase();
-                
+
                 if (nameA < nameB) {
                     return -1; // a vient avant b dans l'ordre alphabétique
                 }
