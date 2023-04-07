@@ -20,9 +20,9 @@
         function sort(){
 
             // Sélectionne la balise <select> par son ID
-            const selectElement = document.getElementById("sort");
+            const selectElement = $('#sort');
 
-            let field = selectElement.value;
+            let field = selectElement.val();
 
             switch (field){
                 case "amount-asc" : sortByField('amount', true);
