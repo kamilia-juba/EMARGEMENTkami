@@ -323,8 +323,11 @@ class ControllerTricount extends MyController{
         $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
         $targetUser = User::get_user_by_id($_POST["userId"]);
 
-        if(!$targetUser->is_subscribed_to_tricount($tricount->id)){
+        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && !$targetUser->is_subscribed_to_tricount($_GET["param1"])){
             $tricount->add_subscriber($targetUser);
+        }
+        else{
+            $this->redirect();
         }
     }
 
@@ -333,8 +336,15 @@ class ControllerTricount extends MyController{
 
         $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
         $targetUser = User::get_user_by_id($_POST["userId"]);
+        if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $targetUser->is_subscribed_to_tricount($_GET["param1"])){
+            if(!$targetUser->has_already_paid($tricount)&&$targetUser->id!=$creatorOfTricount->id){
+                $tricount->delete_participation($targetUser->id);
 
-            $tricount->delete_participation($targetUser->id);
+            }            
+        }
+        else{
+            $this->redirect();
+        }
         
     }
 
