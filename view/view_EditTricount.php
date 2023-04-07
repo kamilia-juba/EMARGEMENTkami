@@ -93,11 +93,13 @@
             updateTargetSubToAdd();
             addTargetToSubs(targetSubToAdd);
             deleteFromNotSubs(targetSubToAdd.id);
+            sortByName(subsJson);
             displaySubs();
             displayNotSubs();
 
             hideSelectNotSubsIfNonSubJsonIsEmty();
 
+            console.log(subsJson);
         }
 
         function hideSelectNotSubsIfNonSubJsonIsEmty(){
@@ -193,7 +195,20 @@
         }
 
         
-
+        function sortByName(jsonArray) {
+            jsonArray.sort(function(a, b) {
+                var nameA = a.full_name.toUpperCase(); // convertir le nom en majuscules pour la comparaison
+                var nameB = b.full_name.toUpperCase();
+                
+                if (nameA < nameB) {
+                    return -1; // a vient avant b dans l'ordre alphabétique
+                }
+                if (nameA > nameB) {
+                    return 1; // a vient après b dans l'ordre alphabétique
+                }
+                    return 0; // les noms sont égaux
+            });
+        }
 
 
 
