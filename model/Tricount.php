@@ -254,6 +254,19 @@ class Tricount extends Model{
         return !empty($data);
     }
 
+        //recupere les utilisateur qui non pas particite au tricpount
+    public function get_users_not_sub_to_a_tricount() : array {
+        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId) ORDER BY full_name", ["tricountId"=>$this->id]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach ($data as $row) {
+
+            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"],$row["id"]);
+
+        }
+        return $results;
+    }
+
     
     public function get_operations_as_json() : string {
         $operations = $this->get_operations();
@@ -288,6 +301,48 @@ class Tricount extends Model{
             $row["id"] = $template->id;
             $row["title"] = $template->title;
             $row["tricount"] = $template->tricount;
+            $table[] = $row;
+        }
+        return json_encode($table);
+    }
+
+    public function get_subs_as_json() : string {
+        $participants = $this->get_participants();
+        
+        
+        $table = [];
+
+        foreach ($participants as $participant) {
+            $hasPaid=$this->has_already_paid($participant);
+            
+            $row = [];
+            $row["id"] = $participant->id;
+            $row["full_name"] = $participant->full_name;
+            $row["has_paid"] = $hasPaid;
+            
+            if($participant->id==$this->creator){
+                $row["is_creator"] = true;
+            }
+            else{
+                $row["is_creator"] = false;
+            }
+
+            $table[] = $row;
+        }
+        return json_encode($table);
+    }
+
+    public function get_not_subs_as_json() : string {
+        $participants = $this->get_users_not_sub_to_a_tricount();
+
+        $table = [];
+
+        foreach ($participants as $participant) {
+
+
+            $row = [];
+            $row["id"] = $participant->id;
+            $row["full_name"] = $participant->full_name;
             $table[] = $row;
         }
         return json_encode($table);
