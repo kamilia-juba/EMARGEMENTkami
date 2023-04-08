@@ -169,7 +169,11 @@
             $(function(){
                 title = $("#title");
                 errTitle = $("#errTitle");
-
+                
+                if(title.val()!=""){
+                    checkTitle();
+                }
+                
                 title.bind("input", checkTitle);
 
                 totalAmount=$("#amount");
@@ -185,6 +189,10 @@
                 });
 
                 handleTemplates();
+
+                $("#phpAmountError").hide();
+                $("#phpTitleError").hide();
+
                 
                 $("#applyTemplateSelect").change(function() {
                     applyItems();
@@ -203,8 +211,9 @@
         <form id="addOperationForm" action="Operation/add_operation/<?= $tricount->id?>" method="post">
             <input class="form-control mb-2" id="title" name="title" type="text" value="<?= $title?>" placeholder="Title">
             <div id='errTitle' class='text-danger'></div>       
-            <div class='text-success' id='okTitle'></div>
+            <div id='okTitle' class='text-success' ></div>
             <?php if (count($errorsTitle) != 0): ?>
+                <div id="phpTitleError" class='text-danger'>      
                     <ul>
                         <?php foreach ($errorsTitle as $errors): ?>
                             <li><?= $errors ?></li>
@@ -217,7 +226,7 @@
                 <span class="input-group-text" style="background-color: #E9ECEF">EUR</span>
             </div>
             <?php if (count($errorsAmount) != 0): ?>
-                <div class='text-danger'>
+                <div id="phpAmountError" class='text-danger'>
                     <ul>
                         <?php foreach ($errorsAmount as $errors): ?>
                             <li><?= $errors ?></li>
