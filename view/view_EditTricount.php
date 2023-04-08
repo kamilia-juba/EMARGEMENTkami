@@ -57,11 +57,48 @@
                         
                         
                     }
-                    //changeDescriptionView();
+                    changeDescriptionView();
                 }
-                //changeDescriptionView();
+                changeDescriptionView();
                 return verification ;
             }
+            async function checkTitleExists(){
+               
+               const data = await $.post("tricount/tricount_exists_service/", {newTitle : title.val()},null, "json");
+               if(data){
+                   errorTitle.append("<p>Title already exists. please choice another</p>");
+               }
+               changeTitleView();
+
+           }
+
+           function changeTitleView(){
+               if(errorTitle.text() == ""){
+                   $("#verificationTitle").html(" • Looks good");
+                   $("#title").attr("class","form-control mb-2 is-valid");
+               }else{
+                   $("#verificationTitle").html("");
+                   $("#title").attr("class", "form-control mb-2 is-invalid");
+               }
+           }
+
+           function changeDescriptionView(){
+               if(errorDescription.text()==""){
+                   $("#verificationDescription").html(" • Looks good");
+                   $("#description").attr("class","form-control mb-2 is-valid");
+               }else{
+                   $("#verificationDescription").html("");
+                   $("#description").attr("class", "form-control mb-2 is-invalid");
+               }
+               
+           }
+
+
+           function checkAll(){
+               let verification = checkTitle();
+               verification = checkDescription() && verification; 
+               return verification;
+           }
 
 
         $(function(){
@@ -73,7 +110,7 @@
             errorDescription = $("#errorDescription");
 
             title.bind("input", checkTitle);
-            //title.bind("input", checkTitleExists);
+            title.bind("input", checkTitleExists);
             description.bind("input", checkDescription);
             displaySubs();
             displayNotSubs();
