@@ -170,11 +170,12 @@
                 title = $("#title");
                 errTitle = $("#errTitle");
                 
+                title.bind("input", checkTitle);
+
                 if(title.val()!=""){
                     checkTitle();
                 }
                 
-                title.bind("input", checkTitle);
 
                 totalAmount=$("#amount");
                 handleAmounts();                
