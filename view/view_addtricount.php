@@ -18,12 +18,14 @@
             function checkTitle(){
                 let verification= true;
                 errorTitle.html("");
+
                 if(title.val().length === 0){
                     errorTitle.append("<p>Title cannot be empty.</p>");
                     verification=false;
                 }
                 else {
-                    if(title.val().length<3 || title.val().length>16){
+                    let regex = /^(?!\s*$)[\S\s]{3,16}$/;
+                    if(!regex.test(title.val())){
                         errorTitle.append("<p>Title length must be between 3 and 16.</p>");
                         verification=false;
                     }
