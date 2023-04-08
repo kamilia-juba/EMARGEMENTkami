@@ -156,6 +156,7 @@ class ControllerOperation extends Mycontroller{
             $tricount = Tricount::get_tricount_by_id($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
             $participants_and_weights = [];
+            $templates_json = $tricount->get_templates_json();
             foreach($participants as $participant){ //récupère un tableau avec les participants ainsi que leur poids sur l'opération et détermine si le participant participe dans cette opération ou non
                 $participants_and_weights[] = [$participant, $operation->get_weight(User::get_user_by_id($participant->id)) == null ? 1 : $operation->get_weight(User::get_user_by_id($participant->id)),$operation->user_participates($participant)];
             }
@@ -236,6 +237,7 @@ class ControllerOperation extends Mycontroller{
                                                  "errorsTitle" => $errorsTitle,
                                                  "errorsAmount" => $errorsAmount, 
                                                  "errorsCheckboxes" => $errorsCheckboxes,
+                                                 "templates_json" => $templates_json,
                                                  "errorsSaveTemplate" => $errorsSaveTemplate]
             );
         } else{
@@ -264,5 +266,30 @@ class ControllerOperation extends Mycontroller{
             $this->redirect();
         }
     }
+
+    public function user_participates_service(){
+        $res = "false";
+        $operation = Operation::get_operation_by_id($_POST["operationId"]);
+        $user = User::get_user_by_id($_POST["userId"]);
+
+        if($operation->user_participates($user)){
+            $res = "true";
+        }
+        echo $res;
+    }
+
+   
+
+    public function get_user_weight_service(){
+        $res = 0;
+        $operation= Operation::get_operation_by_id($_POST["operationId"]);
+        $user=User::get_user_by_id($_POST["userId"]);
+
+        $res += $operation->get_weight($user);
+
+        echo $res;
+    }
+
+   
 }
 ?>
