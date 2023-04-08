@@ -72,6 +72,30 @@
                 return ok;
             }
 
+
+            function handleCheckbox(){
+                var checkboxes = $(".checkboxParticipant").map(function(){
+                            return this.id;
+                        }).get();
+                       
+                    for (var i = 0; i<checkboxes.length; ++i){
+                        var checkbox= $("#" + checkboxes[i]);
+                        
+                        var weight = $("#" + checkboxes[i]+  "_weight");
+                        var weightval = weight.val();
+
+                        if(checkbox.prop("checked")==false){
+                            weight.val("0");
+                        }
+                        if(checkbox.prop("checked")==true){
+                            if(weight.val()==="0"){
+                                weight.val("1");
+                            }
+                            else(weight.val(weightval));
+                        }
+                    }
+            }
+
             function checkAll(){
                 let ok = checkTitle();
                 ok = checkWeight() && ok;
@@ -87,6 +111,10 @@
 
                 title.bind("input", checkTitle);
                 title.bind("input", checkTitleExists);
+
+                $(".checkboxParticipant").change(function(){
+                    handleCheckbox();
+                });
 
                 checkWeight();
 
@@ -119,7 +147,8 @@
                 <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){  ?>
                     <div class="input-group mb-2 mt-2">
                         <span class="form-control" style="background-color: #E9ECEF">
-                            <input type="checkbox" 
+                            <input type="checkbox"
+                                class="checkboxParticipant"
                                 name="checkboxParticipants[]" 
                                 id="<?=$participants_and_weights[$i][0]->id?>" 
                                 value ="<?=$participants_and_weights[$i][0]->id?>" 
