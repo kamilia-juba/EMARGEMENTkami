@@ -8,8 +8,115 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <script src="lib/jquery-3.6.4.js" type="text/javascript"></script>
-        <script src="scripts/add_template_jquery.js"></script>
-        <script>var tricountId = <?= $tricount->id?>;</script>
+        <script>
+            var tricountId = <?= $tricount->id?>;
+            let title, errTitle, errWeights;
+
+            function checkTitle(){
+                let ok = true;
+                errTitle.html("");
+
+                if(title.val().trim().length === 0){
+                    errTitle.append("<p>Title cannot be empty.</p>");
+                    ok = false;
+                }else{
+                    if(!(/^.{3,255}$/).test(title.val())){
+                        errTitle.append("<p>Title must have at least 3 characters.</p>");
+                        ok = false;
+                    }
+                }
+                changeTitleView();
+                return ok;
+            }
+
+            async function checkTitleExists(){
+                const data = await $.post("template/template_exists_service", {newTitle : title.val(), tricountId : tricountId},null, "json");
+                if(data){
+                    errTitle.html("<p>There's already an existing template with this title. Choose another title</p>");
+                }
+                changeTitleView();
+            }
+
+            function changeTitleView(){
+                if(errTitle.text() == ""){
+                    $("#okTitle").html("Looks good");
+                    $("#title").attr("class","form-control mb-2 is-valid");
+                }else{
+                    $("#okTitle").html("");
+                    $("#title").attr("class", "form-control mb-2 is-invalid");
+                }
+            }
+
+            function checkWeight(){
+                let ok = true;
+                $("input[type='number']").on("input", function(){
+                    var checkboxes = $("input[type='checkbox']").map(function(){
+                        return this.id;
+                    }).get();
+                    errWeights.html("");
+                    okWeights.html("Looks good");
+                    for(var i=0; i<checkboxes.length; ++i){
+                        var checkbox = $("#" + checkboxes[i]);
+                        var weight = $("#" + checkboxes[i] + "_weight");
+                        if(weight.val() <= "0"){
+                            checkbox.prop("checked", false);
+                        }else{
+                            checkbox.prop("checked", true);
+                        }
+                        if(weight.val() === ""){
+                            errWeights.html("<p>Weights cannot be empty</p>");
+                            ok = false;
+                            okWeights.html("");
+                        }
+                    }
+                })
+                return ok;
+            }
+
+            function handleCheckbox(){
+                var checkboxes = $(".checkboxParticipant").map(function(){
+                            return this.id;
+                        }).get();
+                       
+                    for (var i = 0; i<checkboxes.length; ++i){
+                        var checkbox= $("#" + checkboxes[i]);
+                        
+                        var weight = $("#" + checkboxes[i]+  "_weight");
+
+                        if(checkbox.prop("checked")==false){
+                            weight.val("0");
+                        }
+                        if(checkbox.prop("checked")==true){
+                            weight.val("1");
+                        }
+                    }
+            }
+
+
+            function checkAll(){
+                let ok = checkTitle();
+                ok = checkWeight() && ok;
+                return ok;
+            }
+
+            $(function(){
+                title = $("#title");
+                errTitle = $("#errTitle");
+                errWeights = $("#errWeights");
+                okWeights = $("#okWeights");
+
+                title.bind("input", checkTitle);
+                title.bind("input", checkTitleExists);
+
+                $(".checkboxParticipant").change(function(){
+                    handleCheckbox();
+                });
+
+                checkWeight();
+
+                $("input:text:first").focus();
+            });
+        </script>
     </head>
  
 
@@ -39,7 +146,7 @@
                 <?php foreach($participants as $participant):  ?>
                     <div class="input-group mb-2 mt-2">
                         <span class="form-control" style="background-color: #E9ECEF">
-                            <input type="checkbox" name="checkboxParticipants[]" id="<?=$participant->id?>" value="<?=$participant->id?>" checked>
+                            <input class = "checkboxParticipant" type="checkbox" name="checkboxParticipants[]" id="<?=$participant->id?>" value="<?=$participant->id?>" checked>
                         </span>  
                         <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participant->full_name?></span>
                         <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participant->id?>_weight" value="1">
