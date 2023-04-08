@@ -82,12 +82,16 @@
                         var checkbox= $("#" + checkboxes[i]);
                         
                         var weight = $("#" + checkboxes[i]+  "_weight");
+                        var weightval = weight.val();
 
                         if(checkbox.prop("checked")==false){
                             weight.val("0");
                         }
                         if(checkbox.prop("checked")==true){
-                            weight.val("1");
+                            if(weight.val()==="0"){
+                                weight.val("1");
+                            }
+                            else(weight.val(weightval));
                         }
                     }
             }
