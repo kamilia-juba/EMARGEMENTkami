@@ -9,6 +9,48 @@
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
 
         <script>
+
+            var tricountId = <?= $tricount->id?>;
+            let title, errTitle, errWeights;
+
+            function checkTitle(){
+                let ok = true;
+                errTitle.html("");
+
+                if(title.val().trim().length === 0){
+                    errTitle.append("<p>Title cannot be empty.</p>");
+                    ok = false;
+                }               
+                 else {
+                    let regex = /^(?!\s*$)[\S\s]{3,16}$/;
+                    let titleValue = title.val().replace(/\s/g, ''); 
+                    if (!regex.test(titleValue)) {
+                        errTitle.append("<p>Title length must be between 3 and 16.</p>");
+                    verification = false;
+                    }
+
+                }
+                changeTitleView();
+                return ok;
+            }
+
+            function changeTitleView(){
+                if(errTitle.text() == ""){
+                    $("#okTitle").html("Looks good");
+                    $("#title").attr("class","form-control mb-2 is-valid");
+                }else{
+                    $("#okTitle").html("");
+                    $("#title").attr("class", "form-control mb-2 is-invalid");
+                }
+            }
+
+            function checkAll(){
+                let ok = checkTitle();
+                //ok = checkWeight() && ok;
+                return ok;
+            }
+
+            // -----------------------------------------------------------
             let totalAmount;
             let template_json = <?=$templates_json?> ;
 
@@ -125,6 +167,11 @@
                 }
             }
             $(function(){
+                title = $("#title");
+                errTitle = $("#errTitle");
+
+                title.bind("input", checkTitle);
+
                 totalAmount=$("#amount");
                 handleAmounts();                
 
@@ -155,8 +202,9 @@
         <form id="applyTemplateForm" action="Operation/add_operation/<?=$tricount->id?>" method="post"></form>
         <form id="addOperationForm" action="Operation/add_operation/<?= $tricount->id?>" method="post">
             <input class="form-control mb-2" id="title" name="title" type="text" value="<?= $title?>" placeholder="Title">
+            <div id='errTitle' class='text-danger'></div>       
+            <div class='text-success' id='okTitle'></div>
             <?php if (count($errorsTitle) != 0): ?>
-                <div class='text-danger'>
                     <ul>
                         <?php foreach ($errorsTitle as $errors): ?>
                             <li><?= $errors ?></li>
