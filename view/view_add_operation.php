@@ -11,7 +11,7 @@
         <script>
 
             var tricountId = <?= $tricount->id?>;
-            let title, errTitle, errWeights;
+            let title,amount, errTitle, errAmount;
 
             function checkTitle(){
                 let ok = true;
@@ -33,6 +33,25 @@
                 changeTitleView();
                 return ok;
             }
+            
+            
+            function checkAmount(){
+                let ok = true;
+                errAmount.html("");
+
+                if(amount.val().trim().length === 0){
+                    errAmount.append("");
+                    errAmount.append("<p>Amount cannot be empty.</p>");
+                    ok = false;
+                }
+                else if(amount.val()<=0){
+                    errAmount.append("");
+                    errAmount.append("<p>Amount must be greater than 0</p>");
+                    ok = false;
+                }
+                changeAmountView();
+                return ok;
+            }
 
             function changeTitleView(){
                 if(errTitle.text() == ""){
@@ -42,11 +61,22 @@
                     $("#okTitle").html("");
                     $("#title").attr("class", "form-control mb-2 is-invalid");
                 }
+            }            
+            
+            function changeAmountView(){
+                if(errAmount.text() == ""){
+                    $("#okAmount").html("Looks good");
+                    $("#amount").attr("class","form-control mb-2 is-valid");
+                }else{
+                    $("#okAmount").html("");
+                    $("#amount").attr("class", "form-control mb-2 is-invalid");
+                }
             }
 
             function checkAll(){
+                //return checkTitle() && checkAmount();
                 let ok = checkTitle();
-                //ok = checkWeight() && ok;
+                ok = checkAmount() && ok;
                 return ok;
             }
 
@@ -169,11 +199,15 @@
             $(function(){
                 title = $("#title");
                 errTitle = $("#errTitle");
+                errAmount = $("#errAmount");
+                amount=$("#amount")
                 
+                amount.bind("input", checkAmount)
                 title.bind("input", checkTitle);
 
                 if(title.val()!=""){
                     checkTitle();
+                    checkAmount();
                 }
                 
 
@@ -226,6 +260,8 @@
                 <input  class = "form-control" id="amount" name="amount" type="number" value="<?= $amount?>" placeholder="Amount">   
                 <span class="input-group-text" style="background-color: #E9ECEF">EUR</span>
             </div>
+            <div id='errAmount' class='text-danger'></div>       
+            <div id='okAmount' class='text-success' ></div>
             <?php if (count($errorsAmount) != 0): ?>
                 <div id="phpAmountError" class='text-danger'>
                     <ul>
