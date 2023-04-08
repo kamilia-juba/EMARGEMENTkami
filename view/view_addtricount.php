@@ -30,7 +30,7 @@
 
                 }
             
-                console.log(title);
+                
                 return verification; 
             
             }
@@ -46,9 +46,9 @@
                         
                         
                     }
-                    changeDescriptionView();
+                    //changeDescriptionView();
                 }
-                changeDescriptionView();
+                //changeDescriptionView();
                 return verification ;
             }
 
@@ -61,7 +61,6 @@
                     errorTitle.append("<p>Title already exists. please choice another</p>");
                 }
                 changeTitleView();
-                console.log();
 
             }
 
@@ -100,7 +99,7 @@
                 errorDescription = $("#errorDescription");
 
                 title.bind("input", checkTitle);
-                title.bind("input", checkTitleExists);
+                //title.bind("input", checkTitleExists);
                 description.bind("input", checkDescription);
                 
 

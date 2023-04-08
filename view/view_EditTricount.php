@@ -9,6 +9,10 @@
     <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
     <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
     <script>
+        let title ;
+        let errorTitle;
+        let description;
+        let errorDescription;
         
         let subsJson = <?=$subs_json?>;
         let notSubJson = <?=$not_subs_json?>;
@@ -21,13 +25,61 @@
         let listOfSubs;
         let selectNotSubs;
 
+
+        function checkTitle(){
+                let verification= true;
+                errorTitle.html("");
+                if(title.val().length === 0){
+                    errorTitle.append("<p>Title cannot be empty.</p>");
+                    verification=false;
+                }
+                else {
+                    if(title.val().length<3 || title.val().length>16){
+                        errorTitle.append("<p>Title length must be between 3 and 16.</p>");
+                        verification=false;
+                    }
+
+                }
+            
+                
+                return verification; 
+            
+            }
+
+            function checkDescription(){
+                let verification= true;
+                errorDescription.html("");
+                
+                if(description.val().length>0){
+                    if(description.val().length<3 || description.val().length>16){
+                        errorDescription.append("<p>Description length must be between 3 and 16.</p>");
+                        verification=false;
+                        
+                        
+                    }
+                    //changeDescriptionView();
+                }
+                //changeDescriptionView();
+                return verification ;
+            }
+
+
         $(function(){
             listOfSubs = $('#subscription');
 
-            
+            title = $("#title");
+            errorTitle = $("#errorTitle");
+            description = $("#description");
+            errorDescription = $("#errorDescription");
+
+            title.bind("input", checkTitle);
+            //title.bind("input", checkTitleExists);
+            description.bind("input", checkDescription);
             displaySubs();
             displayNotSubs();
             hideSelectNotSubsIfNonSubJsonIsEmty();
+            $("input:text:first").focus();
+
             $('#saveButton').attr('onclick', 'saveAll()');
 
         });
@@ -235,6 +287,8 @@
             <div class="form-group p-1 ms-2 me-2 mb-2">
                     <label class="pb-1">Title :</label>
                     <input class="form-control" type="text" id="title" name="title" value="<?= $title?>">
+                    <div class = "text-danger" id = "errorTitle"></div> 
+                    <div class='text-success' id='verificationTitle'></div>
                     <?php if (count($errorsTitle) != 0): ?>
                     <div class='text-danger'>
                         <ul>
@@ -248,6 +302,9 @@
             <div class="form-group p-1 ms-2 me-2 mb-2">
                     <label class="pb-1">Descripition (optional) :</label>
                     <input class="form-control" type="text" id="description" name="description" value="<?=$description?>">
+                    <div class = "text-danger" id = "errorDescription"></div> 
+                    <div class='text-success' id='verificationDescription'></div>
+
                     <?php if (count($errorsDescription) != 0): ?>
                     <div class='text-danger'>
                         <ul>
