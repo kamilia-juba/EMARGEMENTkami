@@ -5,8 +5,219 @@
     <meta charset="UTF-8">
     <base href="<?= $web_root ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
+    <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+    <script>
+        
+        let subsJson = <?=$subs_json?>;
+        let notSubJson = <?=$not_subs_json?>;
+        
+        let targetSubToAdd;
+        let targetSubToDelete;
+
+        let tricountId= <?=$tricount->id?>;
+        let userId= <?=$user->id?>;
+        let listOfSubs;
+        let selectNotSubs;
+
+        $(function(){
+            listOfSubs = $('#subscription');
+
+            
+            displaySubs();
+            displayNotSubs();
+            hideSelectNotSubsIfNonSubJsonIsEmty();
+            $('#saveButton').attr('onclick', 'saveAll()');
+
+        });
+
+
+        function displaySubs(){
+            listOfSubs = $('#subscription');
+
+            html='<ul id="subscription" class="list-group p-1 ms-2 me-2 mb-2">';
+
+
+            for (let sub of subsJson) {
+                if(sub.has_paid){
+                    if(sub.is_creator){
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " (Creator)</p></li>";
+                    }
+                    else{
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + "</p></li>";
+                    }
+
+                } else {
+                    if(sub.is_creator){
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " (Creator)</p></li>";
+                    }
+                    else{
+                        html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " </p>"
+                        html += "<p><a style='float:right'><i onclick='removeParticipant(" + sub.id + ",\"" + sub.full_name + "\")' class='fa-regular fa-trash-can fa-xl'></i></a></p></li>";
+                    }
+                }
+            }
+
+            html+='</ul>'
+            listOfSubs.html(html);
+        }
+
+        function displayNotSubs(){
+            selectNotSubs = $('#add_subscription_selectdiv');
+
+            html='<div class="input-group p-1 ms-2 me-2 mb-2"> <select id="add_subscription_select" class="form-select">'+
+                '<option value="" selected disabled hidden>--Add a new subscriber--</option>';
+            
+                for (let user of notSubJson) {
+                
+                // Convertir l'objet JSON en une chaîne de caractères JSON
+ 
+                var value = JSON.stringify({ id: user.id, full_name: user.full_name, has_paid: false, is_creator: false });
+  
+                 // Stocker la valeur de l'objet JSON dans la balise option
+
+                html += '<option value=\'' + value + '\'>' + user.full_name + '</option>';
+                }
+
+                html += '</select>';
+            
+
+            html+='<input class="me-3 btn btn-primary" type="button" onclick="addParticipant()"  value="Add"></div>';
+
+            selectNotSubs.html(html);
+
+        }
+
+        function addParticipant(){
+            updateTargetSubToAdd();
+            addTargetToSubs(targetSubToAdd);
+            deleteFromNotSubs(targetSubToAdd.id);
+            sortByName(subsJson);
+            displaySubs();
+            displayNotSubs();
+
+            hideSelectNotSubsIfNonSubJsonIsEmty();
+
+            console.log(subsJson);
+        }
+
+        function hideSelectNotSubsIfNonSubJsonIsEmty(){
+            if(checkIfNonSubJsonIsEmpty()){
+                selectNotSubs.hide();
+            }
+        }
+
+        function removeParticipant(id,full_name){
+            let targetSub = {
+                "id" : id,
+                "full_name" : full_name,
+                "has_paid" : false,
+                "is_creator" : false
+            };
+            
+            deleteFromSubs(id);
+            addToNonSubs(targetSub);
+            displaySubs();
+            displayNotSubs();
+
+            selectNotSubs.show();
+
+  
+        }
+
+        function checkIfNonSubJsonIsEmpty(){
+            return notSubJson.length === 0;
+        }
+
+        function updateTargetSubToAdd(){
+            selectNotSubs = $('#add_subscription_select');
+            targetSubToAdd = JSON.parse(selectNotSubs.val());
+        }
+
+        function addTargetToSubs(){
+            subsJson.push(targetSubToAdd);
+        }
+
+        function addToNonSubs(target){
+            notSubJson.push(target);
+        }
+
+        function deleteFromNotSubs(id){
+            for (let i = 0; i < notSubJson.length; i++) {
+                if (notSubJson[i].id === id) {
+                    notSubJson.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+        function deleteFromSubs(id){
+            for (let i = 0; i < subsJson.length; i++) {
+                if (subsJson[i].id === id) {
+                    subsJson.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+        function saveSub(){
+
+            for (let user of subsJson) {
+                console.log("hey");
+                $.post('Tricount/add_subscriber_service/'+tricountId, { userId : user.id}, function(response) {
+                    // La méthode a été appelée avec succès et le résultat est retourné dans 'response'
+                    console.log(response);
+                }).fail(function(xhr, status, error) {
+                    // Une erreur s'est produite lors de l'appel de la méthode
+                    console.log('Erreur : ' + error);
+                });
+            }
+        }
+
+        function saveUnsub(){
+
+            for (let user of notSubJson) {
+                console.log("hey");
+                $.post('Tricount/remove_subscriber_service/'+tricountId, { userId : user.id}, function(response) {
+                    // La méthode a été appelée avec succès et le résultat est retourné dans 'response'
+                    console.log(response);
+                }).fail(function(xhr, status, error) {
+                    // Une erreur s'est produite lors de l'appel de la méthode
+                    console.log('Erreur : ' + error);
+                });
+            }
+        }
+
+        function saveAll(){
+            saveSub();
+            saveUnsub();
+        }
+
+        
+        function sortByName(jsonArray) {
+            jsonArray.sort(function(a, b) {
+                var nameA = a.full_name.toUpperCase(); // convertir le nom en majuscules pour la comparaison
+                var nameB = b.full_name.toUpperCase();
+
+                if (nameA < nameB) {
+                    return -1; // a vient avant b dans l'ordre alphabétique
+                }
+                if (nameA > nameB) {
+                    return 1; // a vient après b dans l'ordre alphabétique
+                }
+                    return 0; // les noms sont égaux
+            });
+        }
+
+
+
+
+
+
+
+
+    </script>
 </head>
 
 <body>
@@ -15,7 +226,7 @@
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
         <a href="Tricount/showTricount/<?=$tricount->id?>/" class="btn btn-outline-danger">Back</a>
         <?=$tricount->title?> &#8594; Edit
-        <input type="submit" class="btn btn-primary" form="editTricountForm" name="saveButton" value="Save">
+        <input id=saveButton type="submit" class="btn btn-primary" form="editTricountForm" name="saveButton" value="Save">
     </div>
 
 
@@ -53,7 +264,7 @@
 
     <h2 class= "p-1 ms-2 me-2 mb-2">Subscriptions</h2>
 
-    <ul class="list-group p-1 ms-2 me-2 mb-2">
+    <ul id="subscription" class="list-group p-1 ms-2 me-2 mb-2">
         <?php foreach($participants as $participant){
                 if($participant->id==$user->id){
                     if($participant->has_already_paid($tricount)|| $tricount->has_already_paid($participant)){// a changer si on ne peut supprimer le createur
@@ -77,9 +288,10 @@
     </ul>
 
 
+
     <form action="Tricount/add_participant/<?= $tricount->id?>" id="addParticipantFrom" method="post">       
-        <div class="input-group p-1 ms-2 me-2 mb-2">
-            <select class="form-select" name="participant" id="participant">
+        <div id="add_subscription_selectdiv" value ="hey" class="input-group p-1 ms-2 me-2 mb-2">
+            <select  class="form-select" name="participant" id="participant">
                 <option value="" selected disabled hidden>--Add a new subscriber--</option>
                 <?php foreach ($notSubParticipants as $user){ ?>
                         <option value="<?=$user->id?>"> <?=$user->full_name?> </option>

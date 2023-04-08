@@ -20,10 +20,10 @@ class Tricount extends Model{
         $T = time();
         $D = date("y-m-d h:m:s", $T);
        
-       if(self::get_tricount_by_id($id)) // si il existe déjà update sinon le sauve
+       if($this->id != null) // si il existe déjà update sinon le sauve
             self::execute("UPDATE tricounts SET   title=:title, description=:description 
                            WHERE id=:id ", 
-                            [ 
+                            [   "id"=>$this->id,
                                 "title"=>$this->title,
                                 "description"=>$this->description
                               
@@ -254,6 +254,19 @@ class Tricount extends Model{
         return !empty($data);
     }
 
+        //recupere les utilisateur qui non pas particite au tricpount
+    public function get_users_not_sub_to_a_tricount() : array {
+        $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId) ORDER BY full_name", ["tricountId"=>$this->id]);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach ($data as $row) {
+
+            $results[] = new User($row["mail"], $row["hashed_password"], $row["full_name"], $row["role"], $row["iban"],$row["id"]);
+
+        }
+        return $results;
+    }
+
     
     public function get_operations_as_json() : string {
         $operations = $this->get_operations();
@@ -273,6 +286,63 @@ class Tricount extends Model{
             $row["operation_date"] = $operation->operation_date;
             $row["initiator"] = $payer->full_name;
             $row["created_at"] = $operation->created_at;
+            $table[] = $row;
+        }
+        return json_encode($table);
+    }
+
+    public function  get_templates_json():string{
+        $templates = $this->get_repartition_templates();
+
+        $table = [];
+
+        foreach($templates as $template){
+            $row = [];
+            $row["id"] = $template->id;
+            $row["title"] = $template->title;
+            $row["tricount"] = $template->tricount;
+            $table[] = $row;
+        }
+        return json_encode($table);
+    }
+
+    public function get_subs_as_json() : string {
+        $participants = $this->get_participants();
+        
+        
+        $table = [];
+
+        foreach ($participants as $participant) {
+            $hasPaid=$this->has_already_paid($participant);
+            
+            $row = [];
+            $row["id"] = $participant->id;
+            $row["full_name"] = $participant->full_name;
+            $row["has_paid"] = $hasPaid;
+            
+            if($participant->id==$this->creator){
+                $row["is_creator"] = true;
+            }
+            else{
+                $row["is_creator"] = false;
+            }
+
+            $table[] = $row;
+        }
+        return json_encode($table);
+    }
+
+    public function get_not_subs_as_json() : string {
+        $participants = $this->get_users_not_sub_to_a_tricount();
+
+        $table = [];
+
+        foreach ($participants as $participant) {
+
+
+            $row = [];
+            $row["id"] = $participant->id;
+            $row["full_name"] = $participant->full_name;
             $table[] = $row;
         }
         return json_encode($table);

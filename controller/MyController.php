@@ -130,10 +130,6 @@ abstract class Mycontroller extends Controller{
             $errorsAmount = array_merge($errorsAmount, $this->validate_amount($amount));
             !is_numeric($amount) ? $errorsAmount[] = "Amount should be numeric" : "";
 
-            if(!$this->weightsAreGreaterThanZero($_POST["weight"])){
-                $errorsCheckboxes[] = "Weights must be greater than 0";
-            }
-
             if(!$this->weightsAreNumeric($_POST["weight"])){
                 $errorsCheckboxes[] = "Weights must be numeric";
             }
