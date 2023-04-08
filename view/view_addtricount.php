@@ -46,9 +46,9 @@
                         
                         
                     }
-                    //changeDescriptionView();
+                    changeDescriptionView();
                 }
-                //changeDescriptionView();
+                changeDescriptionView();
                 return verification ;
             }
 
@@ -99,7 +99,7 @@
                 errorDescription = $("#errorDescription");
 
                 title.bind("input", checkTitle);
-                //title.bind("input", checkTitleExists);
+                title.bind("input", checkTitleExists);
                 description.bind("input", checkDescription);
                 
 
