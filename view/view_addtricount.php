@@ -25,9 +25,10 @@
                 }
                 else {
                     let regex = /^(?!\s*$)[\S\s]{3,16}$/;
-                    if(!regex.test(title.val())){
+                    let titleValue = title.val().replace(/\s/g, ''); 
+                    if (!regex.test(titleValue)) {
                         errorTitle.append("<p>Title length must be between 3 and 16.</p>");
-                        verification=false;
+                    verification = false;
                     }
 
                 }

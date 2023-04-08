@@ -19,11 +19,15 @@
                 if(title.val().trim().length === 0){
                     errTitle.append("<p>Title cannot be empty.</p>");
                     ok = false;
-                }else{
-                    if(!(/^.{3,255}$/).test(title.val())){
-                        errTitle.append("<p>Title must have at least 3 characters.</p>");
-                        ok = false;
+                }               
+                 else {
+                    let regex = /^(?!\s*$)[\S\s]{3,16}$/;
+                    let titleValue = title.val().replace(/\s/g, ''); 
+                    if (!regex.test(titleValue)) {
+                        errorTitle.append("<p>Title length must be between 3 and 16.</p>");
+                    verification = false;
                     }
+
                 }
                 changeTitleView();
                 return ok;
