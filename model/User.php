@@ -123,6 +123,10 @@ class User extends Model {
     // verifie si le string full name respercte les condition(forme d'un mail)
     public static function validate_mail(string $mail) : array {
         $errors = [];
+        if(User::validate_unicity($mail)){
+            $errors[] = "This mail already exists";
+        }
+
         if (!preg_match("/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/",$mail)) {
             $errors[] = "This mail is not valide";
         }

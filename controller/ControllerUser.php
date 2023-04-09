@@ -33,7 +33,7 @@ class ControllerUser extends MyController {
         
 
 
-        if (isset($_POST['full_name']) || isset($_POST['IBAN']) ) {
+        if (isset($_POST['full_name']) || isset($_POST['IBAN']) || isset($POST['mail'] )) {
             $full_name = Tools::sanitize($_POST['full_name']);
             $iban = Tools::sanitize($_POST['iban']);
             $mail = Tools::sanitize($_POST['mail']);
