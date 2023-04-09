@@ -205,7 +205,7 @@
                 amount.bind("input", checkAmount)
                 title.bind("input", checkTitle);
 
-                if(title.val()!=""){
+                if(title.val()!="" || amount.val()!=""){
                     checkTitle();
                     checkAmount();
                 }
