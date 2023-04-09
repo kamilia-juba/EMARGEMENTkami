@@ -180,6 +180,10 @@
         }
     }
 
+    function reselect_customRepartition(){
+        $("#applyTemplateSelect").val("customRepartition");
+    }
+
     
     async function checkUserParticipatesTemplate(template){
                 var checkboxes = $(".checkboxParticipant").map(function(){
@@ -237,11 +241,13 @@
         checkUserParticipatesOperation(operation)
         $("input[type='number']").on("blur", function(){
             handleAmounts();
+            reselect_customRepartition();
         });                
         
         $(".checkboxParticipant").change(function(){
            handleCheckbox();
            handleAmounts();
+           reselect_customRepartition();
         });
 
         handleTemplates();
