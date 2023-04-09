@@ -81,7 +81,8 @@
                 var checkboxes = $(".checkboxParticipant").map(function(){
                             return this.id;
                         }).get();
-                       
+                        errWeights.html("");
+                       var checkboxes_count = checkboxes.length;
                     for (var i = 0; i<checkboxes.length; ++i){
                         var checkbox= $("#" + checkboxes[i]);
                         
@@ -90,27 +91,40 @@
 
                         if(checkbox.prop("checked")==false){
                             weight.val("0");
+                            checkboxes_count--;
                         }
                         if(checkbox.prop("checked")==true){
                             if(weight.val()==="0"){
                                 weight.val("1");
                             }
                             else(weight.val(weightval));
+                            checkboxes_count++;
                         }
                     }
+                    
+                    if (checkboxes_count === 0){
+                        
+                     errWeights.html("You must select at least 1 participant");
+                    }
+
+            }
+            function hide_php_errors(){
+                $("#errTitlePhp").hide();
+                $("#errCheckboxesPhp").hide();
             }
 
             function checkAll(){
                 let ok = checkTitle();
                 ok = checkWeight() && ok;
+                hide_php_errors();
                 return ok;
             }
 
             $(function() {
                 title = $("#title");
                 errTitle = $("#errTitle");
-                errWeights = $("#errWeights");
                 okTitle = $("#okTitle");
+                errWeights = $("#errWeights");
                 okWeights = $("#okWeights");
 
                 title.bind("input", checkTitle);
@@ -139,7 +153,7 @@
                 <div class='text-danger' id='errTitle'></div>
                 <div class='text-success' id='okTitle'></div>
                 <?php if (count($errorsTitle) != 0): ?>
-                    <div class='text-danger'>
+                    <div class='text-danger' id="errTitlePhp">
                         <ul>
                             <?php foreach ($errorsTitle as $errors): ?>
                                 <li><?= $errors ?></li>
@@ -168,7 +182,7 @@
                 <div class='text-danger' id='errWeights'></div>
                 <div class='text-success' id='okWeights'></div>
                 <?php if (count($errorsCheckboxes) != 0): ?>
-                        <div class='text-danger'>
+                    <div class='text-danger' id="errCheckboxesPhp">
                             <ul>
                             <?php foreach ($errorsCheckboxes as $errors): ?>
                                 <li><?= $errors ?></li>
