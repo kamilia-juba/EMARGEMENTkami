@@ -9,6 +9,78 @@
     <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
 
 <script>
+            var tricountId = <?= $tricount->id?>;
+            let title,amount, errTitle, errAmount;
+
+            function checkTitle(){
+                let ok = true;
+                errTitle.html("");
+
+                if(title.val().trim().length === 0){
+                    errTitle.append("<p>Title cannot be empty.</p>");
+                    ok = false;
+                }               
+                 else {
+                    let regex = /^(?!\s*$)[\S\s]{3,16}$/;
+                    let titleValue = title.val().replace(/\s/g, ''); 
+                    if (!regex.test(titleValue)) {
+                        errTitle.append("<p>Title length must be between 3 and 16.</p>");
+                    verification = false;
+                    }
+
+                }
+                changeTitleView();
+                return ok;
+            }
+            
+            
+            function checkAmount(){
+                let ok = true;
+                errAmount.html("");
+
+                if(amount.val().trim().length === 0){
+                    errAmount.append("");
+                    errAmount.append("<p>Amount cannot be empty.</p>");
+                    ok = false;
+                }
+                else if(amount.val()<=0){
+                    errAmount.append("");
+                    errAmount.append("<p>Amount must be greater than 0</p>");
+                    ok = false;
+                }
+                changeAmountView();
+                return ok;
+            }
+
+            function changeTitleView(){
+                if(errTitle.text() == ""){
+                    $("#okTitle").html("Looks good");
+                    $("#title").attr("class","form-control mb-2 is-valid");
+                }else{
+                    $("#okTitle").html("");
+                    $("#title").attr("class", "form-control mb-2 is-invalid");
+                }
+            }            
+            
+            function changeAmountView(){
+                if(errAmount.text() == ""){
+                    $("#okAmount").html("Looks good");
+                    $("#amount").attr("class","form-control mb-2 is-valid");
+                }else{
+                    $("#okAmount").html("");
+                    $("#amount").attr("class", "form-control mb-2 is-invalid");
+                }
+            }
+
+            function checkAll(){
+                //return checkTitle() && checkAmount();
+                let ok = checkTitle();
+                ok = checkAmount() && ok;
+                return ok;
+            }
+
+
+    //-------------------------------------------------------------------------------------------------------------
     let totalAmount;
     let template_json = <?=$templates_json?> ;
     let operation =<?= $operation->id?>;
@@ -141,9 +213,24 @@
                 $("#" + checkboxes[i] + "_weight").val(0);
             }
             handleAmounts();
+
+
         }
     }
     $(function(){
+
+        title = $("#title");
+        errTitle = $("#errTitle");
+        errAmount = $("#errAmount");
+        amount=$("#amount")
+        
+        amount.bind("input", checkAmount)
+        title.bind("input", checkTitle);
+
+        if(title.val()!="" || amount.val()!=""){
+            checkTitle();
+            checkAmount();
+        }
         $("#applyTemplateBtn").hide();
         totalAmount=$("#amount");
         handleAmounts();                
@@ -158,6 +245,9 @@
         });
 
         handleTemplates();
+
+        $("#phpAmountError").hide();
+        $("#phpTitleError").hide();
         
         $("#applyTemplateSelect").change(function() {
             applyItems();
@@ -176,8 +266,10 @@
     <div class="container min-vh-100 pt-2">
         <form id="editOperationForm" action="Operation/editOperation/<?=$tricount->id?>/<?=$operation->id?>" method="post">
             <input class="form-control mb-2" id="title" name="title" value="<?=$operation->title?>">
+            <div id='errTitle' class='text-danger'></div>       
+            <div id='okTitle' class='text-success' ></div>
             <?php if (count($errorsTitle) != 0): ?>
-                <div class='text-danger'>
+                <div id="phpTitleError" class='text-danger'>      
                     <ul>
                         <?php foreach ($errorsTitle as $errors): ?>
                             <li><?= $errors ?></li>
@@ -189,8 +281,10 @@
                 <input class="form-control" type="number" step="0.01" id="amount" min="0" name ="amount" value="<?=$operation->amount?>">
                 <span class="input-group-text" style="background-color: #E9ECEF">EUR</span>
             </div>
+            <div id='errAmount' class='text-danger'></div>       
+           <div id='okAmount' class='text-success' ></div>
             <?php if (count($errorsAmount) != 0): ?>
-                <div class='text-danger'>
+                <div id="phpAmountError" class='text-danger'>
                     <ul>
                         <?php foreach ($errorsAmount as $errors): ?>
                             <li><?= $errors ?></li>
