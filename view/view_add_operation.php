@@ -11,7 +11,8 @@
         <script>
 
             var tricountId = <?= $tricount->id?>;
-            let title,amount, errTitle, errAmount;
+            let title,amount, errTitle, errAmount,errWeights,okWeights;
+            
 
             function checkTitle(){
                 let ok = true;
@@ -73,10 +74,39 @@
                 }
             }
 
+            function checkWeight(){
+                let ok = true;
+                $("input[type='number']").on("input", function(){
+                    var checkboxes = $("input[type='checkbox']").map(function(){
+                        return this.id;
+                    }).get();
+                    errWeights.html("");
+                    okWeights.html("Looks good");
+                    for(var i=0; i<checkboxes.length; ++i){
+                        var checkbox = $("#" + checkboxes[i]);
+                        var weight = $("#" + checkboxes[i] + "_weight");
+                        if(weight.val() <= "0"){
+                            checkbox.prop("checked", false);
+                        }else{
+                            checkbox.prop("checked", true);
+                        }
+                        if(weight.val() === ""){
+                            errWeights.html("<p>Weights cannot be empty</p>");
+                            ok = false;
+                            okWeights.html("");
+                        }
+                    }
+                    console.log(weight);
+                })
+                return ok;
+            }
+
+
             function checkAll(){
                 //return checkTitle() && checkAmount();
                 let ok = checkTitle();
                 ok = checkAmount() && ok;
+                ok = checkWeight();
                 return ok;
             }
 
@@ -131,7 +161,8 @@
                 var checkboxes = $(".checkboxParticipant").map(function(){
                             return this.id;
                         }).get();
-                       
+                errWeights.html("");
+                var checkboxes_count = checkboxes.length;       
                     for (var i =0; i<checkboxes.length;++i){
                          var checkbox= $("#" + checkboxes[i]);
                         
@@ -140,16 +171,25 @@
 
                         if(checkbox.prop("checked")==false){
                             weight.val("0");
+                            checkboxes_count--;
                         }
                         if(checkbox.prop("checked")==true){
                             if(weight.val()==="0"){
                                 weight.val("1");
                             }
                             else(weight.val(weightval));
+                            checkboxes_count++;
                         }
                     }
 
+
+                    if (checkboxes_count === 0){
+                       errWeights.html("You must select at least 1 participant");
+                    }
+
             }
+
+            
 
             function handleTemplates(){
                 $("#applyTemplateBtn").hide();
@@ -205,6 +245,8 @@
                 errTitle = $("#errTitle");
                 errAmount = $("#errAmount");
                 amount=$("#amount")
+                errWeights = $("#errWeights");
+                okWeights = $("#okWeights");
                 
                 amount.bind("input", checkAmount)
                 title.bind("input", checkTitle);
@@ -220,18 +262,22 @@
 
                 $("#amount").on("blur", function(){
                     handleAmounts();
-                });                
-                
+                });  
+
+                checkWeight();
+
                 $(".checkboxParticipant").change(function(){
                    handleCheckbox();
                    handleAmounts();
                    reselect_customRepartition();
+                   checkWeight();
                 });
 
                 handleTemplates();
 
                 $("#phpAmountError").hide();
                 $("#phpTitleError").hide();
+                $("#errCheckboxesPhp").hide();
 
                 
                 $("#applyTemplateSelect").change(function() {
@@ -319,8 +365,10 @@
                     onblur="handleAmounts(); reselect_customRepartition()">
                 </div>
             <?php } ?>
+            <div class='text-danger' id='errWeights'></div>
+                <div class='text-success' id='okWeights'></div>
             <?php if (count($errorsCheckboxes) != 0): ?>
-                        <div class='text-danger'>
+                <div class='text-danger' id="errCheckboxesPhp">
                             <ul>
                             <?php foreach ($errorsCheckboxes as $errors): ?>
                                 <li><?= $errors ?></li>
