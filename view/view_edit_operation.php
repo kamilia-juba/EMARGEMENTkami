@@ -110,7 +110,7 @@
             }
             
            
-            amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + individualAmount + " €</span>")
+            amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + individualAmount.toFixed(2) + " €</span>")
         }
 
     }
@@ -326,7 +326,7 @@
                     </span>
                     <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants_and_weights[$i][0]->full_name?></span>
                     <span id="<?=$participants_and_weights[$i][0]->id?>_amount"> </span>
-                    <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participants_and_weights[$i][0]->id?>_weight" value="<?=$participants_and_weights[$i][1]?>">
+                    <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participants_and_weights[$i][0]->id?>_weight" value="<?=$participants_and_weights[$i][1]?>" oninput="if(this.value < 0) this.value = 0">
                 </div>
             <?php } ?>
             <?php if (count($errorsCheckboxes) != 0): ?>
