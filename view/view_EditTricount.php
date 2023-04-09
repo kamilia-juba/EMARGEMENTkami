@@ -104,12 +104,17 @@
 
 
         $(function(){
+            $("#erreurphp").hide();
             listOfSubs = $('#subscription');
 
             title = $("#title");
             errorTitle = $("#errorTitle");
             description = $("#description");
             errorDescription = $("#errorDescription");
+
+            if(title.val()!=""){
+                    checkTitle();
+            }
 
             title.bind("input", checkTitle);
             title.bind("input", checkTitleExists);
@@ -331,7 +336,7 @@
                     <div class = "text-danger" id = "errorTitle"></div> 
                     <div class='text-success' id='verificationTitle'></div>
                     <?php if (count($errorsTitle) != 0): ?>
-                    <div class='text-danger'>
+                    <div class='text-danger' id="erreurphp">
                         <ul>
                             <?php foreach ($errorsTitle as $errors): ?>
                                  <li><?= $errors ?></li>
@@ -347,7 +352,7 @@
                     <div class='text-success' id='verificationDescription'></div>
 
                     <?php if (count($errorsDescription) != 0): ?>
-                    <div class='text-danger'>
+                    <div class='text-danger' id="erreurphp">
                         <ul>
                             <?php foreach ($errorsDescription as $errors): ?>
                                  <li><?= $errors ?></li>
