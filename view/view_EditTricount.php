@@ -102,6 +102,10 @@
                return verification;
            }
 
+        function hideTitles(){
+            $(":header").hide();
+        }
+
 
         $(function(){
             $("#erreurphp").hide();
@@ -112,9 +116,13 @@
             description = $("#description");
             errorDescription = $("#errorDescription");
 
+
             if(title.val()!=""){
                     checkTitle();
             }
+
+            hideTitles();
+
 
             title.bind("input", checkTitle);
             title.bind("input", checkTitleExists);
