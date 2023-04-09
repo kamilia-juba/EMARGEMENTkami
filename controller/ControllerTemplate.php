@@ -125,6 +125,27 @@ class ControllerTemplate extends Mycontroller{
         }
         echo $res;
     }
+
+    public function user_participates_service(){
+        $res = "false";
+        $template = Template::get_template_by_id($_POST["templateId"]);
+        $user = User::get_user_by_id($_POST["userId"]);
+
+        if($template->user_participates($user)){
+            $res = "true";
+        }
+        echo $res;
+    }
+
+    public function get_user_weight_service(){
+        $res = 0;
+        $template = Template::get_template_by_id($_POST["templateId"]);
+        $user = User::get_user_by_id($_POST["userId"]);
+
+        $res += $template->get_weight_from_template($user);
+        
+        echo $res;
+    }
 }
 
 ?>

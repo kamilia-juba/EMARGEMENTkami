@@ -309,6 +309,7 @@ class ControllerTricount extends MyController{
     public function tricount_exists_service(){
         $res = "false";
         $user = $this->get_user_or_redirect();
+
         if(isset($_POST["newTitle"]) && $_POST["newTitle"] !== ""){
             $tricount = Tricount::tricount_title_already_exists($_POST["newTitle"],$user);
             if($tricount){
@@ -317,5 +318,46 @@ class ControllerTricount extends MyController{
          }
         echo $res;
     }
+
+    public function add_subscriber_service(){
+        $user = $this->get_user_or_redirect();
+        
+        if(isset($_GET["param1"]) && isset($_POST["userId"])){
+
+            $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
+            $targetUser = User::get_user_by_id($_POST["userId"]);
+
+            if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && !$targetUser->is_subscribed_to_tricount($_GET["param1"])){
+                $tricount->add_subscriber($targetUser);
+            }
+            else{
+                $this->redirect();
+            }
+        }
+    }
+
+    public function remove_subscriber_service(){
+        $user = $this->get_user_or_redirect();
+        if(isset($_GET["param1"]) && isset($_POST["userId"])){
+
+        
+            $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
+            $targetUser = User::get_user_by_id($_POST["userId"]);
+            $creatorOfTricount=$user->get_creator_of_tricount($tricount);
+            if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $targetUser->is_subscribed_to_tricount($_GET["param1"])){
+                if(!$targetUser->has_already_paid($tricount)&&$targetUser->id!=$creatorOfTricount->id){
+                    $tricount->delete_participation($targetUser->id);
+                }            
+            }
+            else{
+                $this->redirect();
+            }
+        } else {
+            $this->redirect();
+        }
+    }
+
+
+
 }
 ?>

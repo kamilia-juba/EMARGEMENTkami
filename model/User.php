@@ -53,7 +53,7 @@ class User extends Model {
     }
         // sa permet de save l'user dans la base de donner 
         public function persist() : User {
-        if(self::get_user_by_id($this->id)){
+        if($this->id!=null){
             self::execute("UPDATE Users SET mail=:mail,  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE id=:id ", 
                             [   "id"=>$this->id,
                                 "mail"=>$this->mail,

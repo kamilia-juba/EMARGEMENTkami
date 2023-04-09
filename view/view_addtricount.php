@@ -18,19 +18,22 @@
             function checkTitle(){
                 let verification= true;
                 errorTitle.html("");
+
                 if(title.val().length === 0){
                     errorTitle.append("<p>Title cannot be empty.</p>");
                     verification=false;
                 }
                 else {
-                    if(title.val().length<3 || title.val().length>16){
+                    let regex = /^(?!\s*$)[\S\s]{3,16}$/;
+                    let titleValue = title.val().replace(/\s/g, ''); 
+                    if (!regex.test(titleValue)) {
                         errorTitle.append("<p>Title length must be between 3 and 16.</p>");
-                        verification=false;
+                    verification = false;
                     }
 
                 }
             
-                console.log(title);
+                
                 return verification; 
             
             }
@@ -61,7 +64,6 @@
                     errorTitle.append("<p>Title already exists. please choice another</p>");
                 }
                 changeTitleView();
-                console.log();
 
             }
 
@@ -71,7 +73,7 @@
                     $("#title").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#verificationTitle").html("");
-                    $("#").attr("class", "form-control mb-2 is-invalid");
+                    $("#title").attr("class", "form-control mb-2 is-invalid");
                 }
             }
 
@@ -81,7 +83,7 @@
                     $("#description").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#verificationDescription").html("");
-                    $("#").attr("class", "form-control mb-2 is-invalid");
+                    $("#description").attr("class", "form-control mb-2 is-invalid");
                 }
                 
             }
