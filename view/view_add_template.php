@@ -157,7 +157,7 @@
                             <input class = "checkboxParticipant" type="checkbox" name="checkboxParticipants[]" id="<?=$participant->id?>" value="<?=$participant->id?>" checked>
                         </span>  
                         <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participant->full_name?></span>
-                        <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participant->id?>_weight" value="1">
+                        <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participant->id?>_weight" value="1" oninput="if(this.value < 0) this.value = 0">
                     </div>
                 <?php endforeach; ?>
                 <div class='text-danger' id='errWeights'></div>
