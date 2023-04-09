@@ -102,6 +102,10 @@
                return verification;
            }
 
+        function hideTitles(){
+            $(":header").hide();
+        }
+
 
         $(function(){
             listOfSubs = $('#subscription');
@@ -110,6 +114,8 @@
             errorTitle = $("#errorTitle");
             description = $("#description");
             errorDescription = $("#errorDescription");
+
+            hideTitles();
 
             title.bind("input", checkTitle);
             title.bind("input", checkTitleExists);
