@@ -264,7 +264,7 @@
             <?php endif; ?>
             <div class="input-group mb-2">   
         
-                <input  class = "form-control" id="amount" name="amount" type="text" pattern="[0-9]*([,.][0-9]+)?" required
+                <input  class = "form-control" id="amount" name="amount" type="text"
          value="<?= $amount?>" placeholder="Amount">   
                 <span class="input-group-text" style="background-color: #E9ECEF">EUR</span>
             </div>
