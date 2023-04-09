@@ -182,15 +182,16 @@
 
         function addParticipant(){
             updateTargetSubToAdd();
-            addTargetToSubs(targetSubToAdd);
-            deleteFromNotSubs(targetSubToAdd.id);
-            sortByName(subsJson);
-            displaySubs();
-            displayNotSubs();
+            if(targetSubToAdd!=null){
+                addTargetToSubs(targetSubToAdd);
+                deleteFromNotSubs(targetSubToAdd.id);
+                sortByName(subsJson);
+                displaySubs();
+                displayNotSubs();
 
-            hideSelectNotSubsIfNonSubJsonIsEmty();
-
-            console.log(subsJson);
+                hideSelectNotSubsIfNonSubJsonIsEmty();
+            }
+            
         }
 
         function hideSelectNotSubsIfNonSubJsonIsEmty(){
@@ -209,6 +210,7 @@
             
             deleteFromSubs(id);
             addToNonSubs(targetSub);
+            sortByName(notSubJson);
             displaySubs();
             displayNotSubs();
 
