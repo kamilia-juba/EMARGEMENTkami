@@ -182,15 +182,16 @@
 
         function addParticipant(){
             updateTargetSubToAdd();
-            addTargetToSubs(targetSubToAdd);
-            deleteFromNotSubs(targetSubToAdd.id);
-            sortByName(subsJson);
-            displaySubs();
-            displayNotSubs();
+            if(targetSubToAdd!=null){
+                addTargetToSubs(targetSubToAdd);
+                deleteFromNotSubs(targetSubToAdd.id);
+                sortByName(subsJson);
+                displaySubs();
+                displayNotSubs();
 
-            hideSelectNotSubsIfNonSubJsonIsEmty();
-
-            console.log(subsJson);
+                hideSelectNotSubsIfNonSubJsonIsEmty();
+            }
+            
         }
 
         function hideSelectNotSubsIfNonSubJsonIsEmty(){
@@ -209,6 +210,7 @@
             
             deleteFromSubs(id);
             addToNonSubs(targetSub);
+            sortByName(notSubJson);
             displaySubs();
             displayNotSubs();
 
@@ -377,8 +379,8 @@
                     }
                     else{ 
                         echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name.'</p>';
-                        echo "<p><a href= \"Tricount/deleteParticipant/".$tricount->id."/".$participant->id. "\" 'style='float:right' <i style='color:red' class='fa-regular fa-trash-can fa-xl  '> </a></p></li>";
-                }
+                        echo "<p><a href='Tricount/deleteParticipant/".$tricount->id."/".$participant->id."' class='float-end'><img src='ressources/images/trash-can.png' style='width:25px;height:25px;'></a></p></li>";
+                    }
             }
         ?>
     </ul>

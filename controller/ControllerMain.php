@@ -46,6 +46,10 @@ class ControllerMain extends MyController {
             $password = '';
             $password_confirm = '';
             $errors = [];
+            $errorsEmail = [];
+            $errorsName = [];
+            $errorsIban = [];
+            $errorsPasswordConfirm = [];
     
             if (isset($_POST['mail']) && isset($_POST['full_name']) && 
                 isset($_POST['password']) && isset($_POST['password_confirm'])) {
@@ -55,6 +59,11 @@ class ControllerMain extends MyController {
                 $IBAN = Tools::sanitize($_POST['IBAN']);
                 $password = Tools::sanitize($_POST['password']);
                 $password_confirm = Tools::sanitize($_POST['password_confirm']);
+
+                $errorsEmail = array_merge($errorsEmail,User::validate_unicity($mail));
+                $errorsName = array_merge($errorsName,User::validate_full_name($full_name));
+                $errorsIban = array_merge($errorsIban,User::validate_mail($mail));
+                $errorsPasswordConfirm = array_merge($errorsPasswordConfirm,User::validate_passwords($password, $password_confirm));
                 
     
                 $errors =array_merge($errors, User::get_signup_errors($mail,$full_name,$IBAN,$password,$password_confirm));
@@ -67,8 +76,16 @@ class ControllerMain extends MyController {
             }
         
     
-            (new View("signup"))->show(["mail" => $mail, 'full_name'=> $full_name,'IBAN'=> $IBAN, "password" => $password, 
-                                             "password_confirm" => $password_confirm, "errors" => $errors]);
+            (new View("signup"))->show(["mail" => $mail, 
+                                        'full_name'=> $full_name,
+                                        'IBAN'=> $IBAN, 
+                                        "password" => $password, 
+                                        "password_confirm" => $password_confirm,
+                                        "errorsEmail" => $errorsEmail,
+                                        "errorsName" => $errorsName,
+                                        "errorsIban" => $errorsIban,
+                                        "errorsPasswordConfirm" => $errorsPasswordConfirm,
+                                        "errors" => $errors]);
         }
         
     }

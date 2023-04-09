@@ -26,14 +26,41 @@
                     <span class="input-group-text" ><i class="fa-solid fa-at"></i></span>
                     <input class="form-control" id="mail" name="mail" type="text"  value="<?= $mail ?>" placeholder="Email" >
                 </div>
+                <?php if (count($errorsEmail) != 0): ?>
+                    <div class='text-danger'>      
+                        <ul>
+                            <?php foreach ($errorsEmail as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
                 <div class="input-group mb-3 mt-3">
                     <span class="input-group-text" ><i class="fa-solid fa-user"></i></span>
                     <input class="form-control" id="full_name" name="full_name" type="text"  value="<?= $full_name ?>" placeholder="Full Name" >
                 </div>
+                <?php if (count($errorsName) != 0): ?>
+                    <div id="phpTitleError" class='text-danger'>      
+                        <ul>
+                            <?php foreach ($errorsName as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
                 <div class="input-group mb-3 mt-3">
                     <span class="input-group-text" ><i class="fa-sharp fa-solid fa-credit-card"></i></span>
                     <input class="form-control" id="IBAN" name="IBAN" type="text"  value="<?= $IBAN ?>" placeholder="IBAN" >
                 </div>
+                <?php if (count($errorsIban) != 0): ?>
+                    <div id="phpTitleError" class='text-danger'>      
+                        <ul>
+                            <?php foreach ($errorsIban as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
                 
                 <div class="input-group mb-3 mt-3">
                     <span class="input-group-text" ><i class="fa-solid fa-lock"></i></span>
@@ -43,23 +70,21 @@
                     <span class="input-group-text" ><i class="fa-solid fa-lock"></i></span>
                     <input class="form-control" id="password_confirm" name="password_confirm" type="password"  value="<?= $password_confirm ?>" placeholder="Confirm your password" >
                 </div>
+                <?php if (count($errorsPasswordConfirm) != 0): ?>
+                    <div id="phpTitleError" class='text-danger'>      
+                        <ul>
+                            <?php foreach ($errorsPasswordConfirm as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
                 
                 <input type="submit" class="btn btn-primary w-100 mb-3" value="Sign Up" form="signupForm"><br>
                 <a href="" class="btn btn-outline-danger w-100 mb-3">Back</a>
                    
                 
             </form>
-            
-            <?php if (count($errors) != 0): ?>
-                <div class='text-center text-danger'>
-                    <br><br><p>Please correct the following error(s) :</p>
-                    <ul >
-                        <?php foreach ($errors as $error): ?>
-                            <br><br><li class="list-inline-item"><div class='error-item'><span>&#8226;</span><?= $error ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
         </div>
     </div>
 
