@@ -36,22 +36,22 @@
             
             
             function checkAmount(){
-  let ok = true;
-  errAmount.html("");
+            let ok = true;
+            errAmount.html("");
 
-  // Check if the input value is empty or non-numeric
-  if(amount.val().trim().length === 0 || !/^[0-9.,]+$/.test(amount.val())){
-    errAmount.append("<p>Amount must be a number.</p>");
-    ok = false;
-  }
-  else if(amount.val()<=0){
-    errAmount.append("<p>Amount must be greater than 0.</p>");
-    ok = false;
-  }
-  
-  changeAmountView();
-  return ok;
-}
+            // Check if the input value is empty or non-numeric
+            if(amount.val().trim().length === 0 || !/^[0-9.,]+$/.test(amount.val())){
+                errAmount.append("<p>Amount must be a number.</p>");
+                ok = false;
+            }
+            else if(amount.val()<=0){
+                errAmount.append("<p>Amount must be greater than 0.</p>");
+                ok = false;
+            }
+            
+            changeAmountView();
+            return ok;
+            }
 
             function changeTitleView(){
                 if(errTitle.text() == ""){
