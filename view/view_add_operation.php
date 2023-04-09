@@ -109,7 +109,7 @@
                     }
                     
                    
-                    amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + individualAmount + " €</span>")
+                    amount.html("<span class='input-group-text ' style='background-color: #E9ECEF'>" + individualAmount.toFixed(2) + " €</span>")
                 }
 
             }
