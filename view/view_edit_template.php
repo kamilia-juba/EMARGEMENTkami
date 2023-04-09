@@ -142,7 +142,7 @@
     </head>
     <body>
         <div class="pt-2 ps-3 pe-3 pb-2 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
-            <a href="Tricount/showTemplates/<?=$tricount->id?>" class="btn btn-outline-danger">Cancel</a>
+            <a href="Tricount/show_templates/<?=$tricount->id?>" class="btn btn-outline-danger">Cancel</a>
             <b><?=$tricount->title?> &#8594; Edit Template</b>
             <input type="submit" class="btn btn-primary" form="applyTemplateForm" value="Save">
         </div>

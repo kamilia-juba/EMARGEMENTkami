@@ -337,7 +337,7 @@
 
 
     <h1 class= "p-1 ms-2 me-2 mb-2">Settings</h1>
-        <form action="Tricount/EditTricount/<?= $tricount->id?>" id="editTricountForm" method="post">
+        <form action="Tricount/edit_tricount/<?= $tricount->id?>" id="editTricountForm" method="post">
             <div class="form-group p-1 ms-2 me-2 mb-2">
                     <label class="pb-1">Title :</label>
                     <input class="form-control" type="text" id="title" name="title" value="<?= $title?>">
@@ -383,7 +383,7 @@
                     }
                     else{ 
                         echo "<li class=' list-group-item d-flex justify-content-between'><p>".$participant->full_name." (creator)
-                        <a href= \"Tricount/deleteParticipant/".$tricount->id."/".$participant->id. "\"></a>
+                        <a href= \"Tricount/delete_participant/".$tricount->id."/".$participant->id. "\"></a>
                         </p></li>";
                     }
                 }else
@@ -392,7 +392,7 @@
                     }
                     else{ 
                         echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name.'</p>';
-                        echo "<p><a href='Tricount/deleteParticipant/".$tricount->id."/".$participant->id."' class='float-end'><img src='ressources/images/trash-can.png' style='width:25px;height:25px;'></a></p></li>";
+                        echo "<p><a href='Tricount/delete_participant/".$tricount->id."/".$participant->id."' class='float-end'><img src='ressources/images/trash-can.png' style='width:25px;height:25px;'></a></p></li>";
                     }
             }
         ?>
@@ -420,13 +420,13 @@
 
         <footer>    
             <div class="text-center">
-            <a href="Tricount/showTemplates/<?=$tricount->id?>" class="btn btn-success col-11">Manage repartition templates</a>
+            <a href="Tricount/show_templates/<?=$tricount->id?>" class="btn btn-success col-11">Manage repartition templates</a>
             <p></p>
             <a href ="Tricount/delete_tricount/<?=$tricount->id?>" class="btn btn-danger col-11">Delete Tricount</a>
             <br>
             </div>
         </footer>
-        <!-- <a href="Tricount/showTemplates/<?=$tricount->id?>"><button type="button" name="manageTemplates">Manage repartition templates</button></a>
+        <!-- <a href="Tricount/show_templates/<?=$tricount->id?>"><button type="button" name="manageTemplates">Manage repartition templates</button></a>
         <a href="Tricount/delete_tricount/<?=$tricount->id?>"><button type="button" name="DeleteTricount">Delete Tricount</button></a></body> -->
 </body>
 </html>

@@ -21,7 +21,7 @@ class ControllerOperation extends Mycontroller{
             $user_participates = $operation->user_participates($user);          //récuperation pour voir si l'utilisateur connecté a participé
             $users = $this->get_users_and_their_operation_amounts($operation);      // recuperation des user et de leur amount
             $operations =  $tricount->get_operations();   //recuperation de toutes les opération sur tricount
-            $currentIndex = $this->getCurrentIndex($operations, $operation);        //récuperation de l'index courante
+            $currentIndex = $this->get_current_index($operations, $operation);        //récuperation de l'index courante
             (new View("operation"))->show(
                                         ["user" => $user, 
                                         "operation" => $operation, 

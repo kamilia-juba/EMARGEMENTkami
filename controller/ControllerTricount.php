@@ -85,7 +85,7 @@ class ControllerTricount extends MyController{
         }
     }
     
-    public function showBalance(): void{
+    public function show_balance(): void{
         $user=$this->get_user_or_redirect();
         if ($this->validate_url()) {    //validation url
             $tricount = Tricount::get_tricount_by_id($_GET["param1"], $user->mail);// recup tricount depuis l'id
@@ -109,7 +109,7 @@ class ControllerTricount extends MyController{
     }
 
     //on fais des modification sur tricount 
-    public function editTricount(): void{
+    public function edit_tricount(): void{
         
         $user = $this->get_user_or_redirect();
         $errors = [];
@@ -174,7 +174,7 @@ class ControllerTricount extends MyController{
                 $participantId= $_POST['participant'];
                 $participant=User::get_user_by_id($participantId);  
                 $tricount->add_subscriber($participant);
-                $this->redirect("Tricount","editTricount",$tricount->id);
+                $this->redirect("Tricount","edit_tricount",$tricount->id);
             }
         }
         else{
@@ -197,7 +197,7 @@ class ControllerTricount extends MyController{
                 $this->redirect("Tricount","yourTricounts");
             }
             if(isset($_POST["no"])){
-                $this->redirect("Tricount","editTricount",$tricount->id);
+                $this->redirect("Tricount","edit_tricount",$tricount->id);
             }
             (new View("delete_tricount_confirmation"))->show(["tricount"=>$tricount]);
             
@@ -207,7 +207,7 @@ class ControllerTricount extends MyController{
         }
     }
     //supprimer un participant d'un tricount si il n'a fait aucune transaction
-    public function deleteParticipant():void{
+    public function delete_participant():void{
         $user = $this->get_user_or_redirect();
         if (isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"])  && isset($_GET["param2"]) && $_GET["param2"] !== "" && is_numeric($_GET["param2"])) {
             $participant=User::get_user_by_id($_GET["param2"]);
@@ -222,9 +222,9 @@ class ControllerTricount extends MyController{
                     foreach($templates as $template){
                         $template->remove_user_participation_on_template($participant);
                     }
-                    $this->redirect("Tricount", "editTricount",$tricount->id) ;
+                    $this->redirect("Tricount", "edit_tricount",$tricount->id) ;
                 }
-                $this->redirect("Tricount", "editTricount",$tricount->id);
+                $this->redirect("Tricount", "edit_tricount",$tricount->id);
             }
             else{
                 $this->redirect();
@@ -233,7 +233,7 @@ class ControllerTricount extends MyController{
         $this->redirect();
     }
     //sa parmet dafficher la liste des template d'un tricount 
-    public function showTemplates(): void{
+    public function show_templates(): void{
         $user=$this->get_user_or_redirect();
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->is_subscribed_to_tricount($_GET["param1"])){
             $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
@@ -248,7 +248,7 @@ class ControllerTricount extends MyController{
         }
     }
     // ajouter un template pour un tricount 
-    public function addTemplate(): void{
+    public function add_template(): void{
         $user = $this->get_user_or_redirect(); //si l'utilisateur n'est pas connecter redirection vers la page d'acceuille
         $title = "";
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->is_subscribed_to_tricount($_GET["param1"])){
@@ -260,7 +260,7 @@ class ControllerTricount extends MyController{
             if(isset($_POST["title"]) && $_POST["title"] != ""){
                 $title = trim($_POST["title"]);
                 $errorsTitle = $this->validate_title($title);
-                if(!$this->weightsAreNumeric($_POST["weight"])){
+                if(!$this->weights_are_numeric($_POST["weight"])){
                     $errorsCheckBoxes[] = "Weights must be numeric";
                 }
 
@@ -292,7 +292,7 @@ class ControllerTricount extends MyController{
                         }
                         
                     }
-                    $this->redirect("Tricount","showTemplates",$tricount->id);
+                    $this->redirect("Tricount","show_templates",$tricount->id);
                 }
             }
             (new View("add_template"))->show(["title" => $title,

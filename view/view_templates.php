@@ -9,9 +9,9 @@
     </head>
     <body>
         <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">   
-            <a href="Tricount/editTricount/<?=$tricount->id?>" class="btn btn-outline-danger">Back</a>
+            <a href="Tricount/edit_tricount/<?=$tricount->id?>" class="btn btn-outline-danger">Back</a>
             <?=$tricount->title?> &#8594; Templates
-            <a href="Tricount/addTemplate/<?=$tricount->id?>" class="btn btn-primary">Add</a>
+            <a href="Tricount/add_template/<?=$tricount->id?>" class="btn btn-primary">Add</a>
         </div>
         <ul class="list-group p-2">
             <?php for($i = 0; $i<sizeof($templates_items);++$i){ ?>
