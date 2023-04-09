@@ -145,6 +145,7 @@ class ControllerOperation extends Mycontroller{
 
     public function editOperation(): void {
         $user = $this->get_user_or_redirect();
+        $operation=null;
         $errors = [];
         $errorsTitle = [];
         $errorsAmount = [];
@@ -176,6 +177,11 @@ class ControllerOperation extends Mycontroller{
                 $amount = $_POST["amount"];
                 $date = $_POST["date"];
                 $paidBy = $_POST["paidBy"];
+
+                $operation->title = $title;
+                $operation->amount = $amount;
+                $operation->operation_date = $date;
+                $operation->initiator = $paidBy;
             
                 //partie concernant la gestion des erreurs
                 $errors=$this->get_add_operation_errors($tricount);

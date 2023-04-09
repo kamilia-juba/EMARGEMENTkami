@@ -239,10 +239,10 @@
         totalAmount=$("#amount");
         handleAmounts();                
         checkUserParticipatesOperation(operation)
-        $("input[type='number']").on("blur", function(){
+
+        $("#amount").on("blur", function(){
             handleAmounts();
-            reselect_customRepartition();
-        });                
+        });
         
         $(".checkboxParticipant").change(function(){
            handleCheckbox();
@@ -332,7 +332,11 @@
                     </span>
                     <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants_and_weights[$i][0]->full_name?></span>
                     <span id="<?=$participants_and_weights[$i][0]->id?>_amount"> </span>
-                    <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participants_and_weights[$i][0]->id?>_weight" value="<?=$participants_and_weights[$i][1]?>" oninput="if(this.value < 0) this.value = 0">
+                    <input class="form-control" type="number" min="0" name="weight[]" 
+                    id="<?=$participants_and_weights[$i][0]->id?>_weight" 
+                    value="<?=$participants_and_weights[$i][1]?>" 
+                    oninput="if(this.value < 0) this.value = 0"
+                    onblur="handleAmounts(); reselect_customRepartition()">
                 </div>
             <?php } ?>
             <?php if (count($errorsCheckboxes) != 0): ?>
