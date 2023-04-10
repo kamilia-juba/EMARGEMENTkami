@@ -69,7 +69,7 @@
 
             function changeTitleView(){
                 if(errorTitle.text() == ""){
-                    $("#verificationTitle").html(" • Looks good");
+                    $("#verificationTitle").html("Looks good");
                     $("#title").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#verificationTitle").html("");
@@ -79,7 +79,7 @@
 
             function changeDescriptionView(){
                 if(errorDescription.text()==""){
-                    $("#verificationDescription").html(" • Looks good");
+                    $("#verificationDescription").html("Looks good");
                     $("#description").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#verificationDescription").html("");
