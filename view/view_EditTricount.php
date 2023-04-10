@@ -13,6 +13,7 @@
         let errorTitle;
         let description;
         let errorDescription;
+        let originalTitle;
         
         let subsJson = <?=$subs_json?>;
         let notSubJson = <?=$not_subs_json?>;
@@ -67,7 +68,7 @@
             async function checkTitleExists(){
                
                const data = await $.post("tricount/tricount_exists_service/", {newTitle : title.val()},null, "json");
-               if(data){
+               if(data && originalTitle!=title.val()){
                    errorTitle.append("<p>Title already exists. please choice another</p>");
                }
                changeTitleView();
@@ -112,6 +113,7 @@
             listOfSubs = $('#subscription');
 
             title = $("#title");
+            originalTitle=title.val();
             errorTitle = $("#errorTitle");
             description = $("#description");
             errorDescription = $("#errorDescription");
