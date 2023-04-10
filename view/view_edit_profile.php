@@ -15,27 +15,44 @@
         </div>
         <form id="changeProfileForm" action="user/edit_profile" method="post">
             <div class="form-group pt-3 ps-3 pe-3 pb-3">
-                    <label class="pb-3">Mail :</label>
-                    <input class="form-control" id="mail" name="mail" type="text" size="16" value="<?= $mail ?>">
+                <label class="pb-3">Mail :</label>
+                <input class="form-control" id="mail" name="mail" type="text" size="16" value="<?= $mail ?>">
             </div>
+            <?php if (count($errorsMail) != 0): ?>
+                    <div class='text-danger'>
+                        <ul>
+                        <?php foreach ($errorsMail as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
+            <?php endif; ?>
             <div class="form-group pt-3 ps-3 pe-3 pb-3">
-                    <label class="pb-3">Full name :</label>
-                    <input class="form-control" id="full_name" name="full_name" type="text" size="16" value="<?= $full_name ?>" placeholder="Enter your name">
+                <label class="pb-3">Full name :</label>
+                <input class="form-control" id="full_name" name="full_name" type="text" size="16" value="<?= $full_name ?>" placeholder="Enter your name">
             </div>
+            <?php if (count($errorsName) != 0): ?>
+                    <div class='text-danger'>
+                        <ul>
+                        <?php foreach ($errorsName as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
+            <?php endif; ?>
             <div class="form-group ps-3 pt-3 pe-3 pb-3">
-                    <label class="pb-3">IBAN :</label>
-                    <input class="form-control" id="iban" name="iban" type="text" size="40" value="<?= $iban ?>" placeholder="Enter your IBAN">
+                <label class="pb-3">IBAN :</label>
+                <input class="form-control" id="iban" name="iban" type="text" size="40" value="<?= $iban ?>" placeholder="Enter your IBAN">
             </div>
-        </form>
-        <?php if (count($errors) != 0): ?>
-            <div class='text-danger ps-3 pt-3 pe-3 pb-3'>
-                <br><br><p>Please correct the following error(s) :</p>
-                <ul>
-                    <?php foreach ($errors as $errors): ?>
-                        <li><?= $errors ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
+            <?php if (count($errorsIban) != 0): ?>
+                    <div class='text-danger'>
+                        <ul>
+                        <?php foreach ($errorsIban as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
         <?php endif; ?>
+        </form>
     </body>
 </html>
