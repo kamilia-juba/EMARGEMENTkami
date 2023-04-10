@@ -35,21 +35,21 @@
             
             
             function checkAmount(){
-                let ok = true;
-                errAmount.html("");
+            let ok = true;
+            errAmount.html("");
 
-                if(amount.val().trim().length === 0){
-                    errAmount.append("");
-                    errAmount.append("<p>Amount cannot be empty.</p>");
-                    ok = false;
-                }
-                else if(amount.val()<=0){
-                    errAmount.append("");
-                    errAmount.append("<p>Amount must be greater than 0</p>");
-                    ok = false;
-                }
-                changeAmountView();
-                return ok;
+            // Check if the input value is empty or non-numeric
+            if(amount.val().trim().length === 0 || !/^[0-9.,]+$/.test(amount.val())){
+                errAmount.append("<p>Amount must be a number.</p>");
+                ok = false;
+            }
+            else if(amount.val()<=0){
+                errAmount.append("<p>Amount must be greater than 0.</p>");
+                ok = false;
+            }
+            
+            changeAmountView();
+            return ok;
             }
 
             function changeTitleView(){
@@ -323,7 +323,7 @@
                 </div>
             <?php endif; ?>
             <div class="input-group mb-2">
-                <input class="form-control" type="number" step="0.01" id="amount" min="0" name ="amount" value="<?=$operation->amount?>">
+                <input  class = "form-control" id="amount" name="amount" type="text" value="<?= $operation->amount?>" placeholder="Amount">   
                 <span class="input-group-text" style="background-color: #E9ECEF">EUR</span>
             </div>
             <div id='errAmount' class='text-danger'></div>       
