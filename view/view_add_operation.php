@@ -264,7 +264,6 @@
                     handleAmounts();
                 });  
 
-                checkWeight();
 
                 $(".checkboxParticipant").change(function(){
                    handleCheckbox();
