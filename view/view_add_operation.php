@@ -59,7 +59,7 @@
 
             function changeTitleView(){
                 if(errTitle.text() == ""){
-                    $("#okTitle").html("Looks good");
+                    $("#okTitle").html("<p>Looks good</p>");
                     $("#title").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#okTitle").html("");
@@ -69,7 +69,7 @@
             
             function changeAmountView(){
                 if(errAmount.text() == ""){
-                    $("#okAmount").html("Looks good");
+                    $("#okAmount").html("<p>Looks good</p>");
                     $("#amount").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#okAmount").html("");
@@ -84,7 +84,7 @@
                         return this.id;
                     }).get();
                     errWeights.html("");
-                    okWeights.html("Looks good");
+                    okWeights.html("<p>Looks good</p>");
                     for(var i=0; i<checkboxes.length; ++i){
                         var checkbox = $("#" + checkboxes[i]);
                         var weight = $("#" + checkboxes[i] + "_weight");
