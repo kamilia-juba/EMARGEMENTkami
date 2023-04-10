@@ -61,8 +61,9 @@ class ControllerMain extends MyController {
                 $password_confirm = Tools::sanitize($_POST['password_confirm']);
 
                 $errorsEmail = array_merge($errorsEmail,User::validate_unicity($mail));
+                $errorsEmail = array_merge($errorsEmail, User::validate_mail($mail));
                 $errorsName = array_merge($errorsName,User::validate_full_name($full_name));
-                $errorsIban = array_merge($errorsIban,User::validate_mail($mail));
+                $errorsIban = array_merge($errorsIban,User::validate_IBAN($IBAN));
                 $errorsPasswordConfirm = array_merge($errorsPasswordConfirm,User::validate_passwords($password, $password_confirm));
                 
     
