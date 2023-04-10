@@ -44,7 +44,9 @@ class ControllerUser extends MyController {
         
             $errorsIban = User::validate_IBAN($iban);
             $errorsName = User::validate_full_name($full_name);
-            $errorsMail = User::validate_mail($mail);
+            if($user->mail!=$mail){
+                $errorsMail = User::validate_mail($mail);
+            }
 
             $errors = array_merge($errors, $errorsName);
             $errors = array_merge($errors, $errorsIban);
