@@ -53,11 +53,11 @@
                 errorDescription.html("");
                 
                 if(description.val().length>0){
-                    if(description.val().length<3 || description.val().length>16){
-                        errorDescription.append("<p>Description length must be between 3 and 16.</p>");
-                        verification=false;
-                        
-                        
+                    let regex = /^(?!\s*$)[\S\s]{3,16}$/;
+                    let descriptionValue = description.val().replace(/\s/g, ''); 
+                    if (!regex.test(descriptionValue)) {
+                        errorDescription.append("<p>Title length must be between 3 and 16.</p>");
+                    verification = false;
                     }
                     changeDescriptionView();
                 }
