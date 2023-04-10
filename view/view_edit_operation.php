@@ -34,20 +34,22 @@
             }
             
             
-            function checkAmount(){
+            function checkAmount() {
             let ok = true;
             errAmount.html("");
 
-            // Check if the input value is empty or non-numeric
-            if(amount.val().trim().length === 0 || !/^[0-9.,]+$/.test(amount.val())){
+            // Supprime les espaces de la valeur d'entrée
+            let inputAmount = amount.val().replace(/\s/g, '');
+
+            // Vérifie si la valeur est vide ou non numérique
+            if (inputAmount.length === 0 || !/^[0-9.,]+$/.test(inputAmount)) {
                 errAmount.append("<p>Amount must be a number.</p>");
                 ok = false;
-            }
-            else if(amount.val()<=0){
+            } else if (inputAmount <= 0) {
                 errAmount.append("<p>Amount must be greater than 0.</p>");
                 ok = false;
             }
-            
+            $("#amount").val(inputAmount);
             changeAmountView();
             return ok;
             }
@@ -110,6 +112,8 @@
 
 
     //-------------------------------------------------------------------------------------------------------------
+
+
     let totalAmount;
     let template_json = <?=$templates_json?> ;
     let operation =<?= $operation->id?>;
