@@ -107,38 +107,6 @@
             $(":header").hide();
         }
 
-
-        $(function(){
-            $("#erreurphp").hide();
-            listOfSubs = $('#subscription');
-
-            title = $("#title");
-            originalTitle=title.val();
-            errorTitle = $("#errorTitle");
-            description = $("#description");
-            errorDescription = $("#errorDescription");
-
-
-            if(title.val()!=""){
-                    checkTitle();
-            }
-
-            hideTitles();
-
-
-            title.bind("input", checkTitle);
-            title.bind("input", checkTitleExists);
-            description.bind("input", checkDescription);
-            displaySubs();
-            displayNotSubs();
-            hideSelectNotSubsIfNonSubJsonIsEmty();
-            $("input:text:first").focus();
-
-            $('#saveButton').attr('onclick', 'saveAll()');
-
-        });
-
-
         function displaySubs(){
             listOfSubs = $('#subscription');
 
@@ -272,13 +240,7 @@
         function saveSub(){
 
             for (let user of subsJson) {
-                console.log("hey");
                 $.post('Tricount/add_subscriber_service/'+tricountId, { userId : user.id}, function(response) {
-                    // La méthode a été appelée avec succès et le résultat est retourné dans 'response'
-                    console.log(response);
-                }).fail(function(xhr, status, error) {
-                    // Une erreur s'est produite lors de l'appel de la méthode
-                    console.log('Erreur : ' + error);
                 });
             }
         }
@@ -286,14 +248,9 @@
         function saveUnsub(){
 
             for (let user of notSubJson) {
-                console.log("hey");
                 $.post('Tricount/remove_subscriber_service/'+tricountId, { userId : user.id}, function(response) {
-                    // La méthode a été appelée avec succès et le résultat est retourné dans 'response'
-                    console.log(response);
-                }).fail(function(xhr, status, error) {
-                    // Une erreur s'est produite lors de l'appel de la méthode
-                    console.log('Erreur : ' + error);
                 });
+
             }
         }
 
@@ -318,13 +275,35 @@
             });
         }
 
+        $(function(){
+            $("#erreurphp").hide();
+            listOfSubs = $('#subscription');
+
+            title = $("#title");
+            originalTitle=title.val();
+            errorTitle = $("#errorTitle");
+            description = $("#description");
+            errorDescription = $("#errorDescription");
 
 
+            if(title.val()!=""){
+                    checkTitle();
+            }
+
+            hideTitles();
 
 
+            title.bind("input", checkTitle);
+            title.bind("input", checkTitleExists);
+            description.bind("input", checkDescription);
+            displaySubs();
+            displayNotSubs();
+            hideSelectNotSubsIfNonSubJsonIsEmty();
+            $("input:text:first").focus();
 
+            $('#saveButton').attr('onclick', 'saveAll()');
 
-
+        });
     </script>
 </head>
 
@@ -394,7 +373,7 @@
                     }
                     else{ 
                         echo "<li class='list-group-item d-flex justify-content-between'><p>".$participant->full_name.'</p>';
-                        echo "<p><a href='Tricount/delete_participant/".$tricount->id."/".$participant->id."' class='float-end'><img src='ressources/images/trash-can.png' style='width:25px;height:25px;'></a></p></li>";
+                        echo "<p><a href='Tricount/delete_participant/".$tricount->id."/".$participant->id."' class='float-end'><img src='ressources/images/trash-can.png' alt='Delete participant' style='width:25px;height:25px;'></a></p></li>";
                     }
             }
         ?>
@@ -403,7 +382,7 @@
 
 
     <form action="Tricount/add_participant/<?= $tricount->id?>" id="addParticipantFrom" method="post">       
-        <div id="add_subscription_selectdiv" value ="hey" class="input-group p-1 ms-2 me-2 mb-2">
+        <div id="add_subscription_selectdiv" class="input-group p-1 ms-2 me-2 mb-2">
             <select  class="form-select" name="participant" id="participant">
                 <option value="" selected disabled hidden>--Add a new subscriber--</option>
                 <?php foreach ($notSubParticipants as $user){ ?>
