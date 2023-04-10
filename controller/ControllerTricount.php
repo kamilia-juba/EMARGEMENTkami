@@ -148,7 +148,7 @@ class ControllerTricount extends MyController{
                     
                }   
             }           
-            (new View("edit_tricount"))->show(["user" => $creator,
+            (new View("EditTricount"))->show(["user" => $creator,
                                             "tricount"=>$tricount,
                                             "participants"=>$participants, 
                                             "errors" => $errors,"success"=>$success,
