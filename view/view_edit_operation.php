@@ -9,106 +9,106 @@
     <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
 
 <script>
-            var tricountId = <?= $tricount->id?>;
-            let title,amount, errTitle, errAmount,errWeights,okWeights;
+    var tricountId = <?= $tricount->id?>;
+    let title,amount, errTitle, errAmount,errWeights,okWeights;
 
-            function checkTitle(){
-                let ok = true;
-                errTitle.html("");
+    function checkTitle(){
+        let ok = true;
+        errTitle.html("");
 
-                if(title.val().trim().length === 0){
-                    errTitle.append("<p>Title cannot be empty.</p>");
+        if(title.val().trim().length === 0){
+            errTitle.append("<p>Title cannot be empty.</p>");
+            ok = false;
+        }               
+        else {
+            let regex = /^(?!\s*$)[\S\s]{3,16}$/;
+            let titleValue = title.val().replace(/\s/g, ''); 
+            if (!regex.test(titleValue)) {
+                errTitle.append("<p>Title length must be between 3 and 16.</p>");
+            verification = false;
+            }
+
+        }
+        changeTitleView();
+        return ok;
+    }
+    
+    
+    function checkAmount() {
+    let ok = true;
+    errAmount.html("");
+
+    // Supprime les espaces de la valeur d'entrée
+    let inputAmount = amount.val().replace(/\s/g, '');
+
+    // Vérifie si la valeur est vide ou non numérique
+    if (inputAmount.length === 0 || !/^[0-9.,]+$/.test(inputAmount)) {
+        errAmount.append("<p>Amount must be a number.</p>");
+        ok = false;
+    } else if (inputAmount <= 0) {
+        errAmount.append("<p>Amount must be greater than 0.</p>");
+        ok = false;
+    }
+    $("#amount").val(inputAmount);
+    changeAmountView();
+    return ok;
+    }
+
+    function changeTitleView(){
+        if(errTitle.text() == ""){
+            $("#okTitle").html("Looks good");
+            $("#title").attr("class","form-control mb-2 is-valid");
+        }else{
+            $("#okTitle").html("");
+            $("#title").attr("class", "form-control mb-2 is-invalid");
+        }
+    }            
+    
+    function changeAmountView(){
+        if(errAmount.text() == ""){
+            $("#okAmount").html("Looks good");
+            $("#amount").attr("class","form-control mb-2 is-valid");
+        }else{
+            $("#okAmount").html("");
+            $("#amount").attr("class", "form-control mb-2 is-invalid");
+        }
+    }
+
+    function checkWeight(){
+        let ok = true;
+        $("input[type='number']").on("input", function(){
+            var checkboxes = $("input[type='checkbox']").map(function(){
+                return this.id;
+            }).get();
+            errWeights.html("");
+            okWeights.html("Looks good");
+            for(var i=0; i<checkboxes.length; ++i){
+                var checkbox = $("#" + checkboxes[i]);
+                var weight = $("#" + checkboxes[i] + "_weight");
+                if(weight.val() <= "0"){
+                    checkbox.prop("checked", false);
+                }else{
+                    checkbox.prop("checked", true);
+                }
+                if(weight.val() === ""){
+                    errWeights.html("<p>Weights cannot be empty</p>");
                     ok = false;
-                }               
-                 else {
-                    let regex = /^(?!\s*$)[\S\s]{3,16}$/;
-                    let titleValue = title.val().replace(/\s/g, ''); 
-                    if (!regex.test(titleValue)) {
-                        errTitle.append("<p>Title length must be between 3 and 16.</p>");
-                    verification = false;
-                    }
-
-                }
-                changeTitleView();
-                return ok;
-            }
-            
-            
-            function checkAmount() {
-            let ok = true;
-            errAmount.html("");
-
-            // Supprime les espaces de la valeur d'entrée
-            let inputAmount = amount.val().replace(/\s/g, '');
-
-            // Vérifie si la valeur est vide ou non numérique
-            if (inputAmount.length === 0 || !/^[0-9.,]+$/.test(inputAmount)) {
-                errAmount.append("<p>Amount must be a number.</p>");
-                ok = false;
-            } else if (inputAmount <= 0) {
-                errAmount.append("<p>Amount must be greater than 0.</p>");
-                ok = false;
-            }
-            $("#amount").val(inputAmount);
-            changeAmountView();
-            return ok;
-            }
-
-            function changeTitleView(){
-                if(errTitle.text() == ""){
-                    $("#okTitle").html("Looks good");
-                    $("#title").attr("class","form-control mb-2 is-valid");
-                }else{
-                    $("#okTitle").html("");
-                    $("#title").attr("class", "form-control mb-2 is-invalid");
-                }
-            }            
-            
-            function changeAmountView(){
-                if(errAmount.text() == ""){
-                    $("#okAmount").html("Looks good");
-                    $("#amount").attr("class","form-control mb-2 is-valid");
-                }else{
-                    $("#okAmount").html("");
-                    $("#amount").attr("class", "form-control mb-2 is-invalid");
+                    okWeights.html("");
                 }
             }
-
-            function checkWeight(){
-                let ok = true;
-                $("input[type='number']").on("input", function(){
-                    var checkboxes = $("input[type='checkbox']").map(function(){
-                        return this.id;
-                    }).get();
-                    errWeights.html("");
-                    okWeights.html("Looks good");
-                    for(var i=0; i<checkboxes.length; ++i){
-                        var checkbox = $("#" + checkboxes[i]);
-                        var weight = $("#" + checkboxes[i] + "_weight");
-                        if(weight.val() <= "0"){
-                            checkbox.prop("checked", false);
-                        }else{
-                            checkbox.prop("checked", true);
-                        }
-                        if(weight.val() === ""){
-                            errWeights.html("<p>Weights cannot be empty</p>");
-                            ok = false;
-                            okWeights.html("");
-                        }
-                    }
-                    console.log(weight);
-                })
-                return ok;
-            }
+            console.log(weight);
+        })
+        return ok;
+    }
 
 
-            function checkAll(){
-                //return checkTitle() && checkAmount();
-                let ok = checkTitle();
-                ok = checkAmount() && ok;
-                ok = checkWeight();
-                return ok;
-            }
+    function checkAll(){
+        //return checkTitle() && checkAmount();
+        let ok = checkTitle();
+        ok = checkAmount() && ok;
+        ok = checkWeight();
+        return ok;
+    }
 
 
     //-------------------------------------------------------------------------------------------------------------
