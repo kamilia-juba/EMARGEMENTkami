@@ -95,7 +95,13 @@
                 return verification;
             }
 
+            function hide_php_errors(){
+                $("#errorsTitlePhp").hide();
+                $("#errorsDescPhp").hide();
+            }
+
             $(function(){
+                hide_php_errors();
                 title = $("#title");
                 errorTitle = $("#errorTitle");
                 description = $("#description");
@@ -129,24 +135,30 @@
             <div class = "text-danger" id = "errorTitle"></div> 
             <div class='text-success' id='verificationTitle'></div>
         </div>
+        <?php if (count($errorsTitle) != 0): ?>
+                    <div id="errorsTitlePhp" class='text-danger'>
+                        <ul>
+                        <?php foreach ($errorsTitle as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
+        <?php endif; ?>
         <div class="form-group pt-3 ps-3 pe-3 pb-3">
              <label class="pb-3">Description (optional) :</label>
              <input class="form-control" id="description" name="description" type="text" size="32" value="<?= $description ?>">
              <div class = "text-danger" id = "errorDescription"></div> 
              <div class='text-success' id='verificationDescription'></div>
-        </div>     
-       
-    </form> 
-         <?php if (count($errors) != 0): ?>
-             <div class='text-danger ps-3 pt-3 pe-3 pb-3'>
-                 <p>Please correct the following error(s) :</p>
-                 <ul>
-                    <?php foreach ($errors as $error): ?>
-                        <li><?= $error ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-         <?php endif; ?>
-                  
+        </div>
+        <?php if (count($errorsDescription) != 0): ?>
+                    <div id="errorsDescPhp" class='text-danger'>
+                        <ul>
+                        <?php foreach ($errorsDescription as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
+        <?php endif; ?>
+    </form>  
     </body>
 </html>

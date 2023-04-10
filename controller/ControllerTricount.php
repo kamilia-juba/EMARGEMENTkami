@@ -26,19 +26,23 @@ class ControllerTricount extends MyController{
         $creator=$user->id;
         
         $errors= [];
+        $errorsTitle = [];
+        $errorsDescription = [];
         if(isset($_POST['title']) ){
             $title = trim($_POST['title']);
 
             $description = trim($_POST['description']);
 
             $tricount = new Tricount($title,$created_at,$creator,$description);
-            $errors = $this->validate_title($title);
-            $errors = array_merge($errors,$this->validate_description($description));
+            $errorsTitle = $this->validate_title($title);
+            $errorsDescription = $this->validate_description($description);
+            $errors = array_merge($errors,$errorsDescription);
 
 
             if(Tricount::tricount_title_already_exists($title, $user)){
-                $errors[] = "You already have a tricount with this title. Choose another title";
+                $errorsTitle[] = "You already have a tricount with this title. Choose another title";
             }
+            $errors = array_merge($errors,$errorsTitle);
             // on verifie si y a pas d'erreurs et on sauve le tricount 
             if (count($errors) == 0) { 
                 $tricount->persist($creator); 
@@ -47,7 +51,7 @@ class ControllerTricount extends MyController{
 
             }
         }
-        (new View("addtricount"))->show(["title"=>$title,"description"=>$description, "errors" => $errors]);
+        (new View("addtricount"))->show(["title"=>$title,"description"=>$description,"errorsTitle" => $errorsTitle, "errorsDescription" => $errorsDescription, "errors" => $errors]);
     }
 
     public function index() : void {
