@@ -255,12 +255,21 @@ class ControllerTricount extends MyController{
     public function add_template(): void{
         $user = $this->get_user_or_redirect(); //si l'utilisateur n'est pas connecter redirection vers la page d'acceuille
         $title = "";
+        $weights = [];
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->is_subscribed_to_tricount($_GET["param1"])){
             $errors = [];
             $errorsTitle = [];
             $errorsCheckBoxes = [];
             $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
             $participants = $tricount->get_participants();
+            for($i=0; $i < sizeof($participants); ++$i){
+                $weights[$i] = 1;
+            }
+            if(isset($_POST["weight"])){
+                for($i=0; $i < sizeof($participants); ++$i){
+                    $weights[$i] = $_POST["weight"][$i];
+                }
+            }
             if(isset($_POST["title"]) && $_POST["title"] != ""){
                 $title = trim($_POST["title"]);
                 $errorsTitle = $this->validate_title($title);
@@ -303,7 +312,8 @@ class ControllerTricount extends MyController{
                                             "tricount" => $tricount,
                                             "participants" => $participants,
                                             "errorsTitle" => $errorsTitle,
-                                            "errorsCheckboxes" => $errorsCheckBoxes]
+                                            "errorsCheckboxes" => $errorsCheckBoxes,
+                                            "weights" => $weights]
             );
         }else{
             $this->redirect("Main");
