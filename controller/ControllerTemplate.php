@@ -45,16 +45,32 @@ class ControllerTemplate extends Mycontroller{
             $template = Template::get_template_by_id($_GET["param2"]);// recupere le template 
             $participants = $tricount->get_participants(); // recupere les participant du tricount 
             $participants_and_weights = [];
+            $checkbox_checked = [];
             $title = $template->title;
-            foreach($participants as $participant){
+            for($i = 0; $i < sizeof($participants); ++$i){
+                $participant = $participants[$i];
                 // renseigne le poid de chaque participant dans le tricount 
-                $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant), $participant->user_participates_to_repartition($template)];
+                $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant)];
+                $checkbox_checked[$i] = $participant->user_participates_to_repartition($template) ? "checked" : "";
             }
             if(isset($_POST["weight"])){
                 for($i=0; $i < sizeof($participants); ++$i){
                     $participants_and_weights[$i][1] = $_POST["weight"][$i];
+                    if(isset($_POST["checkboxParticipants"])){
+                        for($j = 0; $j < sizeof($_POST["checkboxParticipants"]); ++$j){
+                            if($_POST["checkboxParticipants"][$j] == $participants_and_weights[$i][0]->id){
+                                $checkbox_checked[$i] = "checked";
+                                break;
+                            }else{
+                                $checkbox_checked[$i] = "";
+                            }
+                        }
+                    }else{
+                        $checkbox_checked[$i] = "";
+                    }
                 }
             }
+
             if(isset($_POST["title"])){
                 $title = trim($_POST["title"]);
 
@@ -104,7 +120,8 @@ class ControllerTemplate extends Mycontroller{
                                                  "template"=>$template,
                                                  "tricount"=>$tricount,
                                                  "user"=>$user,
-                                                 "title"=>$title]
+                                                 "title"=>$title,
+                                                 "checkbox_checked" => $checkbox_checked]
             );
 
         }else{

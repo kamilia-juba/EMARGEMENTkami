@@ -170,9 +170,7 @@
                                 name="checkboxParticipants[]" 
                                 id="<?=$participants_and_weights[$i][0]->id?>" 
                                 value ="<?=$participants_and_weights[$i][0]->id?>" 
-                                <?php if($participants_and_weights[$i][2]){ ?>
-                                            checked
-                                <?php } ?>
+                                <?= $checkbox_checked[$i] ?>
                             >
                         </span>
                         <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants_and_weights[$i][0]->full_name?></span>
