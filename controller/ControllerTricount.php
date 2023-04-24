@@ -141,7 +141,7 @@ class ControllerTricount extends MyController{
                 $errorsDescription = $this->validate_description($description);
 
                 if(Tricount::tricount_title_already_exists($title, $user)){
-                    $errors[] = "You already have a tricount with this title. Choose another title";
+                    $errorsTitle[] = "You already have a tricount with this title. Choose another title";
                 }
               
                 if (count($errorsTitle) == 0 && count($errorsDescription) == 0) { 
