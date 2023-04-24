@@ -265,12 +265,26 @@ class ControllerTricount extends MyController{
             $errorsCheckBoxes = [];
             $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
             $participants = $tricount->get_participants();
+            $checkbox_checked = [];
             for($i=0; $i < sizeof($participants); ++$i){
                 $weights[$i] = 1;
+                $checkbox_checked[$i] = "checked";
             }
             if(isset($_POST["weight"])){
                 for($i=0; $i < sizeof($participants); ++$i){
                     $weights[$i] = $_POST["weight"][$i];
+                    if(isset($_POST["checkboxParticipants"])){
+                        for($j = 0; $j < sizeof($_POST["checkboxParticipants"]); ++$j){
+                            if($_POST["checkboxParticipants"][$j] == $participants[$i]->id){
+                                $checkbox_checked[$i] = "checked";
+                                break;
+                            }else{
+                                $checkbox_checked[$i] = "";
+                            }
+                        }
+                    }else{
+                        $checkbox_checked[$i] = "";
+                    }
                 }
             }
             if(isset($_POST["title"]) && $_POST["title"] != ""){
@@ -316,7 +330,8 @@ class ControllerTricount extends MyController{
                                             "participants" => $participants,
                                             "errorsTitle" => $errorsTitle,
                                             "errorsCheckboxes" => $errorsCheckBoxes,
-                                            "weights" => $weights]
+                                            "weights" => $weights,
+                                            "checkbox_checked" => $checkbox_checked]
             );
         }else{
             $this->redirect("Main");

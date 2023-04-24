@@ -170,7 +170,7 @@
                 <?php for($i = 0; $i < sizeof($participants); ++$i):  ?>
                     <div class="input-group mb-2 mt-2">
                         <span class="form-control" style="background-color: #E9ECEF">
-                            <input class = "checkboxParticipant" type="checkbox" name="checkboxParticipants[]" id="<?=$participants[$i]->id?>" value="<?=$participants[$i]->id?>" checked>
+                            <input class = "checkboxParticipant" type="checkbox" name="checkboxParticipants[]" id="<?=$participants[$i]->id?>" value="<?=$participants[$i]->id?>" <?=$checkbox_checked[$i] ?>>
                         </span>  
                         <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants[$i]->full_name?></span>
                         <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participants[$i]->id?>_weight" value="<?=$weights[$i]?>" oninput="if(this.value < 0) this.value = 0">
