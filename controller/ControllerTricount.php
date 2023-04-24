@@ -180,6 +180,9 @@ class ControllerTricount extends MyController{
                 $tricount->add_subscriber($participant);
                 $this->redirect("Tricount","edit_tricount",$tricount->id);
             }
+            else{
+                $this->redirect("Tricount","edit_tricount",$tricount->id);
+            }
         }
         else{
             $this->redirect("Tricount","yourTricounts");
