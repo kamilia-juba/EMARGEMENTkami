@@ -25,6 +25,10 @@ class ControllerUser extends MyController {
     public function edit_profile() : void {
         $user = $this->get_user_or_redirect();
         $errors = [];
+        $errorsMail = [];
+        $errorsName = [];
+        $errorsIban = [];
+
         $success = "";
 
         $full_name=$user->full_name;
@@ -33,14 +37,20 @@ class ControllerUser extends MyController {
         
 
 
-        if (isset($_POST['full_name']) || isset($_POST['IBAN']) ) {
+        if (isset($_POST['full_name']) || isset($_POST['IBAN']) || isset($POST['mail'] )) {
             $full_name = Tools::sanitize($_POST['full_name']);
             $iban = Tools::sanitize($_POST['iban']);
             $mail = Tools::sanitize($_POST['mail']);
         
-            $errors = array_merge($errors, User::validate_IBAN($iban));
-            $errors = array_merge($errors, User::validate_full_name($full_name));
-            $errors = array_merge($errors, User::validate_mail($mail));
+            $errorsIban = User::validate_IBAN($iban);
+            $errorsName = User::validate_full_name($full_name);
+            if($user->mail!=$mail){
+                $errorsMail = User::validate_mail($mail);
+            }
+
+            $errors = array_merge($errors, $errorsName);
+            $errors = array_merge($errors, $errorsIban);
+            $errors = array_merge($errors, $errorsMail);
 
 
             if (count($errors) == 0) { 
@@ -63,7 +73,7 @@ class ControllerUser extends MyController {
         $success = "Your profile has been successfully updated.";
         }
 
-        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errors" => $errors, "success" => $success]);
+        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errorsMail" => $errorsMail,"errorsName" => $errorsName, "errorsIban" => $errorsIban, "success" => $success]);
     }
 
     public function change_password() : void {

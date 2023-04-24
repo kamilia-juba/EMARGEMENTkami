@@ -135,7 +135,7 @@
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD ">
         <a href= "" class= "btn btn-outline-danger">Back</a>
         <?=$tricount->title?> &#8594; Expenses
-        <a href="Tricount/editTricount/<?= $tricount->id?>" class="btn btn-primary">Edit</a>
+        <a href="Tricount/edit_tricount/<?= $tricount->id?>" class="btn btn-primary">Edit</a>
     </div>
     <?php if($alone && $noExpenses){ ?>
         <div class="container pt-5 ps-2 pe-2 text-center">
@@ -145,7 +145,7 @@
                 </li>
                 <li class="list-group-item ps-3">
                     <p>Click below to add your friends!</p>
-                    <p><a href='Tricount/editTricount/<?=$tricount->id?>' class='btn btn-primary'>Add friends</a></p>
+                    <p><a href='Tricount/edit_tricount/<?=$tricount->id?>' class='btn btn-primary'>Add friends</a></p>
                 </li>
             </ul>
         </div>
@@ -163,7 +163,7 @@
         </div>
     <?php }else{ ?>
         <div class=" d-flex justify-content-between p-2">
-            <a href="Tricount/showBalance/<?= $tricount->id?>" class="btn btn-success w-100 mt-2 mb-1">&#8644; View balance</a>
+            <a href="Tricount/show_balance/<?= $tricount->id?>" class="btn btn-success w-100 mt-2 mb-1">&#8644; View balance</a>
         </div>
         <div id=selectSort></div>
         

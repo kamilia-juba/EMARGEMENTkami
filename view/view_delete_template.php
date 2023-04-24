@@ -13,7 +13,7 @@
 <div class="container d-flex align-items-center min-vh-100 text-danger">
       <div class="container border rounded ">
         <div class="container border-bottom text-center pt-4 pb-4">
-        <p class="fs-1"><i class="fa-regular fa-trash-can fa-xl"></i></p>
+        <p class="fs-1"><img src='ressources/images/trash-can.png' alt='Trash can icon' style='width:50px;height:50px'></p>
           <h1>Are you sure?</h1>
         </div>
     

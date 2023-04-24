@@ -19,11 +19,15 @@
                 if(title.val().trim().length === 0){
                     errTitle.append("<p>Title cannot be empty.</p>");
                     ok = false;
-                }else{
-                    if(!(/^.{3,255}$/).test(title.val())){
-                        errTitle.append("<p>Title must have at least 3 characters.</p>");
-                        ok = false;
+                }               
+                 else {
+                    let regex = /^(?!\s*$)[\S\s]{3,16}$/;
+                    let titleValue = title.val().replace(/\s/g, ''); 
+                    if (!regex.test(titleValue)) {
+                        errTitle.append("<p>Title length must be between 3 and 16.</p>");
+                    verification = false;
                     }
+
                 }
                 changeTitleView();
                 return ok;
@@ -39,7 +43,7 @@
 
             function changeTitleView(){
                 if(errTitle.text() == ""){
-                    $("#okTitle").html("Looks good");
+                    $("#okTitle").html("<p>Looks good</p>");
                     $("#title").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#okTitle").html("");
@@ -54,7 +58,7 @@
                         return this.id;
                     }).get();
                     errWeights.html("");
-                    okWeights.html("Looks good");
+                    okWeights.html("<p>Looks good</p>");
                     for(var i=0; i<checkboxes.length; ++i){
                         var checkbox = $("#" + checkboxes[i]);
                         var weight = $("#" + checkboxes[i] + "_weight");
@@ -77,19 +81,37 @@
                 var checkboxes = $(".checkboxParticipant").map(function(){
                             return this.id;
                         }).get();
+                    
+                    errWeights.html("");
+                var checkboxes_count = checkboxes.length;
                        
                     for (var i = 0; i<checkboxes.length; ++i){
                         var checkbox= $("#" + checkboxes[i]);
                         
                         var weight = $("#" + checkboxes[i]+  "_weight");
+                        var weightval = weight.val();
 
                         if(checkbox.prop("checked")==false){
                             weight.val("0");
+                            checkboxes_count--;
                         }
                         if(checkbox.prop("checked")==true){
-                            weight.val("1");
+                            if(weight.val()==="0"){
+                                weight.val("1");
+                            }
+                            else(weight.val(weightval));
+                            checkboxes_count++;
                         }
+                        
                     }
+                    if (checkboxes_count === 0){
+                        errWeights.html("You must select at least 1 participant");
+                    }
+            }
+
+            function hide_php_errors(){
+                $("#errTitlePhp").hide();
+                $("#errCheckboxesPhp").hide();
             }
 
 
@@ -104,6 +126,8 @@
                 errTitle = $("#errTitle");
                 errWeights = $("#errWeights");
                 okWeights = $("#okWeights");
+
+                hide_php_errors();
 
                 title.bind("input", checkTitle);
                 title.bind("input", checkTitleExists);
@@ -123,18 +147,18 @@
     <body>
         
         <div class="pt-2 ps-3 pe-3 pb-2 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
-            <a href="Tricount/showTemplates/<?=$tricount->id?>" class="btn btn-outline-danger" >Cancel</a>
+            <a href="Tricount/show_templates/<?=$tricount->id?>" class="btn btn-outline-danger" >Cancel</a>
             <?=$tricount->title?> &#8594; New template
             <input type="submit" class="btn btn-primary" value="Save" form="addtemplateForm">
         </div> 
         <div class="container">
-        <form id="addtemplateForm" action="Tricount/addTemplate/<?=$tricount->id?>" method="post" onsubmit="return checkAll();">
+        <form id="addtemplateForm" action="Tricount/add_template/<?=$tricount->id?>" method="post" onsubmit="return checkAll();">
             Title : 
             <input class="form-control mb-2" id="title" name="title" type="text" placeholder="Title" value="<?=$title?>">
             <div class='text-danger' id='errTitle'></div>
             <div class='text-success' id='okTitle'></div>
             <?php if (count($errorsTitle) != 0): ?>
-                <div class='text-danger'>
+                <div class='text-danger' id="errTitlePhp">
                     <ul>
                         <?php foreach ($errorsTitle as $errors): ?>
                             <li><?= $errors ?></li>
@@ -149,13 +173,13 @@
                             <input class = "checkboxParticipant" type="checkbox" name="checkboxParticipants[]" id="<?=$participant->id?>" value="<?=$participant->id?>" checked>
                         </span>  
                         <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participant->full_name?></span>
-                        <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participant->id?>_weight" value="1">
+                        <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participant->id?>_weight" value="1" oninput="if(this.value < 0) this.value = 0">
                     </div>
                 <?php endforeach; ?>
                 <div class='text-danger' id='errWeights'></div>
                 <div class='text-success' id='okWeights'></div>
                 <?php if (count($errorsCheckboxes) != 0): ?>
-                        <div class='text-danger'>
+                        <div class='text-danger' id="errCheckboxesPhp">
                             <ul>
                             <?php foreach ($errorsCheckboxes as $errors): ?>
                                 <li><?= $errors ?></li>

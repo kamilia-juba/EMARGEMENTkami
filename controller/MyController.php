@@ -5,7 +5,7 @@ require_once "framework/Controller.php";
 abstract class Mycontroller extends Controller{
 
     //vérifie si les poids qui sont dans le tableau donné en paramètre sont supérieurs à 0 sinon renvoie false
-    public function weightsAreGreaterThanZero(array $weights): bool{
+    public function weights_are_greaterThanZero(array $weights): bool{
         for($i=0;$i<sizeof($weights);++$i){
             if($weights[$i]<=0){
                 return false;
@@ -15,7 +15,7 @@ abstract class Mycontroller extends Controller{
     }
 
     //vérifie si les poids qui sont dans le tableau donné en paramètre sont bien numériques
-    public function weightsAreNumeric(array $weights): bool{
+    public function weights_are_numeric(array $weights): bool{
         for($i=0;$i<sizeof($weights);++$i){
             if(!is_numeric($weights[$i])){
                 return false;
@@ -78,7 +78,7 @@ abstract class Mycontroller extends Controller{
     //méthodes pour controllerOperation
 
     //méthode qui récupère l'index courant utilisé pour le next et previous
-    public function getCurrentIndex(array $operations, Operation $operation): int{
+    public function get_current_index(array $operations, Operation $operation): int{
         $result = 0;
         for($i=0;$i<sizeof($operations);++$i){
             if($operations[$i]->id == $operation->id){
@@ -115,14 +115,12 @@ abstract class Mycontroller extends Controller{
 
         if(isset($_POST["saveTemplateCheck"])){                                                         //execute ce code si l'utilisateur check save template
             $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
-            $weights = $_POST["weight"];
-            if(isset($_POST["newTemplateName"]) && $newTemplateName!= ""){                              //verifie si le nom est entré et n'est pas vide
-                if($tricount->template_name_exists($_POST["newTemplateName"])){
-                    $errorsSaveTemplate[] = "This template already exists. Choose another name";                        //verifie si le nom existe déjà et sinon il sauvegarde chaque item dans la bdd et ajoute le template
-                }
-                if(isset($_POST["newTemplateName"]) && $newTemplateName== ""){
-                    $errorsSaveTemplate[] = "A name must be given to template to be able to save it.";
-                }
+            $weights = $_POST["weight"];                            //verifie si le nom est entré et n'est pas vide
+            if($tricount->template_name_exists($_POST["newTemplateName"])){
+                $errorsSaveTemplate[] = "This template already exists. Choose another name";                        //verifie si le nom existe déjà et sinon il sauvegarde chaque item dans la bdd et ajoute le template
+            }
+            if(isset($_POST["newTemplateName"]) && $newTemplateName== ""){
+                $errorsSaveTemplate[] = "A name must be given to template to be able to save it.";
             }
         }  
 
@@ -130,7 +128,7 @@ abstract class Mycontroller extends Controller{
             $errorsAmount = array_merge($errorsAmount, $this->validate_amount($amount));
             !is_numeric($amount) ? $errorsAmount[] = "Amount should be numeric" : "";
 
-            if(!$this->weightsAreNumeric($_POST["weight"])){
+            if(!$this->weights_are_numeric($_POST["weight"])){
                 $errorsCheckboxes[] = "Weights must be numeric";
             }
 

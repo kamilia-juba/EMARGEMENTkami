@@ -30,9 +30,35 @@
   * L'utilisateur connecté (hors créateur) peut se delete d'un tricount
   * Il y a 3 types de fichiers SQL dans le dossiers database: prwb_2223_a07 (bdd vide), prwb_2223_a07_dump (bdd du cours de base en dump),  prwb_2223_a07_dump_test (bdd avec nos tests)
 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 ## Notes de version itération 2
 
-...
+### Liste des utilisateurs et mots de passes
+
+  * boverhaegen@epfc.eu, password "Password1,", utilisateur
+  * bepenelle@epfc.eu, password "Password1,", utilisateur
+  * xapigeolet@epfc.eu, password "Password1,", utilisateur
+  * mamichel@epfc.eu, password "Password1,", utilisateur
+  * amine@hotmail.com, password "Passwordtest1,", utilisateur
+  * yacine@hotmail.com, password "Passwordtest1,", utilisateur
+  * mustafa@hotmail.com, password "Passwordtest1,", utilisateur
+  * 
+
+### Liste des bugs connus
+
+  * Lorsqu'on add un tricount avec un nom très long (ex: 250 char) le string fais déborder la vue et cette dernière s'allonge et fais s'allonger pas page également
+  * Quand on décoche toutes les checkbox manuellement, affiche bien l'erreur qui dit de sélectionner au moins un participant mais si on fait pareil pour les poids, affiche "looks     good" au lieu d'afficher l'erreur
+  * Pour la vue add/edit operation, l'erreur JS du save template n'a pas été gerée car on ne sait pas si il faut le faire.
+
+
+### Liste des fonctionnalités supplémentaires
+    
+### Divers
+
+  * Bouton "log out" collé au bas de page
 
 ## Notes de version itération 3 
 

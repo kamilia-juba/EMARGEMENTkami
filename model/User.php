@@ -53,7 +53,7 @@ class User extends Model {
     }
         // sa permet de save l'user dans la base de donner 
         public function persist() : User {
-        if(self::get_user_by_id($this->id)){
+        if($this->id!=null){
             self::execute("UPDATE Users SET mail=:mail,  hashed_password=:hashed_password, full_name=:full_name, role=:role, iban=:iban WHERE id=:id ", 
                             [   "id"=>$this->id,
                                 "mail"=>$this->mail,
@@ -123,6 +123,10 @@ class User extends Model {
     // verifie si le string full name respercte les condition(forme d'un mail)
     public static function validate_mail(string $mail) : array {
         $errors = [];
+        if(User::validate_unicity($mail)){
+            $errors[] = "This mail already exists";
+        }
+
         if (!preg_match("/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/",$mail)) {
             $errors[] = "This mail is not valide";
         }

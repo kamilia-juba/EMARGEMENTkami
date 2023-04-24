@@ -19,7 +19,7 @@ class ControllerTemplate extends Mycontroller{
             $template = Template::get_template_by_id($_GET["param2"]);// recupere le template 
             if(isset($_POST["yes"])){
                 $template->remove_template();
-                $this->redirect("Tricount", "showTemplates", $tricount->id);
+                $this->redirect("Tricount", "show_templates", $tricount->id);
             }else if(isset($_POST["no"])){
                 $this->redirect("Template", "edit_template", $tricount->id, $template->id);
             }
@@ -64,7 +64,7 @@ class ControllerTemplate extends Mycontroller{
                     }
                 }
 
-                if(!$this->weightsAreNumeric($_POST["weight"])){
+                if(!$this->weights_are_numeric($_POST["weight"])){
                     $errorsCheckboxes[] = "Weights must be numeric";
                 }
                 $errors = array_merge($errors,$errorsTitle);
@@ -88,7 +88,7 @@ class ControllerTemplate extends Mycontroller{
                             }
                         }
                     }
-                    $this->redirect("Tricount", "showTemplates", $tricount->id);
+                    $this->redirect("Tricount", "show_templates", $tricount->id);
 
                 }
 

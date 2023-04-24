@@ -18,19 +18,22 @@
             function checkTitle(){
                 let verification= true;
                 errorTitle.html("");
+
                 if(title.val().length === 0){
                     errorTitle.append("<p>Title cannot be empty.</p>");
                     verification=false;
                 }
                 else {
-                    if(title.val().length<3 || title.val().length>16){
+                    let regex = /^(?!\s*$)[\S\s]{3,16}$/;
+                    let titleValue = title.val().replace(/\s/g, ''); 
+                    if (!regex.test(titleValue)) {
                         errorTitle.append("<p>Title length must be between 3 and 16.</p>");
-                        verification=false;
+                    verification = false;
                     }
 
                 }
             
-                console.log(title);
+                
                 return verification; 
             
             }
@@ -61,13 +64,12 @@
                     errorTitle.append("<p>Title already exists. please choice another</p>");
                 }
                 changeTitleView();
-                console.log();
 
             }
 
             function changeTitleView(){
                 if(errorTitle.text() == ""){
-                    $("#verificationTitle").html(" • Looks good");
+                    $("#verificationTitle").html("Looks good");
                     $("#title").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#verificationTitle").html("");
@@ -77,7 +79,7 @@
 
             function changeDescriptionView(){
                 if(errorDescription.text()==""){
-                    $("#verificationDescription").html(" • Looks good");
+                    $("#verificationDescription").html("Looks good");
                     $("#description").attr("class","form-control mb-2 is-valid");
                 }else{
                     $("#verificationDescription").html("");
@@ -93,7 +95,13 @@
                 return verification;
             }
 
+            function hide_php_errors(){
+                $("#errorsTitlePhp").hide();
+                $("#errorsDescPhp").hide();
+            }
+
             $(function(){
+                hide_php_errors();
                 title = $("#title");
                 errorTitle = $("#errorTitle");
                 description = $("#description");
@@ -127,24 +135,30 @@
             <div class = "text-danger" id = "errorTitle"></div> 
             <div class='text-success' id='verificationTitle'></div>
         </div>
+        <?php if (count($errorsTitle) != 0): ?>
+                    <div id="errorsTitlePhp" class='text-danger'>
+                        <ul>
+                        <?php foreach ($errorsTitle as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
+        <?php endif; ?>
         <div class="form-group pt-3 ps-3 pe-3 pb-3">
              <label class="pb-3">Description (optional) :</label>
              <input class="form-control" id="description" name="description" type="text" size="32" value="<?= $description ?>">
              <div class = "text-danger" id = "errorDescription"></div> 
              <div class='text-success' id='verificationDescription'></div>
-        </div>     
-       
-    </form> 
-         <?php if (count($errors) != 0): ?>
-             <div class='text-danger ps-3 pt-3 pe-3 pb-3'>
-                 <p>Please correct the following error(s) :</p>
-                 <ul>
-                    <?php foreach ($errors as $error): ?>
-                        <li><?= $error ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-         <?php endif; ?>
-                  
+        </div>
+        <?php if (count($errorsDescription) != 0): ?>
+                    <div id="errorsDescPhp" class='text-danger'>
+                        <ul>
+                        <?php foreach ($errorsDescription as $errors): ?>
+                            <li><?= $errors ?></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
+        <?php endif; ?>
+    </form>  
     </body>
 </html>

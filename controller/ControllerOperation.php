@@ -21,7 +21,7 @@ class ControllerOperation extends Mycontroller{
             $user_participates = $operation->user_participates($user);          //récuperation pour voir si l'utilisateur connecté a participé
             $users = $this->get_users_and_their_operation_amounts($operation);      // recuperation des user et de leur amount
             $operations =  $tricount->get_operations();   //recuperation de toutes les opération sur tricount
-            $currentIndex = $this->getCurrentIndex($operations, $operation);        //récuperation de l'index courante
+            $currentIndex = $this->get_current_index($operations, $operation);        //récuperation de l'index courante
             (new View("operation"))->show(
                                         ["user" => $user, 
                                         "operation" => $operation, 
@@ -145,6 +145,7 @@ class ControllerOperation extends Mycontroller{
 
     public function editOperation(): void {
         $user = $this->get_user_or_redirect();
+        $operation=null;
         $errors = [];
         $errorsTitle = [];
         $errorsAmount = [];
@@ -156,6 +157,7 @@ class ControllerOperation extends Mycontroller{
             $tricount = Tricount::get_tricount_by_id($operation->tricount, $user->mail);
             $participants = $tricount->get_participants();
             $participants_and_weights = [];
+            $templates_json = $tricount->get_templates_json();
             foreach($participants as $participant){ //récupère un tableau avec les participants ainsi que leur poids sur l'opération et détermine si le participant participe dans cette opération ou non
                 $participants_and_weights[] = [$participant, $operation->get_weight(User::get_user_by_id($participant->id)) == null ? 1 : $operation->get_weight(User::get_user_by_id($participant->id)),$operation->user_participates($participant)];
             }
@@ -172,9 +174,14 @@ class ControllerOperation extends Mycontroller{
 
             if(isset($_POST["title"]) && isset($_POST["amount"]) && isset($_POST["date"])){
                 $title = trim($_POST["title"]);
-                $amount = $_POST["amount"];
+                $amount = floatval(trim($_POST['amount']));
                 $date = $_POST["date"];
                 $paidBy = $_POST["paidBy"];
+
+                $operation->title = $title;
+                $operation->amount = $amount;
+                $operation->operation_date = $date;
+                $operation->initiator = $paidBy;
             
                 //partie concernant la gestion des erreurs
                 $errors=$this->get_add_operation_errors($tricount);
@@ -236,6 +243,7 @@ class ControllerOperation extends Mycontroller{
                                                  "errorsTitle" => $errorsTitle,
                                                  "errorsAmount" => $errorsAmount, 
                                                  "errorsCheckboxes" => $errorsCheckboxes,
+                                                 "templates_json" => $templates_json,
                                                  "errorsSaveTemplate" => $errorsSaveTemplate]
             );
         } else{
@@ -264,5 +272,30 @@ class ControllerOperation extends Mycontroller{
             $this->redirect();
         }
     }
+
+    public function user_participates_service(){
+        $res = "false";
+        $operation = Operation::get_operation_by_id($_POST["operationId"]);
+        $user = User::get_user_by_id($_POST["userId"]);
+
+        if($operation->user_participates($user)){
+            $res = "true";
+        }
+        echo $res;
+    }
+
+   
+
+    public function get_user_weight_service(){
+        $res = 0;
+        $operation= Operation::get_operation_by_id($_POST["operationId"]);
+        $user=User::get_user_by_id($_POST["userId"]);
+
+        $res += $operation->get_weight($user);
+
+        echo $res;
+    }
+
+   
 }
 ?>
