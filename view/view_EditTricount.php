@@ -237,22 +237,26 @@
             }
         }
 
-        function saveSub(){
-
-            for (let user of subsJson) {
-                $.post('Tricount/add_subscriber_service/'+tricountId, { userId : user.id}, function(response) {
+        function saveSub() {
+            subsJson.forEach(function(user) {
+                $.ajax({
+                url: 'Tricount/add_subscriber_service/' + tricountId,
+                type: 'POST',
+                data: { userId: user.id },
                 });
+            });
             }
-        }
 
-        function saveUnsub(){
-
-            for (let user of notSubJson) {
-                $.post('Tricount/remove_subscriber_service/'+tricountId, { userId : user.id}, function(response) {
+        function saveUnsub() {
+            notSubJson.forEach(function(user) {
+                $.ajax({
+                url: 'Tricount/remove_subscriber_service/' + tricountId,
+                type: 'POST',
+                data: { userId: user.id },
                 });
-
+            });
             }
-        }
+
 
         function saveAll(){
             saveSub();
