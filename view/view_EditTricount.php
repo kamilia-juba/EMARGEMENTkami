@@ -68,7 +68,7 @@
             async function checkTitleExists(){
                
                const data = await $.post("tricount/tricount_exists_service/", {newTitle : title.val()},null, "json");
-               if(data && originalTitle!=title.val()){
+               if(data && originalTitle.trim()!=title.val().trim()){
                    errorTitle.append("<p>Title already exists. please choice another</p>");
                }
                changeTitleView();
