@@ -50,6 +50,11 @@ class ControllerTemplate extends Mycontroller{
                 // renseigne le poid de chaque participant dans le tricount 
                 $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant), $participant->user_participates_to_repartition($template)];
             }
+            if(isset($_POST["weight"])){
+                for($i=0; $i < sizeof($participants); ++$i){
+                    $participants_and_weights[$i][1] = $_POST["weight"][$i];
+                }
+            }
             if(isset($_POST["title"])){
                 $title = trim($_POST["title"]);
 
