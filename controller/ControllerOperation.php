@@ -38,6 +38,13 @@ class ControllerOperation extends Mycontroller{
         }
     }
 
+    private function update_new_template_name(){
+        $save_template_name = "";
+        if(isset($_POST["newTemplateName"])){
+            $save_template_name = $_POST["newTemplateName"];
+        }
+        return $save_template_name;
+    }
     public function add_operation() : void {
         $user = $this->get_user_or_redirect();
         $selected_repartition = 0;
@@ -59,9 +66,10 @@ class ControllerOperation extends Mycontroller{
             $templates = $tricount->get_repartition_templates();
             $template_items = $this->get_template_items($templates);
             $weights = $this->initialize_weights($participants);
-
+            $save_template_name =$this->update_new_template_name();
             if(isset($_POST["weight"])){
                 $checkbox_checked = $this->update_checkbox_checked($participants);
+                $weights = $this->update_weights($participants);
             }
             
             
@@ -97,7 +105,8 @@ class ControllerOperation extends Mycontroller{
                                             "paidBy" => $paidBy,
                                             "template_items" => $template_items,
                                             "checkbox_checked" => $checkbox_checked,
-                                            "weights" => $weights]);
+                                            "weights" => $weights,
+                                            "save_template_name"=>$save_template_name]);
 
         }else{
             $this->redirect("main");
@@ -153,7 +162,14 @@ class ControllerOperation extends Mycontroller{
 
         return $checkbox_checked;
     }
-   
+    private function update_weights(array $participants) : array {
+        $weights = [];
+        for($i = 0; $i < sizeof($participants); ++$i){
+            $weights[$i] = $_POST["weight"][$i];
+            
+        }
+        return $weights;
+    }
     public function add_operation2() : void {
         $user = $this->get_user_or_redirect();
         $selected_repartition = 0;
