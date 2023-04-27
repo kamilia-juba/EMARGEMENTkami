@@ -71,8 +71,13 @@ class ControllerOperation extends Mycontroller{
                 $checkbox_checked = $this->update_checkbox_checked($participants);
                 $weights = $this->update_weights($participants);
             }
-            
-            
+
+            if(isset($_POST["repartitionTemplates"]) && $_POST["repartitionTemplates"] != "customRepartition"){ //si un template est appliqué, il execute ce code qui réinistialise la page avec les données du template
+                $template = Template::get_template_by_id($_POST["repartitionTemplates"]);
+                $selected_repartition = $template->id;
+                $checkbox_checked = $this->update_checkboxes_from_template($participants,$template);
+                $weights = $this->update_weights_from_template($participants,$template);
+            }
 
             if (isset($_POST['title']) && isset($_POST['amount']) && isset($_POST['date']) && 
                 isset($_POST['paidBy'])) {
@@ -208,6 +213,42 @@ class ControllerOperation extends Mycontroller{
         }
         return $weights;
     }
+
+    private function update_weights_from_template(array $participants, Template $template): array{
+        $weights = [];
+        $template_items = $template->get_items();
+
+        for($i=0; $i < sizeof($participants); ++$i){
+            for($j = 0; $j < sizeof($template_items); ++$j){
+                if($participants[$i]->id === $template_items[$j]->user->id){
+                    $weights[$i] = $template_items[$j]->weight;
+                    break;
+                }else{
+                    $weights[$i] = 0;
+                }
+            }
+        }
+
+        return $weights;
+    }
+
+    private function update_checkboxes_from_template(array $participants, Template $template): array{
+        $checkboxes_checked = [];
+        $template_items = $template->get_items();
+
+        for($i=0; $i < sizeof($participants); ++$i){
+            for($j = 0; $j < sizeof($template_items); ++$j){
+                if($participants[$i]->id === $template_items[$j]->user->id){
+                    $checkboxes_checked[$i] = "checked";
+                    break;
+                }else{
+                    $checkboxes_checked[$i] = "";
+                }
+            }
+        }
+        return $checkboxes_checked;
+    }
+
     public function add_operation2() : void {
         $user = $this->get_user_or_redirect();
         $selected_repartition = 0;
@@ -235,10 +276,7 @@ class ControllerOperation extends Mycontroller{
         if(isset($_POST["repartitionTemplates"]) && $_POST["repartitionTemplates"] != "customRepartition"){ //si un template est appliqué, il execute ce code qui réinistialise la page avec les données du template
             $template = Template::get_template_by_id($_POST["repartitionTemplates"]);
             $selected_repartition = $template->id;
-            $participants_and_weights = [];
-            foreach($participants as $participant){
-                    $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant), $participant->user_participates_to_repartition($template->id)];
-            }
+            $weights = $this->update_weights_from_template($participants,$template);
         }
 
         if (isset($_POST['title']) && isset($_POST['amount']) && isset($_POST['date']) && 
