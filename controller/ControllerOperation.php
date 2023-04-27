@@ -87,7 +87,45 @@ class ControllerOperation extends Mycontroller{
                 $errorsAmount =$errors["errorsAmount"];
                 $errorsCheckboxes= $errors["errorsCheckboxes"];
                 $errorsSaveTemplate = $errors["errorsSaveTemplate"];
+
+                if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
+                
+                    if(isset($_POST["saveTemplateCheck"])){
+                        $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
+                        $weights = $_POST["weight"];
+    
+                        $newTemplate = $tricount->add_template($newTemplateName);
+                        for($i = 0 ; $i < sizeof($participants); ++ $i){
+                            for($j = 0; $j<sizeof($_POST["checkboxParticipants"]);++$j){                    
+                                if($participants[$i]->id==$_POST["checkboxParticipants"][$j]){
+                                    if($weights[$i]>0){
+                                       $newTemplate->add_items($participants[$i], $weights[$i]);    
+                                    }
+                                }
+                            }
+                        }
+                    }    
+    
+                    $operationss = new Operation($title, $tricount->id, $amount, $paidBy,date("Y-m-d H:i:s"), $date);
+                    $operation=$operationss->persist();
+                    $checkboxes = $_POST["checkboxParticipants"];
+                    $weights = $_POST["weight"];
+                    for($i = 0 ; $i < sizeof($participants); ++ $i){
+                        for($j = 0; $j<sizeof($checkboxes);++$j){
+                            if($participants[$i]->id==$checkboxes[$j]){
+                                if($weights[$i]>0){
+                                    $operation->add_repartitions($participants[$i], $weights[$i]);
+                                }
+                            }
+                        }
+                    }
+                    $this->redirect("Tricount", "showTricount", $tricount->id);
+                }
+                
+            
             }
+
+
 
             (new View("add_operation"))->show(["title" => $title, 
                                             'amount'=> $amount,
@@ -217,8 +255,8 @@ class ControllerOperation extends Mycontroller{
             $errorsCheckboxes= $errors["errorsCheckboxes"];
             $errorsSaveTemplate = $errors["errorsSaveTemplate"];
 
+            
             if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
-                
                 
                 if(isset($_POST["saveTemplateCheck"])){
                     $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
