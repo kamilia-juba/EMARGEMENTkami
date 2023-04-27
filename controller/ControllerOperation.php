@@ -3,6 +3,7 @@ require_once 'model/Operation.php';
 require_once 'controller/MyController.php';
 require_once 'model/User.php';
 require_once 'model/Tricount.php';
+require_once 'model/TemplateItems.php';
 
 class ControllerOperation extends Mycontroller{
 
@@ -36,8 +37,124 @@ class ControllerOperation extends Mycontroller{
             $this->redirect("Main");
         }
     }
-   
+
     public function add_operation() : void {
+        $user = $this->get_user_or_redirect();
+        $selected_repartition = 0;
+
+        if ($this->validate_url()) {                                                // validation url si true exectue le code sinon redirect vers l'index
+            $tricount = Tricount::get_tricount_by_id($_GET["param1"], $user->mail);        //recupération de toutes les informations et initialisation afin de pouvoir les utilisé dans le show
+            $title = "";
+            $amount = "";
+            $date = "";
+            $paidBy = $user->id;
+            $errors = [];
+            $errorsTitle = [];
+            $errorsAmount = [];
+            $errorsCheckboxes= [];
+            $errorsSaveTemplate = [];
+            $participants = $tricount->get_participants();
+            $checkbox_checked = $this->initialize_checkboxes_checked_value($participants);
+            $templates_json = $tricount->get_templates_json();
+            $templates = $tricount->get_repartition_templates();
+            $template_items = $this->get_template_items($templates);
+            $weights = $this->initialize_weights($participants);
+
+            if(isset($_POST["weight"])){
+                $checkbox_checked = $this->update_checkbox_checked($participants);
+            }
+            
+            
+
+            if (isset($_POST['title']) && isset($_POST['amount']) && isset($_POST['date']) && 
+                isset($_POST['paidBy'])) {
+       
+                $title = trim($_POST['title']);
+                $amount = floatval(trim($_POST['amount']));
+                $date = trim($_POST['date']);
+                $paidBy = trim($_POST['paidBy']);      
+                
+                $errors=$this->get_add_operation_errors($tricount);                                            //recupération du reste des erreurs
+                $errorsTitle = $errors["errorsTitle"];
+                $errorsAmount =$errors["errorsAmount"];
+                $errorsCheckboxes= $errors["errorsCheckboxes"];
+                $errorsSaveTemplate = $errors["errorsSaveTemplate"];
+            }
+
+            (new View("add_operation"))->show(["title" => $title, 
+                                            'amount'=> $amount,
+                                            'date'=> $date, 
+                                            "errorsTitle" => $errorsTitle,
+                                            "errorsAmount" => $errorsAmount, 
+                                            "errorsCheckboxes" => $errorsCheckboxes,
+                                            "errorsSaveTemplate" => $errorsSaveTemplate,
+                                            "tricount"=> $tricount, 
+                                            "participants" => $participants,
+                                            "selected_repartition" => $selected_repartition,
+                                            "templates_json" => $templates_json,
+                                            "templates" => $templates,
+                                            "user"=>$user,
+                                            "paidBy" => $paidBy,
+                                            "template_items" => $template_items,
+                                            "checkbox_checked" => $checkbox_checked,
+                                            "weights" => $weights]);
+
+        }else{
+            $this->redirect("main");
+        }
+
+
+    }
+
+    private function get_template_items(array $templates): array{
+        $template_items = [];
+        foreach($templates as $template){
+            $template_items[] = $template->get_items();
+        }
+        return $template_items;
+    }
+
+    private function initialize_checkboxes_checked_value(array $participants): array{
+        $checkbox_checked = [];
+
+        for($i = 0; $i < sizeof($participants); ++$i){
+            $checkbox_checked[] = "checked";
+        }
+
+        return $checkbox_checked;
+    }
+
+    private function initialize_weights(array $participants):array{
+        $res = [];
+
+        for($i = 0; $i < sizeof($participants); ++$i){
+            $res[] = "1";
+        }
+        return $res;
+    }
+
+    private function update_checkbox_checked(array $participants): array{
+        $checkbox_checked = [];
+
+        for($i = 0; $i < sizeof($participants); ++$i){
+            if(isset($_POST["checkboxParticipants"])){
+                for($j = 0; $j < sizeof($_POST["checkboxParticipants"]); ++$j){
+                    if($_POST["checkboxParticipants"][$j] == $participants[$i]->id){
+                        $checkbox_checked[$i] = "checked";
+                        break;
+                    }else{
+                        $checkbox_checked[$i] = "";
+                    }
+                }
+            }else{
+                $checkbox_checked[$i] = "";
+            }
+        }
+
+        return $checkbox_checked;
+    }
+   
+    public function add_operation2() : void {
         $user = $this->get_user_or_redirect();
         $selected_repartition = 0;
         

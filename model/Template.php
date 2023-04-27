@@ -136,6 +136,16 @@
                 return new Template($data["title"],$data["tricount"],$data["id"]);
             }
         }
+
+        public function get_items(){
+            $query = self::execute("SELECT * FROM repartition_template_items WHERE repartition_template=:templateId", ["templateId" => $this->id]);
+            $data = $query->fetchAll();
+            $res = [];
+            foreach($data as $row){
+                $res[] = new TemplateItems(User::get_user_by_id($row["user"]),$this, $row["weight"]);
+            }
+            return $res;
+        }
     }
 
     
