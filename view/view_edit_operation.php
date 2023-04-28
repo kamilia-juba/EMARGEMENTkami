@@ -345,39 +345,36 @@
             <input class="form-control mb-2" id="date" name="date" type="date" value="<?=$operation->operation_date?>">
             Paid by
             <select class="form-select" name="paidBy">
-                <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
-                        <option <?=$participants_and_weights[$i][0]->id==$operation->initiator ? "selected" : "" ?> value="<?=$participants_and_weights[$i][0]->id?>"><?=$participants_and_weights[$i][0]->full_name?></option>
+                <?php foreach($participants as $participant){ ?>
+                        <option <?=$participant->id==$operation->initiator ? "selected" : "" ?> value="<?=$participant->id?>"><?=$participant->full_name?></option>
                 <?php } ?>
             </select>
             Use repartition template (optional)
             <div class="input-group mb-2">
                 <select class="form-select" id="applyTemplateSelect" name="repartitionTemplates" form="applyTemplateForm">
                     <option value="customRepartition">No, i'll use custom repartition</option>
-                    <?php foreach($repartition_templates as $repartition){ ?>
-                            <option value="<?=$repartition->id?>"<?=$repartition->id==$selected_repartition ? "selected" : "" ?>><?=$repartition->title?></option>
-                    <?php } ?>
+                        <?php foreach($templates as $template){ ?>
+                                <option value="<?=$template->id?>"<?=$template->id==$selected_repartition ? "selected" : "" ?>><?=$template->title?></option>
+                        <?php } ?>
                 </select>
                 <input class="btn btn-outline-secondary" id="applyTemplateBtn" type="submit" name="ApplyTemplate" value="&#10226;" form="applyTemplateForm">
             </div>
             For whom ? (select at least one)
-            <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){ ?>
+            <?php for($i = 0; $i<sizeof($participants);++$i){ ?>
                 <div class="input-group mb-2 mt-2">
                     <span class="form-control" style="background-color: #E9ECEF">
                         <input type="checkbox" 
                             class = "checkboxParticipant"
                             name="checkboxParticipants[]" 
-                            id="<?=$participants_and_weights[$i][0]->id?>"
-                            value ="<?=$participants_and_weights[$i][0]->id?>" 
-                            <?php if($participants_and_weights[$i][2]){ ?>
-                                        checked
-                            <?php } ?>
+                            id="<?=$participants[$i]->id?>"
+                            value ="<?=$participants[$i]->id?>" 
+                            <?= $checkbox_checked[$i] ?>
                         >
                     </span>
-                    <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants_and_weights[$i][0]->full_name?></span>
-                    <span id="<?=$participants_and_weights[$i][0]->id?>_amount"> </span>
+                    <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants[$i]->full_name?></span>
+                    <span id="<?=$participants[$i]->id?>_amount"> </span>
                     <input class="form-control" type="number" min="0" name="weight[]" 
-                    id="<?=$participants_and_weights[$i][0]->id?>_weight" 
-                    value="<?=$participants_and_weights[$i][1]?>" 
+                    id="<?=$participants[$i]->id?>_weight" value="<?=$weights[$i]?>" 
                     oninput="if(this.value < 0) this.value = 0"
                     onblur="handleAmounts(); reselect_customRepartition()">
                 </div>
