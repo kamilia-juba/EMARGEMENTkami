@@ -131,7 +131,6 @@ class ControllerOperation extends Mycontroller{
             }
 
 
-            var_dump($date);
             (new View("add_operation"))->show(["title" => $title, 
                                             'amount'=> $amount,
                                             'date'=> $date, 
