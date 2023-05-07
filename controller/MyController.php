@@ -5,13 +5,18 @@ require_once "framework/Controller.php";
 abstract class Mycontroller extends Controller{
 
     //vérifie si les poids qui sont dans le tableau donné en paramètre sont supérieurs à 0 sinon renvoie false
-    public function weights_are_greaterThanZero(array $weights): bool{
-        for($i=0;$i<sizeof($weights);++$i){
-            if($weights[$i]<=0){
-                return false;
+    public function weights_are_greaterThanZero(array $weights, array $checkboxes, array $participants): bool{
+        for($i=0;$i<sizeof($participants);++$i){
+            for($j = 0; $j < sizeof($checkboxes); ++$j){
+                if($checkboxes[$j] == $participants[$i]->id){
+                    if($weights[$i]>0){
+                        return true;
+                    }
+                }
             }
+            
         }
-        return true;
+        return false;
     }
 
     //vérifie si les poids qui sont dans le tableau donné en paramètre sont bien numériques
@@ -109,6 +114,7 @@ abstract class Mycontroller extends Controller{
         $errorsAmount = [];
         $errorsCheckboxes= [];
         $errorsSaveTemplate = [];
+        $participants = $tricount->get_participants();
 
         $array = array("errorsTitle" => $errorsTitle, "errorsAmount" => $errorsAmount, "errorsCheckboxes" => $errorsCheckboxes,"errorsSaveTemplate" => $errorsSaveTemplate);
 
@@ -136,6 +142,10 @@ abstract class Mycontroller extends Controller{
                 if(isset($_POST["weight"])){
                     $errorsCheckboxes[] = "You must select at least 1 participant";
                 }
+            }
+
+            if(!$this->weights_are_greaterThanZero($_POST["weight"],$_POST["checkboxParticipants"],$participants)){
+                $errorsCheckboxes[] = "Weights must be greater than 0";
             }
 
             $array = array("errorsTitle" => $errorsTitle, "errorsAmount" => $errorsAmount, "errorsCheckboxes" => $errorsCheckboxes,"errorsSaveTemplate" => $errorsSaveTemplate);

@@ -86,12 +86,18 @@ class ControllerOperation extends Mycontroller{
                 $amount = floatval(trim($_POST['amount']));
                 $date = trim($_POST['date']);
                 $paidBy = trim($_POST['paidBy']);      
+
+                
                 
                 $errors=$this->get_add_operation_errors($tricount);                                            //recupération du reste des erreurs
                 $errorsTitle = $errors["errorsTitle"];
                 $errorsAmount =$errors["errorsAmount"];
                 $errorsCheckboxes= $errors["errorsCheckboxes"];
                 $errorsSaveTemplate = $errors["errorsSaveTemplate"];
+
+                var_dump($_POST["checkboxParticipants"]);
+
+                
 
                 if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
                 
