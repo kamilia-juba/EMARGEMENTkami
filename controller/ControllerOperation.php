@@ -53,7 +53,7 @@ class ControllerOperation extends Mycontroller{
             $tricount = Tricount::get_tricount_by_id($_GET["param1"], $user->mail);        //recupération de toutes les informations et initialisation afin de pouvoir les utilisé dans le show
             $title = "";
             $amount = "";
-            $date = "";
+            $date = date('Y-m-d');
             $paidBy = $user->id;
             $errors = [];
             $errorsTitle = [];
@@ -131,7 +131,7 @@ class ControllerOperation extends Mycontroller{
             }
 
 
-
+            var_dump($date);
             (new View("add_operation"))->show(["title" => $title, 
                                             'amount'=> $amount,
                                             'date'=> $date, 
@@ -257,7 +257,7 @@ class ControllerOperation extends Mycontroller{
         $tricount = Tricount::get_tricount_by_id($_GET["param1"], $user->mail);        //recupération de toutes les informations et initialisation afin de pouvoir les utilisé dans le show
         $title = "";
         $amount = "";
-        $date = "";
+        $date = date_default_timezone_get();
         $paidBy = "";
         $errors = [];
         $errorsTitle = [];
@@ -267,6 +267,7 @@ class ControllerOperation extends Mycontroller{
         $participants = $tricount->get_participants();
         $participants_and_weights = [];
         $templates_json = $tricount->get_templates_json();
+        $operationss=null;
         foreach($participants as $participant){                                     // initialisation des participants, checkbox et leur poids à 1
                 $participants_and_weights[] = [$participant, 1, true];
         }
@@ -331,7 +332,6 @@ class ControllerOperation extends Mycontroller{
             }
             
         }
-
 
         (new View("add_operation"))->show(["title" => $title, 
                                             'amount'=> $amount,

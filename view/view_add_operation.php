@@ -327,7 +327,7 @@
                 </div>
             <?php endif; ?>
             Date
-            <input class ="form-control mb-2" id="date" name="date" type="date" value="<?php $timezone = date_default_timezone_get(); echo date("Y-m-d")?>">
+            <input class ="form-control mb-2" id="date" name="date" type="date" value="<?=$date?>">
             Paid by
             <select class="form-select" name="paidBy">
                 <?php foreach($participants as $participant){ ?>
