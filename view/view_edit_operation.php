@@ -374,7 +374,7 @@
                     <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants[$i]->full_name?></span>
                     <span id="<?=$participants[$i]->id?>_amount"> </span>
                     <input class="form-control" type="number" min="0" name="weight[]" 
-                    id="<?=$participants[$i]->id?>_weight" value="<?=$weights[$i]?>" 
+                    id="<?=$participants[$i]->id?>_weight" value="<?=$weights[$i]==null ? "0" :  $weights[$i]?>" 
                     oninput="if(this.value < 0) this.value = 0"
                     onblur="handleAmounts(); reselect_customRepartition()">
                 </div>

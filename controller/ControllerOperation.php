@@ -4,6 +4,7 @@ require_once 'controller/MyController.php';
 require_once 'model/User.php';
 require_once 'model/Tricount.php';
 require_once 'model/TemplateItems.php';
+require_once 'model/Repartition.php';
 
 class ControllerOperation extends Mycontroller{
 
@@ -65,7 +66,7 @@ class ControllerOperation extends Mycontroller{
             $templates_json = $tricount->get_templates_json();
             $templates = $tricount->get_repartition_templates();
             $template_items = $this->get_template_items($templates);
-            $weights = $this->initialize_weights($participants);
+            $weights = $this->initialize_weights_at_one($participants);
             $save_template_name =$this->update_new_template_name();
             if(isset($_POST["weight"])){
                 $checkbox_checked = $this->update_checkbox_checked($participants);
@@ -181,12 +182,36 @@ class ControllerOperation extends Mycontroller{
         return $checkbox_checked;
     }
 
-    private function initialize_weights(array $participants):array{
+    private function initialize_weights(array $participants, Operation $operation): array {
+        $res = [];
+        $repartitions = Repartition::get_repartition_by_operation($operation);
+    
+        foreach ($participants as $participant) {
+            $found = false; 
+    
+            foreach ($repartitions as $repartition) {
+                if ($participant == $repartition->user) {
+                    $res[] = $repartition->weight;
+                    $found = true;
+                    break; 
+                }
+            }
+    
+            if (!$found) {
+                $res[] = 0;
+            }
+        }
+    
+        return $res;
+    }  
+    
+    private function initialize_weights_at_one(array $participants):array{
         $res = [];
 
         for($i = 0; $i < sizeof($participants); ++$i){
             $res[] = "1";
         }
+
         return $res;
     }
 
@@ -277,7 +302,7 @@ class ControllerOperation extends Mycontroller{
             $templates_json = $tricount->get_templates_json();
             $templates = $tricount->get_repartition_templates();
             $template_items = $this->get_template_items($templates);
-            $weights = $this->initialize_weights($participants);
+            $weights = $this->initialize_weights($participants,$operation);
             $save_template_name =$this->update_new_template_name();
             $repartition_templates = $tricount->get_repartition_templates();            // reprends template de la base de donnée
 
@@ -356,7 +381,7 @@ class ControllerOperation extends Mycontroller{
             
             }
 
-            (new View("edit_operation"))->show(["selected_repartition" => $selected_repartition,
+            (new View("edit_operation"))->show([
                                                  "operation" => $operation,
                                                  "user"=>$user,
                                                  "tricount" => $tricount,
