@@ -366,6 +366,9 @@ class ControllerTricount extends MyController{
                 $this->redirect();
             }
         }
+        else{
+            $this->redirect();
+        }
     }
 
     public function remove_subscriber_service(){
