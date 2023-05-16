@@ -7,11 +7,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+        <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
+        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
 
         <script>
 
             var tricountId = <?= $tricount->id?>;
             let title,amount, errTitle, errAmount,errWeights,okWeights;
+            var justvalidate = "<?= $justvalidate?>";
             
 
             function checkTitle(){
@@ -245,47 +248,78 @@
                 }
             }
             $(function(){
-                title = $("#title");
-                errTitle = $("#errTitle");
-                errAmount = $("#errAmount");
-                amount=$("#amount")
-                errWeights = $("#errWeights");
-                okWeights = $("#okWeights");
-                
-                amount.bind("input", checkAmount)
-                title.bind("input", checkTitle);
+                if(justvalidate == "off"){
+                    title = $("#title");
+                    errTitle = $("#errTitle");
+                    errAmount = $("#errAmount");
+                    amount=$("#amount")
+                    errWeights = $("#errWeights");
+                    okWeights = $("#okWeights");
+                    
+                    amount.bind("input", checkAmount)
+                    title.bind("input", checkTitle);
 
-                if(title.val()!="" || amount.val()!=""){
-                    checkTitle();
-                    checkAmount();
-                }
-                
+                    if(title.val()!="" || amount.val()!=""){
+                        checkTitle();
+                        checkAmount();
+                    }
+                    
 
-                totalAmount=$("#amount");
-                handleAmounts();                
+                    totalAmount=$("#amount");
+                    handleAmounts();                
 
-                $("#amount").on("blur", function(){
+                    $("#amount").on("blur", function(){
+                        handleAmounts();
+                    });  
+
+
+                    $(".checkboxParticipant").change(function(){
+                    handleCheckbox();
                     handleAmounts();
-                });  
+                    reselect_customRepartition();
+                    checkWeight();
+                    });
 
+                    handleTemplates();
 
-                $(".checkboxParticipant").change(function(){
-                   handleCheckbox();
-                   handleAmounts();
-                   reselect_customRepartition();
-                   checkWeight();
-                });
+                    $("#phpAmountError").hide();
+                    $("#phpTitleError").hide();
+                    $("#errCheckboxesPhp").hide();
 
-                handleTemplates();
+                    
+                    $("#applyTemplateSelect").change(function() {
+                        applyItems();
+                    })
+                }else {
+                    const validation = new JustValidate('#addOperationForm', {
+                        validateBeforeSubmitting: true,
+                        lockForm: true,
+                        focusInvalidField: false,
+                        successLabelCssClass: 'valid-feedback',
+                        errorLabelCssClass: 'invalid-feedback',
+                        errorFieldCssClass: 'is-invalid',
+                        successFieldCssClass: 'is-valid',
+                    });
 
-                $("#phpAmountError").hide();
-                $("#phpTitleError").hide();
-                $("#errCheckboxesPhp").hide();
+                    validation
+                        .addField('#title', [
+                            {
+                                rule: 'required',
+                                errorMessage: 'Field is required'
+                            },
+                        ],{ successMessage: 'Looks good'})
 
-                
-                $("#applyTemplateSelect").change(function() {
-                    applyItems();
-                })
+                        .addField('#amount', [
+                            {
+                                rule: 'required',
+                                errorMessage: 'Amount must be a number'
+                            }
+                        ])
+
+                        .onSuccess(function(event) {
+                            event.target.submit();
+                        });
+                }
             });
         </script>
     </head>

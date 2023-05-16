@@ -152,6 +152,10 @@ abstract class Mycontroller extends Controller{
                      
         return $array;
     }
+
+    public function get_justvalidate_conf(){
+        return Configuration::get("justvalidate");
+    }
 }
 
 ?>
