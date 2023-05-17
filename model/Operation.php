@@ -36,63 +36,42 @@ class Operation extends Model {
         return $errors;
     }
 
-    public static function get_operation_by_id(int $id) : Operation{
-        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId",["tricountId"=>$id]);
-        $data = $query->fetch();
-        return new Operation($data["mail"],$data["hashed_password"],$data["full_name"],$data["role"],$data["iban"], $data["id"]);
 
-    }
-
-    public static function get_operations_by_tricountid(int $tricountId) : array{
-
-        $query = self::execute("SELECT * FROM operations WHERE tricount = :tricountId order by created_at DESC", ["tricountId" => $tricountId]);
-        $data = $query->fetchAll();
-        $operations = [];
-        foreach ($data as $row) {
-            $operations[] = new Operation($row['title'],$row['tricount'], round($row['amount'],2), $row['initiator'], $row['created_at'], $row['operation_date'],$row['id']);
-        }
-        return $operations;
-
-    }
-
+    //méthode qui renvoie l'user qui a payé l'opération
     public function get_payer(): User{
         $query = self::execute("SELECT * from Users where id = (SELECT initiator FROM operations WHERE id=:id)",["id"=>$this->id]);
         $data = $query->fetch();
         return new User($data["mail"],$data["hashed_password"],$data["full_name"],$data["role"],$data["iban"], $data["id"]);
     }
 
-
-    public static function get_total_weights(int $id): int{
-        $query = self::execute("SELECT sum(weight) total from repartitions WHERE operation=:operationId",["operationId" => $id]);
+    //méthode  qui récupère le poids total de l'opération
+    public  function get_total_weights(): int{
+        $query = self::execute("SELECT sum(weight) total from repartitions WHERE operation=:operationId",["operationId" => $this->id]);
         $data = $query->fetch();
         return $data["total"];
     }
 
-    public function get_weight(int $userId): int | null {
-        $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId and user = :userId",["operationId" => $this->id, "userId" => $userId]);
+    //méthode qui récupère le poids sur l'opération d'un user par rapport à son id donné en paramètre
+    public function get_weight(User $user): int | null {
+        $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId and user = :userId",["operationId" => $this->id, "userId" => $user->id]);
         $data = $query->fetch();
         return $data === false ? null : $data["weight"];
     }
 
-    public static function get_weight_from_template_static(User $participant, Template $template){ // a changer pour rendre l'autre static
-        $query = self::execute("SELECT * FROM repartition_template_items WHERE user = :userId and repartition_template=:templateId", ["userId" => $participant->id, "templateId" => $template->id]);
-        $data = $query->fetch();
-        return $data === false ? null : $data["weight"];
-
-    }
-
-    public function user_participates(int $userId):bool{
+    //méthode qui détermine si un user participe à l'opération ou non
+    public function user_participates(User $user):bool{
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :operationId",["operationId" => $this->id]);
         $data = $query->fetchAll();
         foreach($data as $row){
-            if($row["user"]==$userId){
+            if($row["user"]==$user->id){
                 return true;
             }
         }
         return false;
     }
-
-    public static function get_operation_byid(int $id):Operation{
+   
+    //méthode statique qui récupère une opération par son id
+    public static function get_operation_by_id(int $id):Operation{
         $query = self::execute("SELECT * FROM operations WHERE id = :id",["id"=>$id]);
         $data = $query->fetch();
         return new Operation(
@@ -106,6 +85,7 @@ class Operation extends Model {
         );
     }
 
+    //méthode qui récupère tous les participants de l'opération
     public function get_participants():array{
         $query = self::execute("SELECT * FROM repartitions WHERE operation = :id",["id" => $this->id]);
         $data = $query->fetchAll();
@@ -116,6 +96,7 @@ class Operation extends Model {
         return $results;
     }
 
+    //méthode qui insère dans la table operations dans la BDD une nouvelle opération et puis la renvoie
     public function persist() : Operation {
         
         self::execute("INSERT INTO operations(title,tricount,amount,operation_date,initiator,created_at) VALUES(:title,:tricount,:amount,:operation_date,:initiator,:created_at)", 
@@ -130,7 +111,8 @@ class Operation extends Model {
         return $this;
     }
 
-    public function updateOperation(){
+    //méthode qui met à jour une opération dans la BDD
+    public function update_operation(){
         self::execute("UPDATE operations SET title=:title, amount=:amount, operation_date=:operation_date, initiator=:initiator WHERE id=:id",
                         ["id" => $this->id, 
                         "title" => $this->title, 
@@ -139,10 +121,12 @@ class Operation extends Model {
                         "initiator" => $this->initiator]);
     }
 
+    //méthode qui supprime de la BDD les répartitions d'une opération
     public function delete_repartitions(){
         self::execute("DELETE FROM repartitions WHERE operation=:operation",["operation" => $this->id]);
     }
 
+    //méthode qui ajoute dans la BDD les répartitions d'une opération
     public function add_repartitions(User $user, int $weight){
         self::execute("INSERT INTO repartitions(operation,user,weight) VALUES(:operation,:user,:weight) ",
                      ["operation" => $this->id,
@@ -150,6 +134,7 @@ class Operation extends Model {
                       "weight" => $weight]);
     }
 
+    //méthode qui supprime une opération et tous ses liens dans la BDD
     public function delete_operation(){
         self::execute("delete from repartitions where operation=:operationId",["operationId" => $this->id]);
         self::execute("delete from operations where id=:operationId",["operationId" => $this->id]);

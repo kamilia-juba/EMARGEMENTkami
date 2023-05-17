@@ -79,9 +79,9 @@
     <?php foreach($participants as $participant){?>           
         <?php if($participant->account==0) : ?>
             <?php if($participant->id==$user->id) : ?>
-                <p class="text-center align-middle" style="font-weight:bolder ;">&nbsp;<?=$participant->full_name?>&nbsp;(me)</p>
+                <p class="text-center align-middle" style="font-weight:bolder ;">&nbsp;<?=$participant->full_name?>&nbsp;(me) 0€</p>
             <?php else: ?>
-                <p class="text-center align-middle" >&nbsp;<?=$participant->full_name?>&nbsp;</p>
+                <p class="text-center align-middle" >&nbsp;<?=$participant->full_name?>&nbsp; 0€</p>
             </div>
             <?php endif;?>
             
