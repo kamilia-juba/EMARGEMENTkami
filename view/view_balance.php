@@ -5,14 +5,82 @@
     <title>Balance</title>
     <base href="<?= $web_root ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script>
+
+    $(function(){
+
+        $("#php").hide();
+    });
+    </script>
+
+<style>
+    table {
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid black;
+    }
+  </style>
 </head>
 <body>
+
+    
+
+
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD"> 
         <a href= "Tricount/showTricount/<?=$tricount->id?>" class= "btn btn-outline-danger" id = "buttonBack">Back</a> 
         <?=$tricount->title?> &#8594; Balance
     </div>
-    <div class="container pt-2 ">
+
+    <body>
+    <table>
+    <tr>
+      <td>John</td>
+      <td>
+      <canvas id="loadingBar" width="300" height="30"></canvas>
+      </td>
+      
+      <td>
+      <canvas id="loadingBar" width="300" height="30"></canvas>
+
+      </td>
+    </tr>
+  </table>
+
+  <script>
+    var ctx = document.getElementById("loadingBar").getContext("2d");
+    var progress = 0;
+    var animation = setInterval(animateLoadingBar, 10);
+
+    function animateLoadingBar() {
+      if (progress >= 100) {
+        clearInterval(animation);
+      } else {
+        progress += 1.5
+        updateLoadingBar();
+      }
+    }
+
+    function updateLoadingBar() {
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.fillStyle = "#36a2eb";
+      ctx.fillRect(0, 0, progress, ctx.canvas.height);
+    }
+  </script>
+
+
+
+<!------------------------------------------------------------------------------------------------------------------------------------>
+
+
+    <div id="php" class="container pt-2 ">
         <div  style="font-size:15px;">
             <?php foreach($participants as $participant){?>
 
