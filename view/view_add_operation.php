@@ -9,6 +9,7 @@
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
         <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/just-validate-plugin-date-1.2.0.production.min.js"></script>
 
         <script>
 
@@ -305,16 +306,51 @@
                         .addField('#title', [
                             {
                                 rule: 'required',
-                                errorMessage: 'Field is required'
+                                errorMessage: 'Title cannot be empty'
+                            },
+                            {
+                                rule: 'minLength',
+                                value: 3,
+                                errorMessage: 'Title must be at least 3 characters'
+                            },
+                            {
+                                rule:'maxLength',
+                                value: 256,
+                                errorMessage: "Title can't have more than 256 characters"
                             },
                         ],{ successMessage: 'Looks good'})
 
                         .addField('#amount', [
                             {
                                 rule: 'required',
+                                errorMessage: 'Amount is required'
+                            },
+                            {
+                                rule: 'customRegexp',
+                                value: /^[0-9.,]+$/,
                                 errorMessage: 'Amount must be a number'
-                            }
-                        ])
+                            },
+                            {
+                                rule: 'minNumber',
+                                value: 0.01,
+                                errorMessage: 'Amount must be >= 0.01€'
+                            },
+                        ],{ successMessage: 'Looks good'})
+
+                        .addField('#date', [
+                            {
+                                rule: 'required',
+                                errorMessage: 'Date is required'
+                            },
+                            {
+                                plugin: JustValidatePluginDate(() => {
+                                    return {
+                                        isBefore: new Date()
+                                    }
+                                }),
+                                errorMessage: 'Date cannot be in the future'
+                            },
+                        ],{ successMessage: 'Looks good'})
 
                         .onSuccess(function(event) {
                             event.target.submit();
@@ -363,7 +399,9 @@
                 </div>
             <?php endif; ?>
             Date
-            <input class ="form-control mb-2" id="date" name="date" type="date" value="<?=$date?>">
+            <div>
+                <input class ="form-control mb-2" id="date" name="date" type="date" value="<?=$date?>">
+            </div>
             Paid by
             <select class="form-select" name="paidBy">
                 <?php foreach($participants as $participant){ ?>
