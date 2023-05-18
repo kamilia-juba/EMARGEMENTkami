@@ -16,6 +16,7 @@
             var tricountId = <?= $tricount->id?>;
             let title,amount, errTitle, errAmount,errWeights,okWeights;
             var justvalidate = "<?= $justvalidate?>";
+            let checkboxes_count;
             
 
             function checkTitle(){
@@ -170,7 +171,7 @@
                             return this.id;
                         }).get();
                 errWeights.html("");
-                var checkboxes_count = checkboxes.length;       
+                checkboxes_count = checkboxes.length;       
                     for (var i =0; i<checkboxes.length;++i){
                          var checkbox= $("#" + checkboxes[i]);
                         
@@ -189,15 +190,13 @@
                             checkboxes_count++;
                         }
                     }
-
-
-                    if (checkboxes_count === 0){
-                       errWeights.html("You must select at least 1 participant");
-                    }
-
             }
 
-            
+            function checkCheckboxesCount() {
+                if (checkboxes_count === 0){
+                       errWeights.html("You must select at least 1 participant");
+                    }
+            }
 
             function handleTemplates(){
                 $("#applyTemplateBtn").hide();
@@ -249,13 +248,38 @@
                 }
             }
             $(function(){
+                title = $("#title");
+                errTitle = $("#errTitle");
+                errAmount = $("#errAmount");
+                amount=$("#amount")
+                errWeights = $("#errWeights");
+                okWeights = $("#okWeights");
+
+                totalAmount=$("#amount");
+                handleAmounts();   
+
+                $("#amount").on("blur", function(){
+                    handleAmounts();
+                });  
+
+
+                $(".checkboxParticipant").change(function(){
+                    handleCheckbox();
+                    handleAmounts();
+                    reselect_customRepartition();
+                });
+
+                handleTemplates();
+
+                $("#applyTemplateSelect").change(function() {
+                    applyItems();
+                })
+
+                $("#phpAmountError").hide();
+                $("#phpTitleError").hide();
+                $("#errCheckboxesPhp").hide();
+
                 if(justvalidate == "off"){
-                    title = $("#title");
-                    errTitle = $("#errTitle");
-                    errAmount = $("#errAmount");
-                    amount=$("#amount")
-                    errWeights = $("#errWeights");
-                    okWeights = $("#okWeights");
                     
                     amount.bind("input", checkAmount)
                     title.bind("input", checkTitle);
@@ -264,32 +288,10 @@
                         checkTitle();
                         checkAmount();
                     }
-                    
-
-                    totalAmount=$("#amount");
-                    handleAmounts();                
-
-                    $("#amount").on("blur", function(){
-                        handleAmounts();
-                    });  
-
 
                     $(".checkboxParticipant").change(function(){
-                    handleCheckbox();
-                    handleAmounts();
-                    reselect_customRepartition();
-                    checkWeight();
-                    });
-
-                    handleTemplates();
-
-                    $("#phpAmountError").hide();
-                    $("#phpTitleError").hide();
-                    $("#errCheckboxesPhp").hide();
-
-                    
-                    $("#applyTemplateSelect").change(function() {
-                        applyItems();
+                        checkCheckboxesCount();
+                        checkWeight();
                     })
                 }else {
                     const validation = new JustValidate('#addOperationForm', {
@@ -351,6 +353,8 @@
                                 errorMessage: 'Date cannot be in the future'
                             },
                         ],{ successMessage: 'Looks good'})
+
+                        .addRequiredGroup('#checkboxes', 'You must select at least 1 participant')
 
                         .onSuccess(function(event) {
                             event.target.submit();
@@ -419,37 +423,39 @@
                 <input class="btn btn-outline-secondary" id="applyTemplateBtn" type="submit" name="ApplyTemplate" value="&#10226;" form="applyTemplateForm">
             </div>
             For whom ? (select at least one)
-            <?php for($i=0; $i < sizeof($participants); ++$i){ ?>
-                <div class="input-group mb-2 mt-2">
-                    <span class="form-control" style="background-color: #E9ECEF">
-                        <input type="checkbox" 
-                        class = "checkboxParticipant"
-                            name="checkboxParticipants[]" 
-                            id="<?=$participants[$i]->id?>"
-                            value ="<?=$participants[$i]->id?>" 
-                            <?= $checkbox_checked[$i] ?>
-                        >
-                    </span>
-                    <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants[$i]->full_name?></span>
-                    <span id="<?=$participants[$i]->id?>_amount"> </span>
-                    <input class="form-control" type="number" min="0" 
-                    name="weight[]" 
-                    id="<?=$participants[$i]->id?>_weight" value="<?=$weights[$i]?>" 
-                    oninput="if(this.value < 0) this.value = 0"
-                    onblur="handleAmounts(); reselect_customRepartition()">
-                </div>
-            <?php } ?>
-            <div class='text-danger' id='errWeights'></div>
-                <div class='text-success' id='okWeights'></div>
-            <?php if (count($errorsCheckboxes) != 0): ?>
-                <div class='text-danger' id="errCheckboxesPhp">
-                            <ul>
-                            <?php foreach ($errorsCheckboxes as $errors): ?>
-                                <li><?= $errors ?></li>
-                            <?php endforeach; ?>
-                            </ul>
-                        </div>
-            <?php endif; ?>
+            <div  id="checkboxes">
+                <?php for($i=0; $i < sizeof($participants); ++$i){ ?>
+                    <div class="input-group mb-2 mt-2">
+                        <span class="form-control" style="background-color: #E9ECEF">
+                            <input type="checkbox" 
+                            class = "checkboxParticipant"
+                                name="checkboxParticipants[]" 
+                                id="<?=$participants[$i]->id?>"
+                                value ="<?=$participants[$i]->id?>" 
+                                <?= $checkbox_checked[$i] ?>
+                            >
+                        </span>
+                        <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants[$i]->full_name?></span>
+                        <span id="<?=$participants[$i]->id?>_amount"> </span>
+                        <input class="form-control" type="number" min="0" 
+                        name="weight[]" 
+                        id="<?=$participants[$i]->id?>_weight" value="<?=$weights[$i]?>" 
+                        oninput="if(this.value < 0) this.value = 0"
+                        onblur="handleAmounts(); reselect_customRepartition()">
+                    </div>
+                <?php } ?>
+                <div class='text-danger' id='errWeights'></div>
+                    <div class='text-success' id='okWeights'></div>
+                <?php if (count($errorsCheckboxes) != 0): ?>
+                    <div class='text-danger' id="errCheckboxesPhp">
+                                <ul>
+                                <?php foreach ($errorsCheckboxes as $errors): ?>
+                                    <li><?= $errors ?></li>
+                                <?php endforeach; ?>
+                                </ul>
+                            </div>
+                <?php endif; ?>
+            </div>
             Add a new repartition template
             <div class="input-group mb-2 pt-2 pb-2">
                 <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" name="saveTemplateCheck"></span>
