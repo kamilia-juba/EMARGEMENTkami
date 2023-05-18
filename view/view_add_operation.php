@@ -332,18 +332,20 @@
         <div class="container min-vh-100 pt-2">
         <form id="applyTemplateForm" action="Operation/add_operation/<?=$tricount->id?>" method="post"></form>
         <form id="addOperationForm" action="Operation/add_operation/<?= $tricount->id?>" method="post">
-            <input class="form-control mb-2" id="title" name="title" type="text" value="<?= $title?>" placeholder="Title">
-            <div id='errTitle' class='text-danger'></div>       
-            <div id='okTitle' class='text-success' ></div>
-            <?php if (count($errorsTitle) != 0): ?>
-                <div id="phpTitleError" class='text-danger'>      
-                    <ul>
-                        <?php foreach ($errorsTitle as $errors): ?>
-                            <li><?= $errors ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
+            <div>
+                <input class="form-control mb-2" id="title" name="title" type="text" value="<?= $title?>" placeholder="Title">
+                <div id='errTitle' class='text-danger'></div>       
+                <div id='okTitle' class='text-success' ></div>
+                <?php if (count($errorsTitle) != 0): ?>
+                    <div id="phpTitleError" class='text-danger'>      
+                        <ul>
+                            <?php foreach ($errorsTitle as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+            </div>
             <div class="input-group mb-2">   
         
                 <input  class = "form-control" id="amount" name="amount" type="text" value="<?= $amount?>" placeholder="Amount">   
