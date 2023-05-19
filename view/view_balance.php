@@ -18,15 +18,11 @@
     </script>
 
 <style>
-    table {
-      border-collapse: collapse;
+    canvas {
+      padding-left: 10px;
+      padding-right: 10px;
     }
 
-    th, td {
-      padding: 10px;
-      text-align: center;
-      border: 1px solid black;
-    }
   </style>
 </head>
 <body>
@@ -40,40 +36,100 @@
     </div>
 
     <body>
-    <table>
-    <tr>
-      <td>John</td>
-      <td>
-      <canvas id="loadingBar" width="300" height="30"></canvas>
-      </td>
-      
-      <td>
-      <canvas id="loadingBar" width="300" height="30"></canvas>
+    <canvas id="monTableau"></canvas>
 
-      </td>
-    </tr>
-  </table>
+    <script>
+        let participants = <?=$participantsJson?>;
+        let user= <?=$user->id?>;
+        let max = <?=$total?>+ (<?=$total?>*10/100); // je rajoute +10% du total pour avoir un peu d'espace... ((provisoire)
+        let min = -max;
+        
 
-  <script>
-    var ctx = document.getElementById("loadingBar").getContext("2d");
-    var progress = 0;
-    var animation = setInterval(animateLoadingBar, 10);
+        function getNames(){
+            let s = [];
 
-    function animateLoadingBar() {
-      if (progress >= 100) {
-        clearInterval(animation);
-      } else {
-        progress += 1.5
-        updateLoadingBar();
-      }
-    }
+            participants.forEach(function(item) {
+                if(item.id==user){
+                    s.push(item.full_name + " (me)");
 
-    function updateLoadingBar() {
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      ctx.fillStyle = "#36a2eb";
-      ctx.fillRect(0, 0, progress, ctx.canvas.height);
-    }
-  </script>
+                } else {
+                    s.push(item.full_name);
+                }
+            
+            });
+            return s;
+        }
+
+        function getAmounts(){
+            let s = [];
+
+            participants.forEach(function(item) {
+                s.push(item.account.toFixed(2));
+            });
+            return s;
+        }
+
+
+
+        let names = getNames();
+        let amounts = getAmounts();
+
+        var ctx = document.getElementById('monTableau').getContext('2d');
+        var data = {
+            labels: names,
+            datasets: [{
+                label: 'Balance',
+                data: amounts,
+                backgroundColor: function(context) {
+                    var value = context.dataset.data[context.dataIndex];
+                    return value >= 0 ? 'rgb(60,179,113)' : 'rgb(255,99,71)';
+                },
+                
+                borderWidth: 1,
+                barPercentage: 0.8,
+                borderRadius: 10,
+            }]
+        };
+
+        var options = {
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: max,
+                    min: min,
+                    ticks: {
+                        display: false
+                        },
+                    grid: {
+                        display: false
+                    },
+                    categorySpacing: 0.4,
+                },
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            var value = context.dataset.data[context.dataIndex];
+                            return 'Balance : '+ value +" €";
+                        },
+                        
+                        
+                    }
+                },
+            }
+        };
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options,
+        });
+    </script>
 
 
 
