@@ -354,8 +354,27 @@
                             },
                         ],{ successMessage: 'Looks good'})
 
-                        .addRequiredGroup('#checkboxes', 'You must select at least 1 participant')
+                        .addRequiredGroup('#checkboxes', 'You must select at least 1 participant');
 
+                        $("#saveTemplateCheck").change(function() {
+                            if($("#saveTemplateCheck").prop("checked") == true){
+                                console.log("yo");
+                                validation
+                                    .addField("#newTemplateName", [
+                                        {
+                                            rule: "required",
+                                            errorMessage: "A title is required to be able to save the template"
+                                        },
+                                    ], { successMessage: "Looks good"});
+                            }else {
+                                validation
+                                    .removeField("#newTemplateName");
+                            }
+                        })
+                    
+                        
+
+                    validation
                         .onSuccess(function(event) {
                             event.target.submit();
                         });
@@ -363,7 +382,7 @@
                             setTimeout(function() {
                                 validation.revalidateGroup('#checkboxes');
                         }, 100);
-                });
+                        });
                 }
             });
         </script>
@@ -463,7 +482,7 @@
             </div>
             Add a new repartition template
             <div class="input-group mb-2 pt-2 pb-2">
-                <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" name="saveTemplateCheck"></span>
+                <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" id="saveTemplateCheck" name="saveTemplateCheck"></span>
                 <span class="input-group-text" style="background-color: #E9ECEF">Save this template</span>
                 <input class="form-control w-50" id="newTemplateName" name="newTemplateName" value="<?=$save_template_name?>">
             </div>
