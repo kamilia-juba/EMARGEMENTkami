@@ -5,14 +5,138 @@
     <title>Balance</title>
     <base href="<?= $web_root ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script>
+
+    $(function(){
+
+        $("#php").hide();
+    });
+    </script>
+
+<style>
+    canvas {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+  </style>
 </head>
 <body>
+
+    
+
+
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD"> 
         <a href= "Tricount/showTricount/<?=$tricount->id?>" class= "btn btn-outline-danger" id = "buttonBack">Back</a> 
         <?=$tricount->title?> &#8594; Balance
     </div>
-    <div class="container pt-2 ">
+
+    <body>
+    <canvas id="monTableau"></canvas>
+
+    <script>
+        let participants = <?=$participantsJson?>;
+        let user= <?=$user->id?>;
+        let max = <?=$total?>+ (<?=$total?>*10/100); // je rajoute +10% du total pour avoir un peu d'espace... ((provisoire)
+        let min = -max;
+        
+
+        function getNames(){
+            let s = [];
+
+            participants.forEach(function(item) {
+                if(item.id==user){
+                    s.push(item.full_name + " (me)");
+
+                } else {
+                    s.push(item.full_name);
+                }
+            
+            });
+            return s;
+        }
+
+        function getAmounts(){
+            let s = [];
+
+            participants.forEach(function(item) {
+                s.push(item.account.toFixed(2));
+            });
+            return s;
+        }
+
+
+
+        let names = getNames();
+        let amounts = getAmounts();
+
+        var ctx = document.getElementById('monTableau').getContext('2d');
+        var data = {
+            labels: names,
+            datasets: [{
+                label: 'Balance',
+                data: amounts,
+                backgroundColor: function(context) {
+                    var value = context.dataset.data[context.dataIndex];
+                    return value >= 0 ? 'rgb(60,179,113)' : 'rgb(255,99,71)';
+                },
+                
+                borderWidth: 1,
+                barPercentage: 0.8,
+                borderRadius: 10,
+            }]
+        };
+
+        var options = {
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: max,
+                    min: min,
+                    ticks: {
+                        display: false
+                        },
+                    grid: {
+                        display: false
+                    },
+                    categorySpacing: 0.4,
+                },
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            var value = context.dataset.data[context.dataIndex];
+                            return 'Balance : '+ value +" €";
+                        },
+                        
+                        
+                    }
+                },
+            }
+        };
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options,
+        });
+    </script>
+
+
+
+<!------------------------------------------------------------------------------------------------------------------------------------>
+
+
+    <div id="php" class="container pt-2 ">
         <div  style="font-size:15px;">
             <?php foreach($participants as $participant){?>
 
