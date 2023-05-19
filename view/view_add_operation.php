@@ -359,6 +359,11 @@
                         .onSuccess(function(event) {
                             event.target.submit();
                         });
+                        $("input[name='weight[]']").on('input change', function(){
+                            setTimeout(function() {
+                                validation.revalidateGroup('#checkboxes');
+                        }, 100);
+                });
                 }
             });
         </script>
