@@ -21,7 +21,7 @@ class ControllerTricount extends MyController{
         $user = $this->get_user_or_redirect();
         $title='';
         $description='';
-        
+        $justvalidate = $this->get_justvalidate_conf();
         $created_at='55';
         $creator=$user->id;
         
@@ -51,7 +51,7 @@ class ControllerTricount extends MyController{
 
             }
         }
-        (new View("addtricount"))->show(["title"=>$title,"description"=>$description,"errorsTitle" => $errorsTitle, "errorsDescription" => $errorsDescription, "errors" => $errors]);
+        (new View("addtricount"))->show(["title"=>$title,"description"=>$description,"errorsTitle" => $errorsTitle, "errorsDescription" => $errorsDescription, "errors" => $errors,"justvalidate" => $justvalidate]);
     }
 
     public function index() : void {

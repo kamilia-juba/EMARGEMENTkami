@@ -8,13 +8,15 @@
         <base href="<?= $web_root ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+        <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
+        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
         <script>
             
             let title ;
             let errorTitle;
             let description;
             let errorDescription;
-
+            var justvalidate = "<?= $justvalidate?>";
             function checkTitle(){
                 let verification= true;
                 errorTitle.html("");
@@ -23,7 +25,7 @@
                     errorTitle.append("<p>Title cannot be empty.</p>");
                     verification=false;
                 }
-                else {
+         .       else {
                     let regex = /^(?!\s*$)[\S\s]{3,16}$/;
                     let titleValue = title.val().replace(/\s/g, ''); 
                     if (!regex.test(titleValue)) {
@@ -102,21 +104,66 @@
 
             $(function(){
                 hide_php_errors();
-                title = $("#title");
-                errorTitle = $("#errorTitle");
-                description = $("#description");
-                errorDescription = $("#errorDescription");
+                if (justvalidate == "off") {
+                    title = $("#title");
+                    errorTitle = $("#errorTitle");
+                    description = $("#description");
+                    errorDescription = $("#errorDescription");
 
-                title.bind("input", checkTitle);
-                title.bind("input", checkTitleExists);
-                description.bind("input", checkDescription);
-                
+                    title.bind("input", checkTitle);
+                    title.bind("input", checkTitleExists);
+                    description.bind("input", checkDescription);
 
-                $("input:text:first").focus();
-            }
+                    $("input:text:first").focus();
+                } else {
+                    const validation = new JustValidate('#addTricount', {
+                        validateBeforeSubmitting: true,
+                        lockForm: true,
+                        focusInvalidField: false,
+                        successLabelCssClass: 'valid-feedback',
+                        errorLabelCssClass: 'invalid-feedback',
+                        errorFieldCssClass: 'is-invalid',
+                        successFieldCssClass: 'is-valid',
+                    });
 
-            );
+                    validation
+                        .addField('#title', [
+                            {
+                                rule: 'required',
+                                errorMessage: 'Field is required'
+                            },
+                            {
+                                rule: 'minLength',
+                                value: 3,
+                                errorMessage: 'Minimum 3 characters'
+                            },
+                            {
+                                rule: 'maxLength',
+                                value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                            },
+                        ], { successMessage: 'Looks good !' })
 
+                        validation.addField('#description', [
+                            {
+                                rule: 'minLength',
+                                value: 3,
+                                errorMessage: 'Minimum 3 characters'
+                            },
+                            {
+                                rule: 'maxLength',
+                                value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                            },
+                        ], { successMessage: 'Looks good !' })
+
+                        .onSuccess(function(event) {
+                            event.target.submit(); //par défaut le form n'est pas soumis
+                        });
+
+                    $("input:text:first").focus();
+                }
+            });
 
         </script>
     </head>
