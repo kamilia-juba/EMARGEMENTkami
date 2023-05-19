@@ -94,6 +94,7 @@ class ControllerTricount extends MyController{
         if ($this->validate_url()) {    //validation url
             $tricount = Tricount::get_tricount_by_id($_GET["param1"], $user->mail);// recup tricount depuis l'id
             $participants = $tricount->get_balances(); //recuperation de la balance de chacun
+            $participantsJson = $tricount->get_balances_as_json(); //recuperation des balances en JSON pour utiliser dans le script
             $maxUser=$participants[0];
             $sum=0;
             for($i=0;$i<sizeof($participants);++$i){
@@ -105,7 +106,7 @@ class ControllerTricount extends MyController{
                 }
 
             }
-            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser,"sum"=>$sum/100,"total"=>$sum,"user"=>$user]);
+            (new View("balance"))->show(["participantsJson"=>$participantsJson,"participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser,"sum"=>$sum/100,"total"=>$sum,"user"=>$user]);
             $participants=[];
         }else{
             $this->redirect("Main");

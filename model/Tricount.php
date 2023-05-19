@@ -347,6 +347,27 @@ class Tricount extends Model{
         }
         return json_encode($table);
     }
+
+
+    public function get_balances_as_json() : string {
+        $participants = $this->get_balances();
+
+
+        $table = [];
+
+        foreach ($participants as $participant) {
+
+
+            $row = [];
+            $row["id"] = $participant->id;
+            $row["full_name"] = $participant->full_name;
+            $row["account"] = $participant->account;
+            $table[] = $row;
+        }
+
+        return json_encode($table);
+    }
+
 }
 
 ?>
