@@ -387,12 +387,12 @@
                             },
                         ], { successMessage: 'Looks good !' })
 
-                       /* .onValidate(async function(event) {
+                        .onValidate(async function(event) {
                             titleAvailable = await $.post("tricount/tricount_exists_service/", {newTitle: $("#title").val()},null,"json");
                             if (titleAvailable){
                                 this.showErrors({ '#title': 'Title already exists' });
                             }   
-                        })*/
+                        })
                         
                         .onSuccess(function(event) {
                            
