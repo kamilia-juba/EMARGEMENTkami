@@ -10,6 +10,8 @@
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
         <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/just-validate-plugin-date-1.2.0.production.min.js" type="text/javascript"></script>
+        <script src="lib/sweetalert2@11.js"></script>
         <script>
             
             let title ;
@@ -169,7 +171,24 @@
                         .onSuccess(function(event) {
                            
                                 event.target.submit(); //par défaut le form n'est pas soumis
+                        })
+
+                        $('#cancelBtn').click(function() {
+                        Swal.fire({
+                            title: 'Confirmation',
+                            text: 'Êtes-vous sûr de vouloir annuler ?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Oui',
+                            cancelButtonText: 'Non'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "votre_vue_dialogue.html";
+                            }
                         });
+                    });
 
                     $("input:text:first").focus();
                 }
@@ -180,7 +199,7 @@
 
     <body>
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">   
-            <a href = "Tricount/yourTricounts/"  class="btn btn-outline-danger" >Cancel</a>
+            <a href = "Tricount/yourTricounts/" id="cancelBtn"  class="btn btn-outline-danger" >Cancel</a>
             Tricount &#8594; add    
        
             <button form="addTricount" class="btn btn-primary" type="submit">Save</button>
