@@ -10,14 +10,19 @@
         <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
         <script src="lib/just-validate-plugin-date-1.2.0.production.min.js"></script>
+        <script src="lib/sweetalert2@11.js"></script>
 
         <script>
 
             var tricountId = <?= $tricount->id?>;
             let title,amount, errTitle, errAmount,errWeights,okWeights;
             var justvalidate = "<?= $justvalidate?>";
+            let sweetalert = "<?= $sweetalert?>";
             let checkboxes_count;
-            
+            let template_name_available;
+            let data_changed = false;
+            let ini_title = "<?= $title ?>";
+            let ini_amount= "<?= $amount ?>";
 
             function checkTitle(){
                 let ok = true;
@@ -365,7 +370,14 @@
                                             rule: "required",
                                             errorMessage: "A title is required to be able to save the template"
                                         },
-                                    ], { successMessage: "Looks good"});
+                                    ], { successMessage: "Looks good"})
+
+                                    .onValidate(async function(event) {
+                                        template_name_exists = await $.post("template/template_exists_service/", {newTitle: $("#newTemplateName").val(), tricountId: tricountId}, null, "json");
+                                        if(template_name_exists){
+                                            this.showErrors({"#newTemplateName" : "You already have a template with this name"});
+                                        }
+                                    }) ;
                             }else {
                                 validation
                                     .removeField("#newTemplateName");
@@ -384,12 +396,40 @@
                         }, 100);
                         });
                 }
+                if(sweetalert == "on"){
+                    title.on("input", function() {
+                        data_changed = (title.val() != ini_title) || (amount.val() != ini_amount);
+                    });
+
+                    amount.on("input", function(){
+                        data_changed = (title.val() != ini_title) || (amount.val() != ini_amount);
+                    });
+
+                    $("#btnCancel").click(function(event){
+                        if(data_changed){
+                            event.preventDefault();
+                            Swal.fire({
+                                title: 'Unsaved changes !',
+                                text: 'Are you sure you want to leave this form ? Changes you made will not be saved.',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'Leave page'
+                            }).then((result) => {
+                                if(result.isConfirmed){
+                                    window.location.href="Tricount/showTricount/" + tricountId;
+                                }
+                            })
+                        }
+                    });
+                }
             });
+            
         </script>
     </head>
     <body>
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
-        <a href="Tricount/showTricount/<?=$tricount->id?>/" class="btn btn-outline-danger">Cancel</a>
+        <a href="Tricount/showTricount/<?=$tricount->id?>/" id="btnCancel" class="btn btn-outline-danger">Cancel</a>
         <?=$tricount->title?> &#8594; New expense
         <input type="submit" class="btn btn-primary" form="addOperationForm" name="saveButton" value="Save">
     </div>
