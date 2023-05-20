@@ -17,6 +17,7 @@
             let title,amount, errTitle, errAmount,errWeights,okWeights;
             var justvalidate = "<?= $justvalidate?>";
             let checkboxes_count;
+            let template_name_available;
             
 
             function checkTitle(){
@@ -365,7 +366,14 @@
                                             rule: "required",
                                             errorMessage: "A title is required to be able to save the template"
                                         },
-                                    ], { successMessage: "Looks good"});
+                                    ], { successMessage: "Looks good"})
+
+                                    .onValidate(async function(event) {
+                                        template_name_exists = await $.post("template/template_exists_service/", {newTitle: $("#newTemplateName").val(), tricountId: tricountId}, null, "json");
+                                        if(template_name_exists){
+                                            this.showErrors({"#newTemplateName" : "You already have a template with this name"});
+                                        }
+                                    }) ;
                             }else {
                                 validation
                                     .removeField("#newTemplateName");
