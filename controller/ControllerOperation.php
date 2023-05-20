@@ -50,6 +50,7 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         $selected_repartition = 0;
         $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
 
         if ($this->validate_url()) {                                                // validation url si true exectue le code sinon redirect vers l'index
             $tricount = Tricount::get_tricount_by_id($_GET["param1"], $user->mail);        //recupération de toutes les informations et initialisation afin de pouvoir les utilisé dans le show
@@ -157,7 +158,8 @@ class ControllerOperation extends Mycontroller{
                                             "checkbox_checked" => $checkbox_checked,
                                             "weights" => $weights,
                                             "save_template_name"=>$save_template_name,
-                                            "justvalidate" => $justvalidate]);
+                                            "justvalidate" => $justvalidate,
+                                            "sweetalert" => $sweetalert]);
 
         }else{
             $this->redirect("main");
