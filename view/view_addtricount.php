@@ -19,6 +19,10 @@
             let description;
             let errorDescription;
             var justvalidate = "<?= $justvalidate?>";
+            let sweetalert = "<?= $sweetalert?>";
+            let data_changed = false;
+            let ini_title = "<?= $title ?>";
+            let ini_description = "<?= $description ?>";
             let titleAvailable ;
             function checkTitle(){
                 let verification= true;
@@ -173,26 +177,36 @@
                                 event.target.submit(); //par défaut le form n'est pas soumis
                         })
 
-                        $('#cancelBtn').click(function() {
-                        Swal.fire({
-                            title: 'Confirmation',
-                            text: 'Êtes-vous sûr de vouloir annuler ?',
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Oui',
-                            cancelButtonText: 'Non'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = "votre_vue_dialogue.html";
-                            }
-                        });
-                    });
+
 
                     $("input:text:first").focus();
                 }
-            });
+                      if(sweetalert == "on"){
+                            title.on("input", function() {
+                                data_changed = (title.val() != ini_title) || (description.val() != ini_description);
+                            });
+
+                            $('#cancelBtn').click(function() {
+                                if(data_changed){
+                                    event.preventDefault()
+                                    Swal.fire({
+                                        title: 'Confirmation',
+                                        text: 'Êtes-vous sûr de vouloir annuler ?',
+                                        icon: 'question',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Oui',
+                                        cancelButtonText: 'Non'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = "Tricount/yourTricounts";
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                });
 
         </script>
     </head>

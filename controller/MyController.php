@@ -1,5 +1,6 @@
 <?php
 
+use PSpell\Config;
 require_once "framework/Controller.php";
 
 abstract class Mycontroller extends Controller{
@@ -156,6 +157,10 @@ abstract class Mycontroller extends Controller{
     public function get_justvalidate_conf(){
         return Configuration::get("justvalidate");
     }
+    public function get_sweetalert_conf(){
+         return Configuration::get("sweetalert");
+    }
 }
+
 
 ?>

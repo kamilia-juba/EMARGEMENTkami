@@ -22,6 +22,7 @@ class ControllerTricount extends MyController{
         $title='';
         $description='';
         $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
         $created_at='55';
         $creator=$user->id;
         
@@ -51,7 +52,7 @@ class ControllerTricount extends MyController{
 
             }
         }
-        (new View("addtricount"))->show(["title"=>$title,"description"=>$description,"errorsTitle" => $errorsTitle, "errorsDescription" => $errorsDescription, "errors" => $errors,"justvalidate" => $justvalidate]);
+        (new View("addtricount"))->show(["title"=>$title,"description"=>$description,"errorsTitle" => $errorsTitle, "errorsDescription" => $errorsDescription, "errors" => $errors,"justvalidate" => $justvalidate,"sweetalert" => $sweetalert]);
     }
 
     public function index() : void {
@@ -117,6 +118,7 @@ class ControllerTricount extends MyController{
     public function edit_tricount(): void{
         
         $user = $this->get_user_or_redirect();
+        $justvalidate = $this->get_justvalidate_conf();
         $errors = [];
         $success = "";
         $participants = [];
@@ -164,6 +166,7 @@ class ControllerTricount extends MyController{
                                             "errorsTitle"=>$errorsTitle,
                                             "subs_json"=>$subs_json,
                                             "not_subs_json"=>$not_subs_json,
+                                            "justvalidate" => $justvalidate
                                         ]);
         }
         else{
