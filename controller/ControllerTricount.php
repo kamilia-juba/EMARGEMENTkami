@@ -352,6 +352,9 @@ class ControllerTricount extends MyController{
         echo $res;
     }
 
+
+    
+
     public function add_subscriber_service(){
         $user = $this->get_user_or_redirect();
         

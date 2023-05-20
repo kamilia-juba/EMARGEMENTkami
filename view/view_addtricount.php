@@ -17,6 +17,7 @@
             let description;
             let errorDescription;
             var justvalidate = "<?= $justvalidate?>";
+            let titleAvailable ;
             function checkTitle(){
                 let verification= true;
                 errorTitle.html("");
@@ -25,7 +26,7 @@
                     errorTitle.append("<p>Title cannot be empty.</p>");
                     verification=false;
                 }
-         .       else {
+               else {
                     let regex = /^(?!\s*$)[\S\s]{3,16}$/;
                     let titleValue = title.val().replace(/\s/g, ''); 
                     if (!regex.test(titleValue)) {
@@ -142,9 +143,10 @@
                                 value: 16,
                                 errorMessage: 'Maximum 16 characters'
                             },
+                           
                         ], { successMessage: 'Looks good !' })
 
-                        validation.addField('#description', [
+                        .addField('#description', [
                             {
                                 rule: 'minLength',
                                 value: 3,
@@ -157,8 +159,16 @@
                             },
                         ], { successMessage: 'Looks good !' })
 
+                        .onValidate(async function(event) {
+                            titleAvailable = await $.post("tricount/tricount_exists_service/", {newTitle: $("#title").val()},null,"json");
+                            if (titleAvailable){
+                                this.showErrors({ '#title': 'Title already exists' });
+                            }   
+                        })
+                        
                         .onSuccess(function(event) {
-                            event.target.submit(); //par défaut le form n'est pas soumis
+                           
+                                event.target.submit(); //par défaut le form n'est pas soumis
                         });
 
                     $("input:text:first").focus();
