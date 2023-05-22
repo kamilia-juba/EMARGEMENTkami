@@ -23,6 +23,7 @@
             let data_changed = false;
             let ini_title = "<?= $title ?>";
             let ini_amount= "<?= $amount ?>";
+            let ini_date = "<?= $date ?>" ;
 
             function checkTitle(){
                 let ok = true;
@@ -252,6 +253,11 @@
                     handleAmounts();
                 }
             }
+
+            function updateDataStatus(title, amount, date){
+                data_changed = (title != ini_title) || (amount != ini_amount) || (date != ini_date);
+            }
+
             $(function(){
                 title = $("#title");
                 errTitle = $("#errTitle");
@@ -259,6 +265,7 @@
                 amount=$("#amount")
                 errWeights = $("#errWeights");
                 okWeights = $("#okWeights");
+                date = $("#date");
 
                 totalAmount=$("#amount");
                 handleAmounts();   
@@ -398,11 +405,15 @@
                 }
                 if(sweetalert == "on"){
                     title.on("input", function() {
-                        data_changed = (title.val() != ini_title) || (amount.val() != ini_amount);
+                        updateDataStatus(title.val(), amount.val(), date.val());
                     });
 
                     amount.on("input", function(){
-                        data_changed = (title.val() != ini_title) || (amount.val() != ini_amount);
+                        updateDataStatus(title.val(), amount.val(), date.val());
+                    });
+
+                    date.on("blur", function(){
+                        updateDataStatus(title.val(), amount.val(), date.val());
                     });
 
                     $("#btnCancel").click(function(event){
