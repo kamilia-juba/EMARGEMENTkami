@@ -20,7 +20,7 @@ class ControllerMain extends MyController {
         if($this->user_logged() || (isset($_GET["param1"]) && $_GET["param1"] != "")){
             $this->redirect("Tricount","yourTricounts");
         }else {
-            $password = '';
+            $password = ''; 
             $mail = "";
             $errors = [];
             if (isset($_POST['mail']) && isset($_POST['password'])) { 
@@ -45,6 +45,7 @@ class ControllerMain extends MyController {
             $IBAN='';
             $password = '';
             $password_confirm = '';
+            $justvalidate = $this->get_justvalidate_conf();
             $errors = [];
             $errorsEmail = [];
             $errorsName = [];
@@ -86,7 +87,8 @@ class ControllerMain extends MyController {
                                         "errorsName" => $errorsName,
                                         "errorsIban" => $errorsIban,
                                         "errorsPasswordConfirm" => $errorsPasswordConfirm,
-                                        "errors" => $errors]);
+                                        "errors" => $errors,
+                                        "justvalidate" => $justvalidate]);
         }
         
     }
