@@ -23,6 +23,7 @@
             let data_changed = false;
             let ini_title = "<?= $title ?>";
             let ini_amount= "<?= $amount ?>";
+            let ini_date = "<?= $date ?>" ;
 
             function checkTitle(){
                 let ok = true;
@@ -252,6 +253,45 @@
                     handleAmounts();
                 }
             }
+
+            function updateDataStatus(title, amount, date){
+                data_changed = updateDataStatusCheckboxes() || (title != ini_title) || (amount != ini_amount) || (date != ini_date);
+            }
+
+            function updateDataStatusCheckboxes() {
+                var data_changed = false;
+                var checkboxes = $(".checkboxParticipant").map(function() {
+                    return this.id;
+                }).get();
+
+                var checkboxChecked = <?= json_encode($checkbox_checked) ?>;
+                var ini_weights = <?= json_encode($weights) ?>;
+
+                for (var i = 0; i < checkboxChecked.length; i++) {
+                    var checked_value = checkboxChecked[i] == "checked" ? true : false;
+                    var checkbox = $("#" + checkboxes[i]);
+                    var weight = $("#" + checkboxes[i] + "_weight");
+                    console.log(weight.val() === ini_weights[i]);
+                    if (checkbox.prop("checked") !== checked_value || !(weight.val() === ini_weights[i])) {
+                        data_changed = true;
+                    }
+                }
+                return data_changed;
+            }
+
+            function updateDataAfterWeightInput(){
+                var checkboxes = $(".checkboxParticipant").map(function() {
+                    return this.id;
+                }).get();
+                for(var i = 0; i<checkboxes.length; ++i){
+                    var weight = $("#" + checkboxes[i] + "_weight");
+                    weight.on("input", function(){
+                        data_changed = updateDataStatusCheckboxes();
+                    });
+                }
+            }
+
+
             $(function(){
                 title = $("#title");
                 errTitle = $("#errTitle");
@@ -259,6 +299,7 @@
                 amount=$("#amount")
                 errWeights = $("#errWeights");
                 okWeights = $("#okWeights");
+                date = $("#date");
 
                 totalAmount=$("#amount");
                 handleAmounts();   
@@ -398,12 +439,22 @@
                 }
                 if(sweetalert == "on"){
                     title.on("input", function() {
-                        data_changed = (title.val() != ini_title) || (amount.val() != ini_amount);
+                        updateDataStatus(title.val(), amount.val(), date.val());
                     });
 
                     amount.on("input", function(){
-                        data_changed = (title.val() != ini_title) || (amount.val() != ini_amount);
+                        updateDataStatus(title.val(), amount.val(), date.val());
                     });
+
+                    date.on("blur", function(){
+                        updateDataStatus(title.val(), amount.val(), date.val());
+                    });
+
+                    $(".checkboxParticipant").change(function() {
+                        data_changed = updateDataStatusCheckboxes();
+                    });
+
+                    updateDataAfterWeightInput();
 
                     $("#btnCancel").click(function(event){
                         if(data_changed){
