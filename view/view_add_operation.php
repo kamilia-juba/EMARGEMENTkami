@@ -265,15 +265,30 @@
                 }).get();
 
                 var checkboxChecked = <?= json_encode($checkbox_checked) ?>;
+                var ini_weights = <?= json_encode($weights) ?>;
 
                 for (var i = 0; i < checkboxChecked.length; i++) {
                     var checked_value = checkboxChecked[i] == "checked" ? true : false;
                     var checkbox = $("#" + checkboxes[i]);
-                    if (checkbox.prop("checked") !== checked_value) {
+                    var weight = $("#" + checkboxes[i] + "_weight");
+                    console.log(weight.val() === ini_weights[i]);
+                    if (checkbox.prop("checked") !== checked_value || !(weight.val() === ini_weights[i])) {
                         data_changed = true;
                     }
                 }
                 return data_changed;
+            }
+
+            function updateDataAfterWeightInput(){
+                var checkboxes = $(".checkboxParticipant").map(function() {
+                    return this.id;
+                }).get();
+                for(var i = 0; i<checkboxes.length; ++i){
+                    var weight = $("#" + checkboxes[i] + "_weight");
+                    weight.on("input", function(){
+                        data_changed = updateDataStatusCheckboxes();
+                    });
+                }
             }
 
 
@@ -437,7 +452,9 @@
 
                     $(".checkboxParticipant").change(function() {
                         data_changed = updateDataStatusCheckboxes();
-                    })
+                    });
+
+                    updateDataAfterWeightInput();
 
                     $("#btnCancel").click(function(event){
                         if(data_changed){
