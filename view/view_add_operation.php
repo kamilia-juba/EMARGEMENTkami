@@ -255,8 +255,27 @@
             }
 
             function updateDataStatus(title, amount, date){
-                data_changed = (title != ini_title) || (amount != ini_amount) || (date != ini_date);
+                data_changed = updateDataStatusCheckboxes() || (title != ini_title) || (amount != ini_amount) || (date != ini_date);
             }
+
+            function updateDataStatusCheckboxes() {
+                var data_changed = false;
+                var checkboxes = $(".checkboxParticipant").map(function() {
+                    return this.id;
+                }).get();
+
+                var checkboxChecked = <?= json_encode($checkbox_checked) ?>;
+
+                for (var i = 0; i < checkboxChecked.length; i++) {
+                    var checked_value = checkboxChecked[i] == "checked" ? true : false;
+                    var checkbox = $("#" + checkboxes[i]);
+                    if (checkbox.prop("checked") !== checked_value) {
+                        data_changed = true;
+                    }
+                }
+                return data_changed;
+            }
+
 
             $(function(){
                 title = $("#title");
@@ -415,6 +434,10 @@
                     date.on("blur", function(){
                         updateDataStatus(title.val(), amount.val(), date.val());
                     });
+
+                    $(".checkboxParticipant").change(function() {
+                        data_changed = updateDataStatusCheckboxes();
+                    })
 
                     $("#btnCancel").click(function(event){
                         if(data_changed){
