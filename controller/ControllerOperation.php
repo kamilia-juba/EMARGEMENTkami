@@ -288,6 +288,8 @@ class ControllerOperation extends Mycontroller{
         $user = $this->get_user_or_redirect();
         $selected_repartition = 0;
         $operation=null;
+        $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
 
 
         if ($this->validate_url()) {                                                // validation url si true exectue le code sinon redirect vers l'index
@@ -402,6 +404,8 @@ class ControllerOperation extends Mycontroller{
                                                  "checkbox_checked" => $checkbox_checked,
                                                  "weights" => $weights,
                                                  "templates" => $templates,
+                                                 "justvalidate" => $justvalidate,
+                                                 "sweetalert" => $sweetalert
                                                  ]
             );
 

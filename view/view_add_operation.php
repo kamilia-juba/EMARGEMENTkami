@@ -111,7 +111,6 @@
                             okWeights.html("");
                         }
                     }
-                    console.log(weight);
                 })
                 return ok;
             }
@@ -277,7 +276,6 @@
                     var checked_value = checkboxChecked[i] == "checked" ? true : false;
                     var checkbox = $("#" + checkboxes[i]);
                     var weight = $("#" + checkboxes[i] + "_weight");
-                    console.log(weight.val() === ini_weights[i]);
                     if (checkbox.prop("checked") !== checked_value || !(weight.val() === ini_weights[i])) {
                         data_changed = true;
                     }
@@ -410,7 +408,6 @@
 
                         $("#saveTemplateCheck").change(function() {
                             if($("#saveTemplateCheck").prop("checked") == true){
-                                console.log("yo");
                                 validation
                                     .addField("#newTemplateName", [
                                         {
