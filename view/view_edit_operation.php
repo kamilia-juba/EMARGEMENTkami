@@ -318,6 +318,10 @@
             }
         }
 
+        async function deleteOperation(){
+            await $.get("Operation/delete_operation_service/" + tricountId + "/" + operationId);
+        }
+
         $(function(){
 
             title = $("#title");
@@ -505,6 +509,32 @@
                         })
                     }
                 });
+
+                $("#btnDelete").click(function(event){
+                    event.preventDefault();
+                    Swal.fire({
+                        title: "Are you sure ?",
+                        icon: 'warning',
+                        html: 'Do you really want to delete this operation ?<br><br> This process cannot be undone.',
+                        showCancelButton: true,
+                        cancelButtonColor: '#d33',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if(result.isConfirmed){
+                            deleteOperation();
+                            Swal.fire({
+                                title: 'Deleted',
+                                icon: 'success',
+                                text: 'This operation has been deleted.'
+                            }).then((result) => {
+                                if(result.isConfirmed){
+                                    window.location.href="Tricount/showTricount/" + tricountId;
+                                }
+                            })
+                        }
+                    })
+                })
             }
         });
     </script>
@@ -617,7 +647,7 @@
                             </ul>
                         </div>
         <?php endif; ?>
-        <a href="Operation/delete_operation/<?=$tricount->id?>/<?=$operation->id?>" class="btn btn-danger w-100">Delete Operation</a>
+        <a href="Operation/delete_operation/<?=$tricount->id?>/<?=$operation->id?>" class="btn btn-danger w-100" id="btnDelete">Delete Operation</a>
     </div>
 </body>
 </html>

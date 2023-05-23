@@ -460,6 +460,15 @@ class ControllerOperation extends Mycontroller{
         echo $res;
     }
 
+    public function delete_operation_service(){
+        if($this->validate_url()){
+            $operation = Operation::get_operation_by_id($_GET["param2"]);
+            $operation->delete_operation();
+        }else {
+            $this->redirect();
+        }
+    }
+
    
 }
 ?>
