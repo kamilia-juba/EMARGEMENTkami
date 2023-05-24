@@ -54,8 +54,8 @@
                             ],{ successMessage: 'Looks good !' }) 
                             
                         .onValidate(async function(event) {
-                            mailAvailable = await $.post("User/Mail_exists_service/", {newTitle: $("#mail").val()},null,"json");
-                            if (!mailAvailable){
+                            mailAvailable = await $.post("User/Mail_exists_service/", {newEmail: $("#mail").val()},null,"json");
+                            if (mailAvailable){
                                 this.showErrors({ '#mail': 'this mail doesnt exist' });
                             }   
                         })
