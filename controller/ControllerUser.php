@@ -35,6 +35,8 @@ class ControllerUser extends MyController {
         $iban=$user->iban;
         $mail=$user->mail;
         
+        $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
 
 
         if (isset($_POST['full_name']) || isset($_POST['IBAN']) || isset($POST['mail'] )) {
@@ -73,7 +75,8 @@ class ControllerUser extends MyController {
         $success = "Your profile has been successfully updated.";
         }
 
-        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errorsMail" => $errorsMail,"errorsName" => $errorsName, "errorsIban" => $errorsIban, "success" => $success]);
+        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errorsMail" => $errorsMail,"errorsName" => $errorsName, "errorsIban" => $errorsIban, "success" => $success, "justvalidate" => $justvalidate,
+        "sweetalert" => $sweetalert]);
     }
 
     public function change_password() : void {
