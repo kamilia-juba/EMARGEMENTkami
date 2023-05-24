@@ -106,7 +106,7 @@ class ControllerUser extends MyController {
 
         if(isset($_POST["newMail"]) && $_POST["newMail"] !== ""){
             $user = User::get_user_by_mail($_POST["newMail"]);
-            if($user){
+            if($user!=null){
              $res = "true";
              }
          }

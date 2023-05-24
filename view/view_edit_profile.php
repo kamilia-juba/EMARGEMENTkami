@@ -87,12 +87,13 @@
                         validation
                         .onSuccess(function(event) {
                             event.target.submit();
-                        });
-                        $("input[name='weight[]']").on('input change', function(){
-                            setTimeout(function() {
-                                validation.revalidateGroup('#checkboxes');
-                        }, 100);
-                    });
+                        })
+                        .onValidate(async function(event) {
+                            mailAvailable = await $.post("User/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
+                            if (mailAvailable){
+                                this.showErrors({ '#mail': 'this mail already exists' });
+                            }   
+                        })
                 }
             });
         </script>
