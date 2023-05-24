@@ -217,7 +217,10 @@
                                 value: 256,
                                 errorMessage: "Title can't have more than 256 characters"
                             },
-                        ],{ successMessage: 'Looks good'});
+                        ],{ successMessage: 'Looks good'})
+                        
+                        .addRequiredGroup('#checkboxes', 'You must select at least 1 participant');
+;
                         
                         
                     validation
@@ -310,6 +313,7 @@
                     </div>
                 <?php endif; ?>
                 Template items :
+                <div id="checkboxes">
                 <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){  ?>
                     <div class="input-group mb-2 mt-2">
                         <span class="form-control" style="background-color: #E9ECEF">
@@ -336,6 +340,7 @@
                             </ul>
                         </div>
                 <?php endif; ?>
+                </div>
             </form>
             <a href="Template/deleteTemplate/<?=$tricount->id?>/<?=$template->id?>" class="btn btn-danger w-100" id="btnDelete">Delete Template</a> 
         </div>
