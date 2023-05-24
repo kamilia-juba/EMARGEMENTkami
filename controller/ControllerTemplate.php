@@ -45,32 +45,14 @@ class ControllerTemplate extends Mycontroller{
         if ($this->validate_url()){
             $tricount = Tricount::get_tricount_by_id($_GET["param1"]); // recuper le tricount 
             $template = Template::get_template_by_id($_GET["param2"]);// recupere le template 
+            $items = $template->get_items();
             $participants = $tricount->get_participants(); // recupere les participant du tricount 
-            $participants_and_weights = [];
-            $checkbox_checked = [];
+            $weights = $this->initialize_weights($participants, $items);
+            $checkbox_checked = $this->initialize_checkboxes($participants, $items);
             $title = $template->title;
-            for($i = 0; $i < sizeof($participants); ++$i){
-                $participant = $participants[$i];
-                // renseigne le poid de chaque participant dans le tricount 
-                $participants_and_weights[] = [$participant, $template->get_weight_from_template($participant) == null ? 0 : $template->get_weight_from_template($participant)];
-                $checkbox_checked[$i] = $participant->user_participates_to_repartition($template) ? "checked" : "";
-            }
             if(isset($_POST["weight"])){
-                for($i=0; $i < sizeof($participants); ++$i){
-                    $participants_and_weights[$i][1] = $_POST["weight"][$i];
-                    if(isset($_POST["checkboxParticipants"])){
-                        for($j = 0; $j < sizeof($_POST["checkboxParticipants"]); ++$j){
-                            if($_POST["checkboxParticipants"][$j] == $participants_and_weights[$i][0]->id){
-                                $checkbox_checked[$i] = "checked";
-                                break;
-                            }else{
-                                $checkbox_checked[$i] = "";
-                            }
-                        }
-                    }else{
-                        $checkbox_checked[$i] = "";
-                    }
-                }
+                $checkbox_checked = $this->update_checkbox_checked($participants);
+                $weights = $this->update_weights($participants);
             }
 
             if(isset($_POST["title"])){
@@ -101,12 +83,11 @@ class ControllerTemplate extends Mycontroller{
                     $template->update_template($title);
                     $template->remove_items();
 
-                    for($i = 0 ; $i < sizeof($participants_and_weights); ++ $i){
+                    for($i = 0 ; $i < sizeof($participants); ++ $i){
                         for($j = 0; $j<sizeof($checkboxes);++$j){
-                            if($participants_and_weights[$i][0]->id==$checkboxes[$j]){
+                            if($participants[$i]->id==$checkboxes[$j]){
                                 if($weights[$i]>0){
-                                    $participants_and_weights[$i][1] = $weights[$i];
-                                    $template->add_items($participants_and_weights[$i][0],$participants_and_weights[$i][1]);
+                                    $template->add_items($participants[$i],$weights[$i]);
                                 }
                             }
                         }
@@ -116,7 +97,7 @@ class ControllerTemplate extends Mycontroller{
                 }
 
             }
-            (new View("edit_template"))->show(["participants_and_weights" => $participants_and_weights,
+            (new View("edit_template"))->show(["participants" => $participants,
                                                  "errorsTitle" => $errorsTitle,
                                                  "errorsCheckboxes" => $errorsCheckboxes,
                                                  "template"=>$template,
@@ -125,6 +106,7 @@ class ControllerTemplate extends Mycontroller{
                                                  "user"=>$user,
                                                  "title"=>$title,
                                                  "checkbox_checked" => $checkbox_checked,
+                                                 "weights" => $weights,
                                                  "justvalidate" => $justvalidate,
                                                  "sweetalert" => $sweetalert]
             );
@@ -134,49 +116,135 @@ class ControllerTemplate extends Mycontroller{
         }
     }
 
-    public function template_exists_service(){
-        $res = "false";
-        $template = Template::get_template_by_name_and_tricountId($_POST["newTitle"], $_POST["tricountId"]);
-        if($template){
-            $res = "true";
+    private function initialize_weights(array $participants, array $items){
+        $res = [];
+
+        foreach($participants as $participant){
+            $found = false;
+
+            foreach($items as $item){
+                if($participant->id == $item->user->id){
+                    $res[] = $item->weight;
+                    $found = true;
+                    break;
+                }
+            }
+
+            if(!$found){
+                $res[] = 0;
+            }
         }
-        echo $res;
+        
+        return $res;
+    }
+
+    private function update_weights(array $participants){
+        $weights = [];
+        for($i = 0; $i < sizeof($participants); ++$i){
+            $weights[$i] = $_POST["weight"][$i];
+        }
+        return $weights;
+    }
+
+    private function initialize_checkboxes(array $participants, array $items): array{
+        $checkboxes_checked = [];
+
+        for($i=0; $i < sizeof($participants); ++$i){
+            for($j = 0; $j < sizeof($items); ++$j){
+                if($participants[$i]->id === $items[$j]->user->id){
+                    $checkboxes_checked[$i] = "checked";
+                    break;
+                }else{
+                    $checkboxes_checked[$i] = "";
+                }
+            }
+        }
+        return $checkboxes_checked;
+    }
+
+    private function update_checkbox_checked(array $participants): array{
+        $checkbox_checked = [];
+
+        for($i = 0; $i < sizeof($participants); ++$i){
+            if(isset($_POST["checkboxParticipants"])){
+                for($j = 0; $j < sizeof($_POST["checkboxParticipants"]); ++$j){
+                    if($_POST["checkboxParticipants"][$j] == $participants[$i]->id){
+                        $checkbox_checked[$i] = "checked";
+                        break;
+                    }else{
+                        $checkbox_checked[$i] = "";
+                    }
+                }
+            }else{
+                $checkbox_checked[$i] = "";
+            }
+        }
+
+        return $checkbox_checked;
+    }
+
+    public function template_exists_service(){
+        if($this->validate_url()){
+            $res = "false";
+            $template = Template::get_template_by_name_and_tricountId($_POST["newTitle"], $_POST["tricountId"]);
+            if($template){
+                $res = "true";
+            }
+            echo $res;
+        }else {
+            $this->redirect();
+        }
+        
     }
 
     public function template_title_other_exists_service(){
-        $res = "false";
-        $template = Template::get_template_by_id($_POST["templateId"]);
-
-        if($template->template_name_exists($_POST["newTitle"])){
-            $res = "true";
+        if($this->validate_url()){
+            $res = "false";
+            $template = Template::get_template_by_id($_POST["templateId"]);
+    
+            if($template->template_name_exists($_POST["newTitle"])){
+                $res = "true";
+            }
+            echo $res;
+        }else{
+            $this->redirect();
         }
-        echo $res;
+        
     }
 
     public function user_participates_service(){
-        $res = "false";
-        $template = Template::get_template_by_id($_POST["templateId"]);
-        $user = User::get_user_by_id($_POST["userId"]);
-
-        if($template->user_participates($user)){
-            $res = "true";
+        if($this->validate_url()){
+            $res = "false";
+            $template = Template::get_template_by_id($_POST["templateId"]);
+            $user = User::get_user_by_id($_POST["userId"]);
+    
+            if($template->user_participates($user)){
+                $res = "true";
+            }
+            echo $res;
+        }else{
+            $this->redirect();
         }
-        echo $res;
+        
     }
 
     public function get_user_weight_service(){
-        $res = 0;
-        $template = Template::get_template_by_id($_POST["templateId"]);
-        $user = User::get_user_by_id($_POST["userId"]);
-
-        $res += $template->get_weight_from_template($user);
-        
-        echo $res;
+        if($this->validate_url()){
+            $res = 0;
+            $template = Template::get_template_by_id($_POST["templateId"]);
+            $user = User::get_user_by_id($_POST["userId"]);
+    
+            $res += $template->get_weight_from_template($user);
+            
+            echo $res;
+        }else {
+            $this->redirect();
+        }
     }
 
     public function delete_template_service(){
         if($this->validate_url()){
-            $template = Template::get_template_by_id($_GET["param1"]);
+            $template = Template::get_template_by_id($_GET["param2"]);
             $template->remove_template();
         }else {
             $this->redirect();

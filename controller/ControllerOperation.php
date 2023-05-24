@@ -97,9 +97,6 @@ class ControllerOperation extends Mycontroller{
                 $errorsAmount =$errors["errorsAmount"];
                 $errorsCheckboxes= $errors["errorsCheckboxes"];
                 $errorsSaveTemplate = $errors["errorsSaveTemplate"];
-
-                var_dump($_POST["checkboxParticipants"]);
-
                 
 
                 if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
@@ -438,26 +435,36 @@ class ControllerOperation extends Mycontroller{
 
 
     public function user_participates_service(){
-        $res = "false";
-        $operation = Operation::get_operation_by_id($_POST["operationId"]);
-        $user = User::get_user_by_id($_POST["userId"]);
-
-        if($operation->user_participates($user)){
-            $res = "true";
+        if($this->validate_url()){
+            $res = "false";
+            $operation = Operation::get_operation_by_id($_POST["operationId"]);
+            $user = User::get_user_by_id($_POST["userId"]);
+    
+            if($operation->user_participates($user)){
+                $res = "true";
+            }
+            echo $res;
+        }else{
+            $this->redirect();
         }
-        echo $res;
+        
     }
 
    
 
     public function get_user_weight_service(){
-        $res = 0;
-        $operation= Operation::get_operation_by_id($_POST["operationId"]);
-        $user=User::get_user_by_id($_POST["userId"]);
-
-        $res += $operation->get_weight($user);
-
-        echo $res;
+        if($this->validate_url()){
+            $res = 0;
+            $operation= Operation::get_operation_by_id($_POST["operationId"]);
+            $user=User::get_user_by_id($_POST["userId"]);
+    
+            $res += $operation->get_weight($user);
+    
+            echo $res;
+        }else {
+            $this->redirect();
+        }
+        
     }
 
     public function delete_operation_service(){

@@ -265,6 +265,10 @@ class ControllerTricount extends MyController{
         $user = $this->get_user_or_redirect(); //si l'utilisateur n'est pas connecter redirection vers la page d'acceuille
         $title = "";
         $weights = [];
+        $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
+
+
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->is_subscribed_to_tricount($_GET["param1"])){
             $errors = [];
             $errorsTitle = [];
@@ -316,8 +320,6 @@ class ControllerTricount extends MyController{
                     $checkboxes = $_POST["checkboxParticipants"];
                     $template = Template::add_repartition_template($title,$tricount);
                     $weight = $_POST["weight"];
-                    var_dump($checkboxes);
-                    var_dump($weight);
                     for($i=0; $i<sizeof($participants); ++$i){
                         for($j = 0; $j<sizeof($checkboxes);++$j){
                             if($participants[$i]->id==$checkboxes[$j]){
@@ -337,7 +339,10 @@ class ControllerTricount extends MyController{
                                             "errorsTitle" => $errorsTitle,
                                             "errorsCheckboxes" => $errorsCheckBoxes,
                                             "weights" => $weights,
-                                            "checkbox_checked" => $checkbox_checked]
+                                            "checkbox_checked" => $checkbox_checked,
+                                            "justvalidate" => $justvalidate,
+                                            "sweetalert" => $sweetalert,
+                                            "tricountId" => $tricount->id]
             );
         }else{
             $this->redirect("Main");

@@ -1,6 +1,7 @@
 <?php 
 
     require_once "framework/Model.php";
+    require_once "model/TemplateItems.php";
 
 
     class Template extends Model{
