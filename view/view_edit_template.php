@@ -7,9 +7,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <script src="lib/jquery-3.6.4.js" type="text/javascript"></script>
+        <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
+        <script src="lib/sweetalert2@11.js"></script>
         <script>
             var templateId = <?= $template->id ?>;
             let title,errTitle,okTitle,errWeights,okWeights;
+            var justvalidate = "<?= $justvalidate?>";
+            let sweetalert = "<?= $sweetalert?>";
+            let checkboxes_count;
+            let template_name_available;
+            let data_changed = false;
+            let ini_title = "<?= $title ?>";
+
 
             function checkTitle(){
                 let ok = true;
@@ -120,6 +129,47 @@
                 return ok;
             }
 
+            function updateDataStatus(title){
+                data_changed = updateDataStatusCheckboxes() 
+                                || (title != ini_title);
+            }
+
+            function updateDataStatusCheckboxes() {
+                var data_changed = false;
+                var checkboxes = $(".checkboxParticipant").map(function() {
+                    return this.id;
+                }).get();
+
+                var checkboxChecked = <?= json_encode($checkbox_checked) ?>;
+                var ini_weights = <?= json_encode($weights) ?>;
+
+                for (var i = 0; i < checkboxChecked.length; i++) {
+                    var checked_value = checkboxChecked[i] == "checked" ? true : false;
+                    var checkbox = $("#" + checkboxes[i]);
+                    var weight = $("#" + checkboxes[i] + "_weight");
+                    if (checkbox.prop("checked") !== checked_value || !(weight.val() === ini_weights[i])) {
+                        data_changed = true;
+                    }
+                }
+                return data_changed;
+            }
+
+            function updateDataAfterWeightInput(){
+                var checkboxes = $(".checkboxParticipant").map(function() {
+                    return this.id;
+                }).get();
+                for(var i = 0; i<checkboxes.length; ++i){
+                    var weight = $("#" + checkboxes[i] + "_weight");
+                    weight.on("input", function(){
+                        data_changed = updateDataStatusCheckboxes();
+                    });
+                }
+            }
+
+            async function deleteOperation(){
+            await $.get("Template/delete_template_service/" + templateId);
+        }
+
             $(function() {
                 title = $("#title");
                 errTitle = $("#errTitle");
@@ -127,22 +177,132 @@
                 errWeights = $("#errWeights");
                 okWeights = $("#okWeights");
 
-                title.bind("input", checkTitle);
-                title.bind("input", checkTitleExists);
-
-                $(".checkboxParticipant").change(function(){
-                    handleCheckbox();
-                });
-
+                handleCheckbox();
                 checkWeight();
 
-                $("input:text:first").focus();
-            })
+                $(".checkboxParticipant").change(function(){
+                        handleCheckbox();
+                    })
+
+                hide_php_errors();
+
+                if(justvalidate == "off"){
+                    
+
+                    title.bind("input", checkTitle);
+                    title.bind("input", checkTitleExists);
+
+
+                    if(title.val()!="" || amount.val()!=""){
+                        checkTitle();
+                        checkAmount();
+                    }
+
+                    $(".checkboxParticipant").change(function(){
+                        handleCheckbox();
+                    })
+
+                    checkWeight();
+                }else {
+                    const validation = new JustValidate('#applyTemplateForm', {
+                        validateBeforeSubmitting: true,
+                        lockForm: true,
+                        focusInvalidField: false,
+                        successLabelCssClass: 'valid-feedback',
+                        errorLabelCssClass: 'invalid-feedback',
+                        errorFieldCssClass: 'is-invalid',
+                        successFieldCssClass: 'is-valid',
+                    });
+
+                    validation
+                        .addField('#title', [
+                            {
+                                rule: 'required',
+                                errorMessage: 'Title cannot be empty'
+                            },
+                            {
+                                rule: 'minLength',
+                                value: 3,
+                                errorMessage: 'Title must be at least 3 characters'
+                            },
+                            {
+                                rule:'maxLength',
+                                value: 256,
+                                errorMessage: "Title can't have more than 256 characters"
+                            },
+                        ],{ successMessage: 'Looks good'});
+
+                        
+                    validation
+                        .onSuccess(function(event) {
+                            event.target.submit();
+                        });
+                        $("input[name='weight[]']").on('input change', function(){
+                            setTimeout(function() {
+                                validation.revalidateGroup('#checkboxes');
+                        }, 100);
+                        });
+                }
+
+                if(sweetalert == "on"){
+                    title.on("input", function() {
+                        updateDataStatus(title.val(), amount.val(), date.val());
+                    });
+                    $(".checkboxParticipant").change(function() {
+                        data_changed = updateDataStatusCheckboxes();
+                    });
+                    updateDataAfterWeightInput();
+
+                    $("#btnCancel").click(function(event){
+                        if(data_changed){
+                            event.preventDefault();
+                            Swal.fire({
+                                title: 'Unsaved changes !',
+                                text: 'Are you sure you want to leave this form ? Changes you made will not be saved.',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'Leave page'
+                            }).then((result) => {
+                                if(result.isConfirmed){
+                                    window.location.href="Tricount/showTricount/" + tricountId;
+                                }
+                            })
+                        }
+                    });
+
+                    $("#btnDelete").click(function(event){
+                    event.preventDefault();
+                    Swal.fire({
+                        title: "Are you sure ?",
+                        icon: 'warning',
+                        html: 'Do you really want to delete this template ?<br><br> This process cannot be undone.',
+                        showCancelButton: true,
+                        cancelButtonColor: '#d33',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if(result.isConfirmed){
+                            deleteTemplate();
+                            Swal.fire({
+                                title: 'Deleted',
+                                icon: 'success',
+                                text: 'This template has been deleted.'
+                            }).then((result) => {
+                                if(result.isConfirmed){
+                                    window.location.href="Tricount/showTricount/" + tricountId;
+                                }
+                            })
+                        }
+                    })
+                })
+                }
+            });
         </script>
     </head>
     <body>
         <div class="pt-2 ps-3 pe-3 pb-2 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
-            <a href="Tricount/show_templates/<?=$tricount->id?>" class="btn btn-outline-danger">Cancel</a>
+            <a href="Tricount/show_templates/<?=$tricount->id?>" class="btn btn-outline-danger" id="btnCancel">Cancel</a>
             <b><?=$tricount->title?> &#8594; Edit Template</b>
             <input type="submit" class="btn btn-primary" form="applyTemplateForm" value="Save">
         </div>
@@ -189,7 +349,7 @@
                         </div>
                 <?php endif; ?>
             </form>
-            <a href="Template/deleteTemplate/<?=$tricount->id?>/<?=$template->id?>" class="btn btn-danger w-100">Delete Template</a> 
+            <a href="Template/deleteTemplate/<?=$tricount->id?>/<?=$template->id?>" class="btn btn-danger w-100" id="btnDelete">Delete Template</a> 
         </div>
     </body>
 </html>

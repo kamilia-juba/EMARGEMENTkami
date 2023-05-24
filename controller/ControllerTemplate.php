@@ -39,6 +39,8 @@ class ControllerTemplate extends Mycontroller{
         $errors = [];
         $errorsTitle = [];
         $errorsCheckboxes = [];
+        $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
 
         if ($this->validate_url()){
             $tricount = Tricount::get_tricount_by_id($_GET["param1"]); // recuper le tricount 
@@ -121,7 +123,9 @@ class ControllerTemplate extends Mycontroller{
                                                  "tricount"=>$tricount,
                                                  "user"=>$user,
                                                  "title"=>$title,
-                                                 "checkbox_checked" => $checkbox_checked]
+                                                 "checkbox_checked" => $checkbox_checked,
+                                                 "justvalidate" => $justvalidate,
+                                                 "sweetalert" => $sweetalert]
             );
 
         }else{
@@ -167,6 +171,15 @@ class ControllerTemplate extends Mycontroller{
         $res += $template->get_weight_from_template($user);
         
         echo $res;
+    }
+
+    public function delete_template_service(){
+        if($this->validate_url()){
+            $template = Template::get_template_by_id($_GET["param1"]);
+            $template->remove_template();
+        }else {
+            $this->redirect();
+        }
     }
 }
 
