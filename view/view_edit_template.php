@@ -152,8 +152,8 @@
             }
 
             async function deleteTemplate(){
-            await $.get("Template/delete_template_service/" + templateId);
-        }
+                await $.get("Template/delete_template_service/" + tricountId + "/" + templateId);
+            }
 
             $(function() {
                 title = $("#title");

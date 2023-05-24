@@ -184,48 +184,67 @@ class ControllerTemplate extends Mycontroller{
     }
 
     public function template_exists_service(){
-        $res = "false";
-        $template = Template::get_template_by_name_and_tricountId($_POST["newTitle"], $_POST["tricountId"]);
-        if($template){
-            $res = "true";
+        if($this->validate_url()){
+            $res = "false";
+            $template = Template::get_template_by_name_and_tricountId($_POST["newTitle"], $_POST["tricountId"]);
+            if($template){
+                $res = "true";
+            }
+            echo $res;
+        }else {
+            $this->redirect();
         }
-        echo $res;
+        
     }
 
     public function template_title_other_exists_service(){
-        $res = "false";
-        $template = Template::get_template_by_id($_POST["templateId"]);
-
-        if($template->template_name_exists($_POST["newTitle"])){
-            $res = "true";
+        if($this->validate_url()){
+            $res = "false";
+            $template = Template::get_template_by_id($_POST["templateId"]);
+    
+            if($template->template_name_exists($_POST["newTitle"])){
+                $res = "true";
+            }
+            echo $res;
+        }else{
+            $this->redirect();
         }
-        echo $res;
+        
     }
 
     public function user_participates_service(){
-        $res = "false";
-        $template = Template::get_template_by_id($_POST["templateId"]);
-        $user = User::get_user_by_id($_POST["userId"]);
-
-        if($template->user_participates($user)){
-            $res = "true";
+        if($this->validate_url()){
+            $res = "false";
+            $template = Template::get_template_by_id($_POST["templateId"]);
+            $user = User::get_user_by_id($_POST["userId"]);
+    
+            if($template->user_participates($user)){
+                $res = "true";
+            }
+            echo $res;
+        }else{
+            $this->redirect();
         }
-        echo $res;
+        
     }
 
     public function get_user_weight_service(){
-        $res = 0;
-        $template = Template::get_template_by_id($_POST["templateId"]);
-        $user = User::get_user_by_id($_POST["userId"]);
-
-        $res += $template->get_weight_from_template($user);
-        
-        echo $res;
+        if($this->validate_url()){
+            $res = 0;
+            $template = Template::get_template_by_id($_POST["templateId"]);
+            $user = User::get_user_by_id($_POST["userId"]);
+    
+            $res += $template->get_weight_from_template($user);
+            
+            echo $res;
+        }else {
+            $this->redirect();
+        }
     }
 
     public function delete_template_service(){
         if($this->validate_url()){
-            $template = Template::get_template_by_id($_GET["param1"]);
+            $template = Template::get_template_by_id($_GET["param2"]);
             $template->remove_template();
         }else {
             $this->redirect();
