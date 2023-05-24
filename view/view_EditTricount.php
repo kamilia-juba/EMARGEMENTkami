@@ -292,7 +292,7 @@
 
 
         async function deleteTricount(){
-            await $.get("Tricount/delete_tricount_service" + tricountId)
+            await $.get("Tricount/delete_tricount_service/" + tricountId)
         }
         $(function(){
                 $("#erreurphp").hide();
@@ -406,7 +406,7 @@
                                 }
                             });
                 
-                            +                $("#btnDelete").click(function(event){
+                $("#btnDelete").click(function(event){
                     event.preventDefault();
                     Swal.fire({
                         title: "Are you sure ?",
@@ -418,14 +418,14 @@
                         confirmButtonText: 'Yes, delete it!'
                     }).then((result) => {
                         if(result.isConfirmed){
-                            deleteOperation();
+                            deleteTricount();
                             Swal.fire({
                                 title: 'Deleted',
                                 icon: 'success',
                                 text: 'This tricount has been deleted.'
                             }).then((result) => {
                                 if(result.isConfirmed){
-                                    window.location.href="Tricount/showTricount/" + tricountId;
+                                    window.location.href="Tricount/yourTricounts/" ;
                                 }
                             })
                         }
@@ -535,7 +535,7 @@
             <div class="text-center">
             <a href="Tricount/show_templates/<?=$tricount->id?>" class="btn btn-success col-11">Manage repartition templates</a>
             <p></p>
-            <a href ="Tricount/delete_tricount/<?=$tricount->id?>" class="btn btn-danger col-11">Delete Tricount</a>
+            <a href ="Tricount/delete_tricount/<?=$tricount->id?>" id="btnDelete" class="btn btn-danger col-11">Delete Tricount</a>
             <br>
             </div>
         </footer>
