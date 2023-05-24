@@ -129,8 +129,42 @@
                 return ok;
             }
 
-            function updateDataStatus(title) {
-                data_changed =  title != ini_title;
+            function updateDataStatus() {
+                data_changed = title != ini_title;
+                updateDataStatusCheckboxes();
+            }
+
+            function updateDataStatusCheckboxes() {
+                var data_changed = false;
+                var checkboxes = $(".checkboxParticipant").map(function() {
+                    return this.id;
+                }).get();
+
+                var checkboxChecked = <?= json_encode($checkbox_checked) ?>;
+                var ini_weights = <?= json_encode($weights) ?>;
+
+                for (var i = 0; i < checkboxChecked.length; i++) {
+                    var checked_value = checkboxChecked[i] == "checked" ? true : false;
+                    var checkbox = $("#" + checkboxes[i]);
+                    var weight = $("#" + checkboxes[i] + "_weight");
+                    if (checkbox.prop("checked") !== checked_value || !(weight.val() === ini_weights[i])) {
+                        data_changed = true;
+                    }
+                }
+                return data_changed;
+            }
+
+            
+            function updateDataAfterWeightInput(){
+                var checkboxes = $(".checkboxParticipant").map(function() {
+                    return this.id;
+                }).get();
+                for(var i = 0; i<checkboxes.length; ++i){
+                    var weight = $("#" + checkboxes[i] + "_weight");
+                    weight.on("input", function(){
+                        data_changed = updateDataStatusCheckboxes();
+                    });
+                }
             }
 
             $(function() {
@@ -143,10 +177,13 @@
 
                 handleCheckbox();
                 checkWeight();
+                updateDataAfterWeightInput();
 
                 $(".checkboxParticipant").change(function(){
                         handleCheckbox();
-                    })
+                        data_changed=true;
+                        
+                })
                     
 
                 hide_php_errors();
@@ -209,6 +246,9 @@
                             setTimeout(function() {
                                 validation.revalidateGroup('#checkboxes');
                         }, 100);
+                        });
+                        $(".checkboxParticipant").change(function() {
+                            updateDataStatusCheckboxes();
                         });
                 }
 
