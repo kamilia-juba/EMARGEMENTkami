@@ -50,7 +50,6 @@ class ControllerUser extends MyController {
             $errorsName = array_merge($errorsName,User::validate_full_name($full_name));
             
             $errors = array_merge($errorsEmail, $errorsName, $errorsIban);
-            var_dump(count($errorsEmail));
             if (count($errorsEmail) == 0 && count($errorsName) == 0 && count($errorsIban) == 0) {
                 $user->full_name = $full_name;
                 $user->iban = $iban;

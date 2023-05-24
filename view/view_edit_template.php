@@ -132,8 +132,6 @@
 
             function updateDataStatus(title) {
                 data_changed =  title != ini_title;
-                console.log(title);
-                console.log(ini_title);
             }
 
 
@@ -236,7 +234,6 @@
                 if(sweetalert == "on"){
                     title.on("input", function() {
                         updateDataStatus(title.val());
-                        console.log("je change en " + data_changed);
                     });
                     $(".checkboxParticipant").change(function() {
                         updateDataStatusCheckboxes();
@@ -261,7 +258,6 @@
                     });
 
                     $("#btnDelete").click(function(event){
-                        console.log(data_changed);
                     event.preventDefault();
                     Swal.fire({
                         title: "Are you sure ?",
