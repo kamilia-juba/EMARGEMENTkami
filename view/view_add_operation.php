@@ -24,6 +24,7 @@
             let ini_title = "<?= $title ?>";
             let ini_amount= "<?= $amount ?>";
             let ini_date = "<?= $date ?>" ;
+            let ini_newTemplate = "<?= $save_template_name?>";
 
             function checkTitle(){
                 let ok = true;
@@ -110,7 +111,6 @@
                             okWeights.html("");
                         }
                     }
-                    console.log(weight);
                 })
                 return ok;
             }
@@ -255,7 +255,12 @@
             }
 
             function updateDataStatus(title, amount, date){
-                data_changed = updateDataStatusCheckboxes() || (title != ini_title) || (amount != ini_amount) || (date != ini_date);
+                data_changed = updateDataStatusCheckboxes() 
+                                || (title != ini_title) 
+                                || (amount != ini_amount) 
+                                || (date != ini_date) 
+                                || ($("#newTemplateName").val() != ini_newTemplate)
+                                || ($("#saveTemplateCheck").prop("checked") == true) ;
             }
 
             function updateDataStatusCheckboxes() {
@@ -271,7 +276,6 @@
                     var checked_value = checkboxChecked[i] == "checked" ? true : false;
                     var checkbox = $("#" + checkboxes[i]);
                     var weight = $("#" + checkboxes[i] + "_weight");
-                    console.log(weight.val() === ini_weights[i]);
                     if (checkbox.prop("checked") !== checked_value || !(weight.val() === ini_weights[i])) {
                         data_changed = true;
                     }
@@ -404,7 +408,6 @@
 
                         $("#saveTemplateCheck").change(function() {
                             if($("#saveTemplateCheck").prop("checked") == true){
-                                console.log("yo");
                                 validation
                                     .addField("#newTemplateName", [
                                         {
@@ -453,6 +456,14 @@
                     $(".checkboxParticipant").change(function() {
                         data_changed = updateDataStatusCheckboxes();
                     });
+
+                    $("#saveTemplateCheck").change(function(){
+                        updateDataStatus(title.val(),amount.val(),date.val());
+                    })
+
+                    $("#newTemplateName").on("input",function() {
+                        updateDataStatus(title.val(), amount.val(), date.val());
+                    })
 
                     updateDataAfterWeightInput();
 
