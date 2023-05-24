@@ -58,19 +58,15 @@ class ControllerUser extends MyController {
                 $this->redirect("user","settings"); 
             }
         }
-            
-        // si on est en POST et sans erreurs, on redirige avec un paramètre 'ok'
-        if (count($_POST) > 0 && count($errors) == 0){
-        $this->redirect("user", "edit_profile", "ok");
-        }
 
-        // si param 'ok' dans l'url, on affiche le message de succès
-        if (isset($_GET['param1']) && $_GET['param1'] === "ok"){
-        $success = "Your profile has been successfully updated.";
-        }
-
-        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errorsMail" => $errorsEmail,"errorsName" => $errorsName, "errorsIban" => $errorsIban, "justvalidate" => $justvalidate,
-        "sweetalert" => $sweetalert]);
+        (new View("edit_profile"))->show(["iban" => $iban, 
+                                        "full_name" => $full_name,
+                                        "mail"=>$mail , 
+                                        "errorsMail" => $errorsEmail,
+                                        "errorsName" => $errorsName, 
+                                        "errorsIban" => $errorsIban, 
+                                        "justvalidate" => $justvalidate,
+                                        "sweetalert" => $sweetalert]);
     }
 
     public function change_password() : void {

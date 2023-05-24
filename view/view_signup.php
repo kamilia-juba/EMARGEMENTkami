@@ -43,7 +43,10 @@
 
             }
 
-             $(function(){
+
+            
+            $(function(){
+
                 hide_php_errors();
                 mail = $("#mail");
                 fullName = $("#full_name");
@@ -130,12 +133,14 @@
                             
 
                             .onValidate(async function(event) {
-                                mailAvailable = await $.post("User/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
-                                if (mailAvailable){
-                                    this.showErrors({ '#mail': 'this mail already exist' });
-                                }   
-                             })
 
+                               
+                             titleAvailable = await $.post("user/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
+                                    if(titleAvailable){
+                                        this.showErrors({"#mail" : "Mail not available" });
+                                    }
+                                }
+                            )
                              .onSuccess(function(event) {
                            
                                 event.target.submit(); //par défaut le form n'est pas soumis
@@ -183,9 +188,15 @@
                         }
                     });
                      }
+
+
+                
+                            $("input:text:first").focus();
+
+
                     
-                });
-          </script>
+            });
+        </script>
     </head>
     <body>
         <div class="bg-primary p-3 fs-5 text-light">

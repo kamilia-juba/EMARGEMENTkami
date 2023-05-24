@@ -12,18 +12,26 @@
         <script>
             var justvalidate = "<?= $justvalidate?>";
             let sweetalert = "<?= $sweetalert?>";
+            let ini_mail = "<?=$mail ?>";
+            let ini_fullname = "<?=$full_name ?>";
+            let ini_iban = "<?=$iban ?>";
+            let data_changed = false;
+
+
+            function updateDataStatus(mail, fullname, iban){
+                data_changed = (mail != ini_mail) || (fullname != ini_fullname) || (iban != ini_iban) ;
+                console.log(data_changed);
+            }
 
 
             $(function(){
 
 
 
-                title = $("#title");
-                errTitle = $("#errTitle");
-                errAmount = $("#errAmount");
-                amount=$("#amount");
-                errWeights = $("#errWeights");
-                okWeights = $("#okWeights");
+                fullname = $("#full_name");
+                mail=$("#mail");
+                iban=$("#iban");
+    
 
                 $("#phpMailError").hide();
                 $("#phpNameError").hide();
@@ -95,12 +103,44 @@
                             }   
                         })
                 }
+
+                if(sweetalert=="on"){
+                    mail.on("input", function() {
+                        updateDataStatus(mail.val(), fullname.val(), iban.val());
+                    });
+
+                    fullname.on("input", function() {
+                        updateDataStatus(mail.val(), fullname.val(), iban.val());                    
+                    });
+
+                    iban.on("input", function() {
+                        updateDataStatus(mail.val(), fullname.val(), iban.val());                    
+                    });
+
+                    $("#btnCancel").click(function(event){
+                        if(data_changed){
+                            event.preventDefault();
+                            Swal.fire({
+                                title: 'Unsaved changes !',
+                                text: 'Are you sure you want to leave this form ? Changes you made will not be saved.',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'Leave page'
+                            }).then((result) => {
+                                if(result.isConfirmed){
+                                    window.location.href="user/settings"    ;
+                                }
+                            })
+                        }
+                    });
+                }
             });
         </script>
     </head>
     <body>
         <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
-            <a href="user/settings" class="btn btn-outline-danger">Back</a>
+            <a href="user/settings" class="btn btn-outline-danger" id="btnCancel">Back</a>
             Edit profile
             <button form="changeProfileForm" class="btn btn-primary" type="submit">Save</button>
         </div>

@@ -198,7 +198,7 @@
                         ],{ successMessage: 'Looks good'})
                         
                         .addRequiredGroup('#checkboxes', 'You must select at least 1 participant');
-;
+
                         
                         
                     validation
@@ -253,18 +253,20 @@
         <div class="container">
         <form id="addtemplateForm" action="Tricount/add_template/<?=$tricount->id?>" method="post" onsubmit="return checkAll();">
             Title : 
-            <input class="form-control mb-2" id="title" name="title" type="text" placeholder="Title" value="<?=$title?>">
-            <div class='text-danger' id='errTitle'></div>
-            <div class='text-success' id='okTitle'></div>
-            <?php if (count($errorsTitle) != 0): ?>
-                <div class='text-danger' id="errTitlePhp">
-                    <ul>
-                        <?php foreach ($errorsTitle as $errors): ?>
-                            <li><?= $errors ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
+            <div>
+                <input class="form-control mb-2" id="title" name="title" type="text" placeholder="Title" value="<?=$title?>">
+                <div class='text-danger' id='errTitle'></div>
+                <div class='text-success' id='okTitle'></div>
+                <?php if (count($errorsTitle) != 0): ?>
+                    <div class='text-danger' id="errTitlePhp">
+                        <ul>
+                            <?php foreach ($errorsTitle as $errors): ?>
+                                <li><?= $errors ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+            </div>
             Template items :
                 <div id="checkboxes">
                     <?php for($i = 0; $i < sizeof($participants); ++$i):  ?>
