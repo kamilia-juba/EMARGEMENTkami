@@ -37,7 +37,7 @@
                 if(data){
                     errTitle.html("<p>There's already an existing template with this title. Choose another title</p>");
                 }
-                changeTitleView();
+                changeTitleView(); 
             }
 
             function changeTitleView(){

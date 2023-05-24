@@ -119,6 +119,7 @@ class ControllerTricount extends MyController{
         
         $user = $this->get_user_or_redirect();
         $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
         $errors = [];
         $success = "";
         $participants = [];
@@ -166,7 +167,8 @@ class ControllerTricount extends MyController{
                                             "errorsTitle"=>$errorsTitle,
                                             "subs_json"=>$subs_json,
                                             "not_subs_json"=>$not_subs_json,
-                                            "justvalidate" => $justvalidate
+                                            "justvalidate" => $justvalidate,
+                                            "sweetalert" => $sweetalert
                                         ]);
         }
         else{
@@ -395,6 +397,16 @@ class ControllerTricount extends MyController{
                 $this->redirect();
             }
         } else {
+            $this->redirect();
+        }
+    }
+
+    public function delete_tricount_service(){
+        $user = $this->get_user_or_redirect();
+        if($this->validate_url()){
+            $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
+            $tricount -> delete_tricount($user);
+        }else{
             $this->redirect();
         }
     }

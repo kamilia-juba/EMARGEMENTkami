@@ -8,15 +8,17 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css” />
-        <link rel="stylesheet" href="https://kit.fontawesome.com/991f3da7c3.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://kit.fontawesome.com/991f3da7c3.js" crossorigin="anonymous">
         <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
         <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/sweetalert2@11.js"></script>
         <script>
            
 
              var justvalidate = "<?= $justvalidate?>";
+             let mailAvailable ;
 
              function hide_php_errors(){
                  $("#errorEmail").hide();
@@ -25,6 +27,14 @@
                  $("#ErrorPasswordConfirme").hide();
                 
              }
+
+             function confirmPasswordRule(value) {
+  // Get the value of the "Password" field
+  var passwordValue = document.querySelector('#password').value;
+  
+  // Perform the validation by comparing the values
+  return value === passwordValue;
+}
              $(function(){
                 hide_php_errors();
 
@@ -104,21 +114,16 @@
                                 
                             ],{ successMessage: 'Looks good !' })  
                             
-                            validation
-                            .addField('#confirm_password', [
-                                {
-                                    rule: 'required',
-                                    errorMessage: 'Confirm Password is required'
-                                },
-                                {
-                                    rule: 'equals',
-                                    value: document.querySelector('#password').value,
-                                    errorMessage: 'Confirm Password must match Password'
-                                }
-                            ], { successMessage: 'Looks good !' });
+                            
 
+                            .onValidate(async function(event) {
+                                titleAvailable = await $.post("user/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
+
+                                }
+                            )}
                             $("input:text:first").focus();
-                    }
+
+                    
                 });
           </script>
     </head>
@@ -179,7 +184,7 @@
                 </div>
                 <div class="input-group mb-3 mt-3">
                     <span class="input-group-text" ><i class="fa-solid fa-lock"></i></span>
-                    <input class="form-control" id="password_confirm" name="password_confirm" type="password"  value="<?= $password_confirm ?>" placeholder="Confirm your password" >
+                    <input class="form-control" id="passwordConfirm" name="password_confirm" type="password"  value="<?= $password_confirm ?>" placeholder="Confirm your password" >
                 </div>
                 <?php if (count($errorsPasswordConfirm) != 0): ?>
                     <div id="ErrorPasswordConfirme" class='text-danger'>      

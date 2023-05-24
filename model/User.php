@@ -270,4 +270,6 @@ class User extends Model {
         $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
         return $errors;
     }
+
+
 }

@@ -10,6 +10,7 @@
     <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
     <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
     <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+    <script src="lib/sweetalert2@11.js"></script>
     <script>
         let title ;
         let errorTitle;
@@ -19,7 +20,7 @@
         
         let subsJson = <?=$subs_json?>;
         let notSubJson = <?=$not_subs_json?>;
-        
+        let sweetalert = "<?= $sweetalert?>";
         let targetSubToAdd;
         let targetSubToDelete;
 
@@ -29,6 +30,9 @@
         
         let selectNotSubs;
 
+        let ini_title = "<?= $title ?>";
+        let ini_description = "<?= $description ?>";
+        
         var justvalidate = "<?= $justvalidate?>";
         let titleAvailable;
 
@@ -285,48 +289,24 @@
             });
         }
 
-      /*  $(function(){
-            $("#erreurphp").hide();
-            listOfSubs = $('#subscription');
-
-            title = $("#title");
-            originalTitle=title.val();
-            errorTitle = $("#errorTitle");
-            description = $("#description");
-            errorDescription = $("#errorDescription");
 
 
-            if(title.val()!=""){
-                    checkTitle();
-            }
-
-            hideTitles();
-
-
-            title.bind("input", checkTitle);
-            title.bind("input", checkTitleExists);
-            description.bind("input", checkDescription);
-            displaySubs();
-            displayNotSubs();
-            hideSelectNotSubsIfNonSubJsonIsEmty();
-            $("input:text:first").focus();
-
-            $('#saveButton').attr('onclick', 'saveAll()');
-
-        });
-*/
+        async function deleteTricount(){
+            await $.get("Tricount/delete_tricount_service" + tricountId)
+        }
         $(function(){
                 $("#erreurphp").hide();
                 hideTitles();
-
+                title = $("#title");
+                originalTitle=title.val();
+                errorTitle = $("#errorTitle");
+                description = $("#description");
+                errorDescription = $("#errorDescription");
+             
                 if (justvalidate == "off") {
                     listOfSubs = $('#subscription');
 
-                    title = $("#title");
-                    originalTitle=title.val();
-                    errorTitle = $("#errorTitle");
-                    description = $("#description");
-                    errorDescription = $("#errorDescription");
+
 
 
                     if(title.val()!=""){
@@ -401,6 +381,59 @@
 
                     $("input:text:first").focus();
                 }
+                if(sweetalert == "on"){
+                            title.on("input", function() {
+                                data_changed = (title.val() != ini_title) || (description.val() != ini_description);
+                            });
+
+                        $('#cancelBtn').click(function() {
+                            if(data_changed){
+                                event.preventDefault()
+                                Swal.fire({
+                                    title: 'Unsaved changes !',
+                                    text: 'Are you sure you want to leave this form ? Changes you made will not be saved.',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Leave page',
+                                    cancelButtonText: 'cancel'
+                               }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = "Tricount/yourTricounts";
+                                        }
+                                    });
+                                }
+                            });
+                
+                            +                $("#btnDelete").click(function(event){
+                    event.preventDefault();
+                    Swal.fire({
+                        title: "Are you sure ?",
+                        icon: 'warning',
+                        html: 'Do you really want to delete this tricount ?<br><br> This process cannot be undone.',
+                        showCancelButton: true,
+                        cancelButtonColor: '#d33',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if(result.isConfirmed){
+                            deleteOperation();
+                            Swal.fire({
+                                title: 'Deleted',
+                                icon: 'success',
+                                text: 'This tricount has been deleted.'
+                            }).then((result) => {
+                                if(result.isConfirmed){
+                                    window.location.href="Tricount/showTricount/" + tricountId;
+                                }
+                            })
+                        }
+                    })
+                })
+                }
+
+
             });
 
     </script>
@@ -410,7 +443,7 @@
 
 
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">
-        <a href="Tricount/showTricount/<?=$tricount->id?>/" class="btn btn-outline-danger">Back</a>
+        <a href="Tricount/showTricount/<?=$tricount->id?>/" id="cancelBtn" class="btn btn-outline-danger">Back</a>
         <?=$tricount->title?> &#8594; Edit
         <input id=saveButton type="submit" class="btn btn-primary" form="editTricountForm" name="saveButton" value="Save">
     </div>

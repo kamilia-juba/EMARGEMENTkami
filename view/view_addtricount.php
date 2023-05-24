@@ -111,11 +111,14 @@
 
             $(function(){
                 hide_php_errors();
+
+                title = $("#title");
+                errorTitle = $("#errorTitle");
+                description = $("#description");
+                errorDescription = $("#errorDescription");
+
                 if (justvalidate == "off") {
-                    title = $("#title");
-                    errorTitle = $("#errorTitle");
-                    description = $("#description");
-                    errorDescription = $("#errorDescription");
+
 
                     title.bind("input", checkTitle);
                     title.bind("input", checkTitleExists);
@@ -190,14 +193,14 @@
                                 if(data_changed){
                                     event.preventDefault()
                                     Swal.fire({
-                                        title: 'Confirmation',
-                                        text: 'Êtes-vous sûr de vouloir annuler ?',
-                                        icon: 'question',
+                                        title: 'Unsaved changes !',
+                                        text: 'Are you sure you want to leave this form ? Changes you made will not be saved.',
+                                        icon: 'warning',
                                         showCancelButton: true,
                                         confirmButtonColor: '#3085d6',
                                         cancelButtonColor: '#d33',
-                                        confirmButtonText: 'Oui',
-                                        cancelButtonText: 'Non'
+                                        confirmButtonText: 'Leave page',
+                                        cancelButtonText: 'cancel'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
                                             window.location.href = "Tricount/yourTricounts";
