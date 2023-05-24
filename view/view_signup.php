@@ -29,13 +29,14 @@
              }
 
              function confirmPasswordRule(value) {
-  // Get the value of the "Password" field
-  var passwordValue = document.querySelector('#password').value;
-  
-  // Perform the validation by comparing the values
-  return value === passwordValue;
-}
-             $(function(){
+                // Get the value of the "Password" field
+                var passwordValue = document.querySelector('#password').value;
+                
+                // Perform the validation by comparing the values
+                return value === passwordValue;
+            }
+            
+            $(function(){
                 hide_php_errors();
 
                 if(justvalidate =="on"){
@@ -118,14 +119,17 @@
 
                             .onValidate(async function(event) {
                                 titleAvailable = await $.post("user/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
-
+                                    if(titleAvailable){
+                                        this.showErrors({"#mail" : "Mail not available" });
+                                    }
                                 }
-                            )}
+                            )
+                }
                             $("input:text:first").focus();
 
                     
-                });
-          </script>
+            });
+        </script>
     </head>
     <body>
         <div class="bg-primary p-3 fs-5 text-light">
