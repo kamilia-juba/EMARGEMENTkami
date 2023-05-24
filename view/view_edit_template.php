@@ -220,7 +220,6 @@
                         ],{ successMessage: 'Looks good'})
                         
                         .addRequiredGroup('#checkboxes', 'You must select at least 1 participant');
-;
                         
                         
                     validation
@@ -314,19 +313,19 @@
                 <?php endif; ?>
                 Template items :
                 <div id="checkboxes">
-                <?php for($i = 0; $i<sizeof($participants_and_weights);++$i){  ?>
+                <?php for($i = 0; $i<sizeof($participants);++$i){  ?>
                     <div class="input-group mb-2 mt-2">
                         <span class="form-control" style="background-color: #E9ECEF">
                             <input type="checkbox"
                                 class="checkboxParticipant"
                                 name="checkboxParticipants[]" 
-                                id="<?=$participants_and_weights[$i][0]->id?>" 
-                                value ="<?=$participants_and_weights[$i][0]->id?>" 
+                                id="<?=$participants[$i]->id?>" 
+                                value ="<?=$participants[$i]->id?>" 
                                 <?= $checkbox_checked[$i] ?>
                             >
                         </span>
-                        <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants_and_weights[$i][0]->full_name?></span>
-                        <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participants_and_weights[$i][0]->id?>_weight" value="<?=$participants_and_weights[$i][1]?>" oninput="if(this.value < 0) this.value = 0">
+                        <span class="input-group-text w-75" style="background-color: #E9ECEF"><?=$participants[$i]->full_name?></span>
+                        <input class="form-control" type="number" min="0" name="weight[]" id="<?=$participants[$i]->id?>_weight" value="<?=$weights[$i]?>" oninput="if(this.value < 0) this.value = 0">
                     </div>
                 <?php } ?> 
                 <div class='text-danger' id='errWeights'></div>
