@@ -316,8 +316,6 @@ class ControllerTricount extends MyController{
                     $checkboxes = $_POST["checkboxParticipants"];
                     $template = Template::add_repartition_template($title,$tricount);
                     $weight = $_POST["weight"];
-                    var_dump($checkboxes);
-                    var_dump($weight);
                     for($i=0; $i<sizeof($participants); ++$i){
                         for($j = 0; $j<sizeof($checkboxes);++$j){
                             if($participants[$i]->id==$checkboxes[$j]){

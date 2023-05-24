@@ -97,9 +97,6 @@ class ControllerOperation extends Mycontroller{
                 $errorsAmount =$errors["errorsAmount"];
                 $errorsCheckboxes= $errors["errorsCheckboxes"];
                 $errorsSaveTemplate = $errors["errorsSaveTemplate"];
-
-                var_dump($_POST["checkboxParticipants"]);
-
                 
 
                 if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
