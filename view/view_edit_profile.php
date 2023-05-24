@@ -42,9 +42,8 @@
                     errorFieldCssClass: 'is-invalid',
                     successFieldCssClass: 'is-valid',
                 });
-                
-                validation
-                            .addField('#mail',[
+                    validation
+                        .addField('#mail',[
                             {
                                 rule: 'required',
                                 errorMessage: 'mail is required'
@@ -55,39 +54,47 @@
                                 errorMessage: 'Veuillez saisir une adresse e-mail valide au format example@domaine.com.'
                             }
                         ], { successMessage: 'Looks good !' })
-                        validation
-                            .addField('#full_name',[
-                                {
-                                    rule: 'required',
-                                    errorMessage: 'Name is required'
-                                },
-                                {
-                                    rule: 'minLength',
-                                    value: 3,
-                                    errorMessage: 'Minimum 3 characters'
-                                },
-                                {
-                                    rule: 'maxLength',
-                                    value: 16,
-                                errorMessage: 'Maximum 16 characters'
-                                },
-                            ],{ successMessage: 'Looks good !' })
-                        validation
-                            .addField('#iban',[
-                                {
+                    validation
+                        .addField('#iban',[
+                            {
+                            rule: 'required',
+                            errorMessage: 'mail is required'
+                        },
+                        {   
+                            rule: 'customRegexp',
+                            value : /^(?=.{5,34}$)[A-Z]{2}\d{2}[A-Za-z0-9]{1,30}$/,
+                            errorMessage: 'IBAN saisi n\'est pas valide. Veuillez vérifier et entrer un IBAN correct.'
+                        }
+                        ],{ successMessage: 'Looks good !' })
+                    validation
+                        .addField('#full_name',[
+                            {
                                 rule: 'required',
-                                errorMessage: 'mail is required'
+                                errorMessage: 'Name is required'
                             },
                             {
-                                rule: 'customRegexp',
-                                value : /^(?=.{5,34}$)[A-Z]{2}\d{2}[A-Za-z0-9]{1,30}$/,
-                                errorMessage: 'IBAN saisi n\'est pas valide. Veuillez vérifier et entrer un IBAN correct.'
-                            }
-                            ],{ successMessage: 'Looks good !' })
+                                rule: 'minLength',
+                                value: 3,
+                                errorMessage: 'Minimum 3 characters'
+                            },
+                            {
+                                rule: 'maxLength',
+                                value: 16,
+                            errorMessage: 'Maximum 16 characters'
+                            },
+                        ],{ successMessage: 'Looks good !' })
+
+                        validation
+                        .onSuccess(function(event) {
+                            event.target.submit();
+                        });
+                        $("input[name='weight[]']").on('input change', function(){
+                            setTimeout(function() {
+                                validation.revalidateGroup('#checkboxes');
+                        }, 100);
+                    });
                 }
             });
-
-
         </script>
     </head>
     <body>

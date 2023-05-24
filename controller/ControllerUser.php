@@ -24,12 +24,13 @@ class ControllerUser extends MyController {
         //gestion de l'édition du profil
     public function edit_profile() : void {
         $user = $this->get_user_or_redirect();
+        $mail = '';
+        $full_name='';
+        $iban='';
         $errors = [];
-        $errorsMail = [];
+        $errorsEmail = [];
         $errorsName = [];
         $errorsIban = [];
-
-        $success = "";
 
         $full_name=$user->full_name;
         $iban=$user->iban;
@@ -39,29 +40,23 @@ class ControllerUser extends MyController {
         $sweetalert = $this->get_sweetalert_conf();
 
 
-        if (isset($_POST['full_name']) || isset($_POST['IBAN']) || isset($POST['mail'] )) {
+        if (isset($_POST['full_name']) || isset($_POST['iban']) || isset($POST['mail'] )) {
             $full_name = Tools::sanitize($_POST['full_name']);
             $iban = Tools::sanitize($_POST['iban']);
             $mail = Tools::sanitize($_POST['mail']);
-        
-            $errorsIban = User::validate_IBAN($iban);
-            $errorsName = User::validate_full_name($full_name);
-            if($user->mail!=$mail){
-                $errorsMail = User::validate_mail($mail);
-            }
 
-            $errors = array_merge($errors, $errorsName);
-            $errors = array_merge($errors, $errorsIban);
-            $errors = array_merge($errors, $errorsMail);
-
-
-            if (count($errors) == 0) { 
+            $errorsEmail = array_merge($errorsEmail,User::validate_unicity($mail));
+            $errorsEmail = array_merge($errorsEmail, User::validate_mail($mail));
+            $errorsName = array_merge($errorsName,User::validate_full_name($full_name));
+            
+            $errors = array_merge($errorsEmail, $errorsName, $errorsIban);
+            var_dump(count($errorsEmail));
+            if (count($errorsEmail) == 0 && count($errorsName) == 0 && count($errorsIban) == 0) {
                 $user->full_name = $full_name;
                 $user->iban = $iban;
                 $user->mail=$mail;
                 $user->persist();
-                $this->redirect("user","settings");
-                    
+                $this->redirect("user","settings"); 
             }
         }
             
@@ -75,7 +70,7 @@ class ControllerUser extends MyController {
         $success = "Your profile has been successfully updated.";
         }
 
-        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errorsMail" => $errorsMail,"errorsName" => $errorsName, "errorsIban" => $errorsIban, "success" => $success, "justvalidate" => $justvalidate,
+        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errorsMail" => $errorsEmail,"errorsName" => $errorsName, "errorsIban" => $errorsIban, "justvalidate" => $justvalidate,
         "sweetalert" => $sweetalert]);
     }
 
