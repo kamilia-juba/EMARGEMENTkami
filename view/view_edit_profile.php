@@ -44,56 +44,46 @@
                 });
                 
                 validation
-                        .addField('#full_name', [
+                            .addField('#mail',[
                             {
                                 rule: 'required',
-                                errorMessage: 'Title cannot be empty'
+                                errorMessage: 'mail is required'
                             },
                             {
-                                rule: 'minLength',
-                                value: 3,
-                                errorMessage: 'Title must be at least 3 characters'
-                            },
-                            {
-                                rule:'maxLength',
-                                value: 256,
-                                errorMessage: "Title can't have more than 256 characters"
-                            },
-                        ],{ successMessage: 'Looks good'})
-
-                        .addField('#mail', [
-                            {
+                                rule: 'customRegexp',
+                                value : /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,
+                                errorMessage: 'Veuillez saisir une adresse e-mail valide au format example@domaine.com.'
+                            }
+                        ], { successMessage: 'Looks good !' })
+                        validation
+                            .addField('#full_name',[
+                                {
+                                    rule: 'required',
+                                    errorMessage: 'Name is required'
+                                },
+                                {
+                                    rule: 'minLength',
+                                    value: 3,
+                                    errorMessage: 'Minimum 3 characters'
+                                },
+                                {
+                                    rule: 'maxLength',
+                                    value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                                },
+                            ],{ successMessage: 'Looks good !' })
+                        validation
+                            .addField('#iban',[
+                                {
                                 rule: 'required',
-                                errorMessage: 'Title cannot be empty'
+                                errorMessage: 'mail is required'
                             },
                             {
-                                rule: 'minLength',
-                                value: 3,
-                                errorMessage: 'Title must be at least 3 characters'
-                            },
-                            {
-                                rule:'maxLength',
-                                value: 256,
-                                errorMessage: "Title can't have more than 256 characters"
-                            },
-                        ],{ successMessage: 'Looks good'})
-
-                        .addField('#iban', [
-                            {
-                                rule: 'required',
-                                errorMessage: 'Title cannot be empty'
-                            },
-                            {
-                                rule: 'minLength',
-                                value: 3,
-                                errorMessage: 'Title must be at least 3 characters'
-                            },
-                            {
-                                rule:'maxLength',
-                                value: 256,
-                                errorMessage: "Title can't have more than 256 characters"
-                            },
-                        ],{ successMessage: 'Looks good'})
+                                rule: 'customRegexp',
+                                value : /^(?=.{5,34}$)[A-Z]{2}\d{2}[A-Za-z0-9]{1,30}$/,
+                                errorMessage: 'IBAN saisi n\'est pas valide. Veuillez vérifier et entrer un IBAN correct.'
+                            }
+                            ],{ successMessage: 'Looks good !' })
                 }
             });
 
