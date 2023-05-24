@@ -291,7 +291,7 @@
             <input type="submit" class="btn btn-primary" value="Save" form="addtemplateForm">
         </div> 
         <div class="container">
-        <form id="addtemplateForm" action="Tricount/add_template/<?=$tricount->id?>" method="post" onsubmit="return checkAll();">
+        <form id="addtemplateForm" action="Tricount/add_template/<?=$tricount->id?>" method="post">
             Title : 
             <div>
                 <input class="form-control mb-2" id="title" name="title" type="text" placeholder="Title" value="<?=$title?>">
