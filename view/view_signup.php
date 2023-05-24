@@ -17,9 +17,15 @@
         <script>
            
 
+           let mail, fullName, iban, password,passwordConfirm;
              var justvalidate = "<?= $justvalidate?>";
              let mailAvailable ;
-
+             let sweetalert = "<?= $sweetalert?>";
+             let ini_mail = "<?= $mail?>";
+             let ini_fullName = "<?= $full_name?>";
+             let ini_iban = "<?= $IBAN?>";
+             let ini_password = "<?= $password?>";
+             let ini_passwordConfirm = "<?= $password_confirm?>";
              function hide_php_errors(){
                  $("#errorEmail").hide();
                  $("#ErrorName").hide();
@@ -27,17 +33,26 @@
                  $("#ErrorPasswordConfirme").hide();
                 
              }
+             function updateDataStatus(mail, fullName, iban, password,passwordConfirm){
+                data_changed =  
+                                 (mail != ini_mail) 
+                                || (fullName != ini_fullName) 
+                                || (iban != ini_iban) 
+                                || (password != ini_password) 
+                                || (passwordConfirm != ini_passwordConfirm) 
 
-             function confirmPasswordRule(value) {
-                // Get the value of the "Password" field
-                var passwordValue = document.querySelector('#password').value;
-                
-                // Perform the validation by comparing the values
-                return value === passwordValue;
             }
+
+
             
             $(function(){
+
                 hide_php_errors();
+                mail = $("#mail");
+                fullName = $("#full_name");
+                iban = $("#IBAN");
+                password=$("#password");
+                passwordConfirm=$("#passwordConfirm");
 
                 if(justvalidate =="on"){
                     const validation = new JustValidate('#signupForm', {
@@ -118,14 +133,66 @@
                             
 
                             .onValidate(async function(event) {
-                                titleAvailable = await $.post("user/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
+
+                               
+                             titleAvailable = await $.post("user/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
                                     if(titleAvailable){
                                         this.showErrors({"#mail" : "Mail not available" });
                                     }
                                 }
                             )
-                }
+                             .onSuccess(function(event) {
+                           
+                                event.target.submit(); //par défaut le form n'est pas soumis
+                             })
+                             $("input:text:first").focus();
+                     }
+
+                     if(sweetalert =="on"){
+                        mail.on("input", function() {
+                             updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                         fullName.on("input", function(){
+                            updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                        iban.on("input", function(){
+                            updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                        password.on("input", function(){
+                            updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                        passwordConfirm.on("input", function(){
+                            updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                        
+                    $("#btnCancel").click(function(event){
+                        if(data_changed){
+                            event.preventDefault();
+                            Swal.fire({
+                                title: 'Unsaved changes !',
+                                text: 'Are you sure you want to leave this form ? Changes you made will not be saved.',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'Leave page'
+                            }).then((result) => {
+                                if(result.isConfirmed){
+                                    window.location.href="Main/index/" ;
+                                }
+                            })
+                        }
+                    });
+                     }
+
+
+                
                             $("input:text:first").focus();
+
 
                     
             });
@@ -201,7 +268,7 @@
                 <?php endif; ?>
                 
                 <input type="submit" class="btn btn-primary w-100 mb-3" value="Sign Up" form="signupForm"><br>
-                <a href="" class="btn btn-outline-danger w-100 mb-3">Back</a>
+                <a href="" id="btnCancel" class="btn btn-outline-danger w-100 mb-3">Back</a>
                    
                 
             </form>

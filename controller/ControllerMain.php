@@ -9,7 +9,6 @@ class ControllerMain extends MyController {
     //sinon, produit la vue d'accueil.
     public function index() : void {
         $justvalidate = $this->get_justvalidate_conf();
-
         if ($this->user_logged()) {
             $this->redirect("Tricount","yourTricounts");
         } else {
@@ -49,6 +48,7 @@ class ControllerMain extends MyController {
             $password = '';
             $password_confirm = '';
             $justvalidate = $this->get_justvalidate_conf();
+            $sweetalert = $this->get_sweetalert_conf();
             $errors = [];
             $errorsEmail = [];
             $errorsName = [];
@@ -91,7 +91,8 @@ class ControllerMain extends MyController {
                                         "errorsIban" => $errorsIban,
                                         "errorsPasswordConfirm" => $errorsPasswordConfirm,
                                         "errors" => $errors,
-                                        "justvalidate" => $justvalidate]);
+                                        "justvalidate" => $justvalidate,
+                                        "sweetalert" => $sweetalert]);
         }
         
     }
