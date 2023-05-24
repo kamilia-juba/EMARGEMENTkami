@@ -244,7 +244,7 @@ class ControllerTemplate extends Mycontroller{
 
     public function delete_template_service(){
         if($this->validate_url()){
-            $template = Template::get_template_by_id($_GET["param1"]);
+            $template = Template::get_template_by_id($_GET["param2"]);
             $template->remove_template();
         }else {
             $this->redirect();
