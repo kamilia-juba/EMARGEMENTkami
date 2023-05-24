@@ -5,7 +5,11 @@ require_once 'framework/View.php';
 require_once 'controller/MyController.php';
 
 class ControllerUser extends MyController {
-    public function index() : void {}
+    public function index() : void {
+        $this->get_user_or_redirect();
+
+        $this->redirect("Tricount", "yourTricounts");
+    }
 
     public function settings() : void {
         if (!$this->user_logged()) {
@@ -21,19 +25,38 @@ class ControllerUser extends MyController {
     public function edit_profile() : void {
         $user = $this->get_user_or_redirect();
         $errors = [];
+        $errorsMail = [];
+        $errorsName = [];
+        $errorsIban = [];
+
         $success = "";
 
+        $full_name=$user->full_name;
+        $iban=$user->iban;
+        $mail=$user->mail;
+        
 
-        if (isset($_POST['full_name']) || isset($_POST['IBAN']) ) {
+
+        if (isset($_POST['full_name']) || isset($_POST['IBAN']) || isset($POST['mail'] )) {
             $full_name = Tools::sanitize($_POST['full_name']);
             $iban = Tools::sanitize($_POST['iban']);
+            $mail = Tools::sanitize($_POST['mail']);
         
-            $errors = array_merge($errors, User::validate_IBAN($iban));
-            $errors = array_merge($errors, User::validate_full_name($full_name));
+            $errorsIban = User::validate_IBAN($iban);
+            $errorsName = User::validate_full_name($full_name);
+            if($user->mail!=$mail){
+                $errorsMail = User::validate_mail($mail);
+            }
+
+            $errors = array_merge($errors, $errorsName);
+            $errors = array_merge($errors, $errorsIban);
+            $errors = array_merge($errors, $errorsMail);
+
 
             if (count($errors) == 0) { 
                 $user->full_name = $full_name;
                 $user->iban = $iban;
+                $user->mail=$mail;
                 $user->persist();
                 $this->redirect("user","settings");
                     
@@ -50,7 +73,7 @@ class ControllerUser extends MyController {
         $success = "Your profile has been successfully updated.";
         }
 
-        (new View("edit_profile"))->show(["iban" => $user->iban, "full_name" => $user->full_name , "errors" => $errors, "success" => $success]);
+        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errorsMail" => $errorsMail,"errorsName" => $errorsName, "errorsIban" => $errorsIban, "success" => $success]);
     }
 
     public function change_password() : void {
@@ -61,17 +84,19 @@ class ControllerUser extends MyController {
         $password = '';
         $password_confirm = '';
 
-        if (isset($_POST['password']) && isset($_POST['password_confirm'])) {
+        if (isset($_POST['password']) && isset($_POST['password_confirm']) && isset($_POST['actual_password'])) {
            
+            $actual_password = $_POST['actual_password'];
             $password = $_POST['password'];
             $password_confirm = $_POST['password_confirm'];
 
             $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
+            $errors = array_merge($errors, $user->validate_password_unicity($actual_password,$password));
 
             if (count($errors) == 0) { 
-                $user->hashed_password =$password;
+                $user->hashed_password = Tools::my_hash($password);
                 $user->persist(); //sauve l'utilisateur
-                $success = "Password updated succefully";
+                $this->redirect("User","settings");
             }
         }
         (new View("change_password"))->show([ "errors" => $errors, "success" => $success]);

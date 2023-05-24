@@ -1,0 +1,13 @@
+.invalid-feedback {
+    color: red;
+    position: relative;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.valid-feedback {
+    color: green;
+    position: relative;
+    margin-bottom: 5px;
+    display: block;
+}
