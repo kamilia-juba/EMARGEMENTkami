@@ -121,6 +121,7 @@ class ControllerTemplate extends Mycontroller{
                                                  "errorsCheckboxes" => $errorsCheckboxes,
                                                  "template"=>$template,
                                                  "tricount"=>$tricount,
+                                                 "tricountId"=>$tricount->id,
                                                  "user"=>$user,
                                                  "title"=>$title,
                                                  "checkbox_checked" => $checkbox_checked,

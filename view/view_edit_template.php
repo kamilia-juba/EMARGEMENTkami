@@ -17,7 +17,8 @@
             let checkboxes_count;
             let template_name_available;
             let data_changed = false;
-            let ini_title = "<?= $title ?>";
+            let ini_title = "<?=$title?>";
+            let tricountId = "<?=$tricountId?>";
 
 
             function checkTitle(){
@@ -129,30 +130,14 @@
                 return ok;
             }
 
-            function updateDataStatus(title){
-                data_changed = updateDataStatusCheckboxes() 
-                                || (title != ini_title);
+            function updateDataStatus(title) {
+                data_changed =  title != ini_title;
+                console.log(title);
+                console.log(ini_title);
             }
 
-            function updateDataStatusCheckboxes() {
-                var data_changed = false;
-                var checkboxes = $(".checkboxParticipant").map(function() {
-                    return this.id;
-                }).get();
 
-                var checkboxChecked = <?= json_encode($checkbox_checked) ?>;
-                var ini_weights = <?= json_encode($weights) ?>;
-
-                for (var i = 0; i < checkboxChecked.length; i++) {
-                    var checked_value = checkboxChecked[i] == "checked" ? true : false;
-                    var checkbox = $("#" + checkboxes[i]);
-                    var weight = $("#" + checkboxes[i] + "_weight");
-                    if (checkbox.prop("checked") !== checked_value || !(weight.val() === ini_weights[i])) {
-                        data_changed = true;
-                    }
-                }
-                return data_changed;
-            }
+            
 
             function updateDataAfterWeightInput(){
                 var checkboxes = $(".checkboxParticipant").map(function() {
@@ -166,7 +151,7 @@
                 }
             }
 
-            async function deleteOperation(){
+            async function deleteTemplate(){
             await $.get("Template/delete_template_service/" + templateId);
         }
 
@@ -176,6 +161,7 @@
                 okTitle = $("#okTitle");
                 errWeights = $("#errWeights");
                 okWeights = $("#okWeights");
+                data_changed=false;
 
                 handleCheckbox();
                 checkWeight();
@@ -183,6 +169,7 @@
                 $(".checkboxParticipant").change(function(){
                         handleCheckbox();
                     })
+                    
 
                 hide_php_errors();
 
@@ -193,7 +180,7 @@
                     title.bind("input", checkTitleExists);
 
 
-                    if(title.val()!="" || amount.val()!=""){
+                    if(title.val()!="" || title.val()!=""){
                         checkTitle();
                         checkAmount();
                     }
@@ -231,7 +218,7 @@
                                 errorMessage: "Title can't have more than 256 characters"
                             },
                         ],{ successMessage: 'Looks good'});
-
+                        
                         
                     validation
                         .onSuccess(function(event) {
@@ -246,12 +233,12 @@
 
                 if(sweetalert == "on"){
                     title.on("input", function() {
-                        updateDataStatus(title.val(), amount.val(), date.val());
+                        updateDataStatus(title.val());
+                        console.log("je change en " + data_changed);
                     });
                     $(".checkboxParticipant").change(function() {
-                        data_changed = updateDataStatusCheckboxes();
+                        updateDataStatusCheckboxes();
                     });
-                    updateDataAfterWeightInput();
 
                     $("#btnCancel").click(function(event){
                         if(data_changed){
@@ -265,13 +252,14 @@
                                 confirmButtonText: 'Leave page'
                             }).then((result) => {
                                 if(result.isConfirmed){
-                                    window.location.href="Tricount/showTricount/" + tricountId;
+                                    window.location.href="Tricount/show_templates/" + tricountId;
                                 }
                             })
                         }
                     });
 
                     $("#btnDelete").click(function(event){
+                        console.log(data_changed);
                     event.preventDefault();
                     Swal.fire({
                         title: "Are you sure ?",
@@ -290,7 +278,7 @@
                                 text: 'This template has been deleted.'
                             }).then((result) => {
                                 if(result.isConfirmed){
-                                    window.location.href="Tricount/showTricount/" + tricountId;
+                                    window.location.href="Tricount/show_templates/" + tricountId;
                                 }
                             })
                         }
