@@ -8,15 +8,18 @@ class ControllerMain extends MyController {
         //si l'utilisateur est connecté, redirige vers son profil.
     //sinon, produit la vue d'accueil.
     public function index() : void {
+        $justvalidate = $this->get_justvalidate_conf();
+
         if ($this->user_logged()) {
             $this->redirect("Tricount","yourTricounts");
         } else {
-            (new View("login"))->show(["mail" => "", "password" => "", "errors" => $errors = []]);
+            (new View("login"))->show(["mail" => "", "password" => "", "errors" => $errors = [],"justvalidate" => $justvalidate]);
         }
     }
 
     //gestion de la connexion d'un utilisateur
     public function login() : void {
+        
         if($this->user_logged() || (isset($_GET["param1"]) && $_GET["param1"] != "")){
             $this->redirect("Tricount","yourTricounts");
         }else {
