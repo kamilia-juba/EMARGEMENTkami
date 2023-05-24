@@ -10,6 +10,117 @@
         <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css” />
         <link rel="stylesheet" href="https://kit.fontawesome.com/991f3da7c3.css" crossorigin="anonymous">
         <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
+        <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+        <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
+        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script>
+           
+
+             var justvalidate = "<?= $justvalidate?>";
+
+             function hide_php_errors(){
+                 $("#errorEmail").hide();
+                 $("#ErrorName").hide();
+                 $("#errorIban").hide();
+                 $("#ErrorPasswordConfirme").hide();
+                
+             }
+             $(function(){
+                hide_php_errors();
+
+                if(justvalidate =="on"){
+                    const validation = new JustValidate('#signupForm', {
+                        validateBeforeSubmitting: true,
+                            lockForm: true,
+                        focusInvalidField: false,
+                            successLabelCssClass: 'valid-feedback',
+                            errorLabelCssClass: 'invalid-feedback',
+                            errorFieldCssClass: 'is-invalid',
+                            successFieldCssClass: 'is-valid',
+                        });
+                        validation
+                            .addField('#mail',[
+                            {
+                                rule: 'required',
+                                errorMessage: 'mail is required'
+                            },
+                            {
+                                rule: 'customRegexp',
+                                value : /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,
+                                errorMessage: 'Veuillez saisir une adresse e-mail valide au format example@domaine.com.'
+                            }
+                        ], { successMessage: 'Looks good !' })
+                        validation
+                            .addField('#full_name',[
+                                {
+                                    rule: 'required',
+                                    errorMessage: 'Name is required'
+                                },
+                                {
+                                    rule: 'minLength',
+                                    value: 3,
+                                    errorMessage: 'Minimum 3 characters'
+                                },
+                                {
+                                    rule: 'maxLength',
+                                    value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                                },
+                            ],{ successMessage: 'Looks good !' })
+                        validation
+                            .addField('#IBAN',[
+                                {
+                                rule: 'required',
+                                errorMessage: 'mail is required'
+                            },
+                            {
+                                rule: 'customRegexp',
+                                value : /^(?=.{5,34}$)[A-Z]{2}\d{2}[A-Za-z0-9]{1,30}$/,
+                                errorMessage: 'IBAN saisi n\'est pas valide. Veuillez vérifier et entrer un IBAN correct.'
+                            }
+                            ],{ successMessage: 'Looks good !' })
+
+                        validation
+                            .addField('#password',[
+                                {
+                                    rule: 'required',
+                                    errorMessage: 'Password is required'
+                                },
+                                {
+                                    rule: 'minLength',
+                                    value: 8,
+                                    errorMessage: 'Minimum 8 characters'
+                                },
+                                {
+                                    rule: 'maxLength',
+                                    value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                                },
+                                {
+                                    rule: 'customRegexp',
+                                    value : /^(?=.*[A-Z])(?=.*\d)(?=.*['\";:,.\/?!\\-]).+$/,
+                                    errorMessage: 'Le mot de passe doit contenir au moins une lettre majuscule, un chiffre et un caractère spécial ' 
+                                }
+                                
+                            ],{ successMessage: 'Looks good !' })  
+                            
+                            validation
+                            .addField('#confirm_password', [
+                                {
+                                    rule: 'required',
+                                    errorMessage: 'Confirm Password is required'
+                                },
+                                {
+                                    rule: 'equals',
+                                    value: document.querySelector('#password').value,
+                                    errorMessage: 'Confirm Password must match Password'
+                                }
+                            ], { successMessage: 'Looks good !' });
+
+                            $("input:text:first").focus();
+                    }
+                });
+          </script>
     </head>
     <body>
         <div class="bg-primary p-3 fs-5 text-light">
@@ -27,7 +138,7 @@
                     <input class="form-control" id="mail" name="mail" type="text"  value="<?= $mail ?>" placeholder="Email" >
                 </div>
                 <?php if (count($errorsEmail) != 0): ?>
-                    <div class='text-danger'>      
+                    <div class='text-danger' id="errorEmail">      
                         <ul>
                             <?php foreach ($errorsEmail as $errors): ?>
                                 <li><?= $errors ?></li>
@@ -40,7 +151,7 @@
                     <input class="form-control" id="full_name" name="full_name" type="text"  value="<?= $full_name ?>" placeholder="Full Name" >
                 </div>
                 <?php if (count($errorsName) != 0): ?>
-                    <div id="phpTitleError" class='text-danger'>      
+                    <div id="ErrorName" class='text-danger'>      
                         <ul>
                             <?php foreach ($errorsName as $errors): ?>
                                 <li><?= $errors ?></li>
@@ -53,7 +164,7 @@
                     <input class="form-control" id="IBAN" name="IBAN" type="text"  value="<?= $IBAN ?>" placeholder="IBAN" >
                 </div>
                 <?php if (count($errorsIban) != 0): ?>
-                    <div id="phpTitleError" class='text-danger'>      
+                    <div id="errorIban" class='text-danger'>      
                         <ul>
                             <?php foreach ($errorsIban as $errors): ?>
                                 <li><?= $errors ?></li>
@@ -71,7 +182,7 @@
                     <input class="form-control" id="password_confirm" name="password_confirm" type="password"  value="<?= $password_confirm ?>" placeholder="Confirm your password" >
                 </div>
                 <?php if (count($errorsPasswordConfirm) != 0): ?>
-                    <div id="phpTitleError" class='text-danger'>      
+                    <div id="ErrorPasswordConfirme" class='text-danger'>      
                         <ul>
                             <?php foreach ($errorsPasswordConfirm as $errors): ?>
                                 <li><?= $errors ?></li>

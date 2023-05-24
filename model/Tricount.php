@@ -254,6 +254,16 @@ class Tricount extends Model{
         return !empty($data);
     }
 
+    public static function get_Tricount_By_Title(string $title, User $user){
+        $query = self::execute("SELECT * FROM tricounts WHERE title=:title and creator=:user", ["title" => $title, "user" => $user->id]);
+        $data = $query->fetch();
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new Tricount($data["title"],$data["created_at"],$data["creator"],$data["description"],$data["id"]);
+        }
+    }
+
         //recupere les utilisateur qui non pas particite au tricpount
     public function get_users_not_sub_to_a_tricount() : array {
         $query = self::execute("SELECT * FROM users WHERE id NOT IN (SELECT user FROM subscriptions WHERE tricount=:tricountId) ORDER BY full_name", ["tricountId"=>$this->id]);
@@ -347,6 +357,27 @@ class Tricount extends Model{
         }
         return json_encode($table);
     }
+
+
+    public function get_balances_as_json() : string {
+        $participants = $this->get_balances();
+
+
+        $table = [];
+
+        foreach ($participants as $participant) {
+
+
+            $row = [];
+            $row["id"] = $participant->id;
+            $row["full_name"] = $participant->full_name;
+            $row["account"] = $participant->account;
+            $table[] = $row;
+        }
+
+        return json_encode($table);
+    }
+
 }
 
 ?>

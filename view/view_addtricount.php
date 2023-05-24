@@ -8,13 +8,22 @@
         <base href="<?= $web_root ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+        <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
+        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/just-validate-plugin-date-1.2.0.production.min.js" type="text/javascript"></script>
+        <script src="lib/sweetalert2@11.js"></script>
         <script>
             
             let title ;
             let errorTitle;
             let description;
             let errorDescription;
-
+            var justvalidate = "<?= $justvalidate?>";
+            let sweetalert = "<?= $sweetalert?>";
+            let data_changed = false;
+            let ini_title = "<?= $title ?>";
+            let ini_description = "<?= $description ?>";
+            let titleAvailable ;
             function checkTitle(){
                 let verification= true;
                 errorTitle.html("");
@@ -23,7 +32,7 @@
                     errorTitle.append("<p>Title cannot be empty.</p>");
                     verification=false;
                 }
-                else {
+               else {
                     let regex = /^(?!\s*$)[\S\s]{3,16}$/;
                     let titleValue = title.val().replace(/\s/g, ''); 
                     if (!regex.test(titleValue)) {
@@ -102,28 +111,109 @@
 
             $(function(){
                 hide_php_errors();
-                title = $("#title");
-                errorTitle = $("#errorTitle");
-                description = $("#description");
-                errorDescription = $("#errorDescription");
+                if (justvalidate == "off") {
+                    title = $("#title");
+                    errorTitle = $("#errorTitle");
+                    description = $("#description");
+                    errorDescription = $("#errorDescription");
 
-                title.bind("input", checkTitle);
-                title.bind("input", checkTitleExists);
-                description.bind("input", checkDescription);
-                
+                    title.bind("input", checkTitle);
+                    title.bind("input", checkTitleExists);
+                    description.bind("input", checkDescription);
 
-                $("input:text:first").focus();
-            }
+                    $("input:text:first").focus();
+                } else {
+                    const validation = new JustValidate('#addTricount', {
+                        validateBeforeSubmitting: true,
+                        lockForm: true,
+                        focusInvalidField: false,
+                        successLabelCssClass: 'valid-feedback',
+                        errorLabelCssClass: 'invalid-feedback',
+                        errorFieldCssClass: 'is-invalid',
+                        successFieldCssClass: 'is-valid',
+                    });
 
-            );
+                    validation
+                        .addField('#title', [
+                            {
+                                rule: 'required',
+                                errorMessage: 'Field is required'
+                            },
+                            {
+                                rule: 'minLength',
+                                value: 3,
+                                errorMessage: 'Minimum 3 characters'
+                            },
+                            {
+                                rule: 'maxLength',
+                                value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                            },
+                           
+                        ], { successMessage: 'Looks good !' })
 
+                        .addField('#description', [
+                            {
+                                rule: 'minLength',
+                                value: 3,
+                                errorMessage: 'Minimum 3 characters'
+                            },
+                            {
+                                rule: 'maxLength',
+                                value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                            },
+                        ], { successMessage: 'Looks good !' })
+
+                        .onValidate(async function(event) {
+                            titleAvailable = await $.post("tricount/tricount_exists_service/", {newTitle: $("#title").val()},null,"json");
+                            if (titleAvailable){
+                                this.showErrors({ '#title': 'Title already exists' });
+                            }   
+                        })
+                        
+                        .onSuccess(function(event) {
+                           
+                                event.target.submit(); //par défaut le form n'est pas soumis
+                        })
+
+
+
+                    $("input:text:first").focus();
+                }
+                      if(sweetalert == "on"){
+                            title.on("input", function() {
+                                data_changed = (title.val() != ini_title) || (description.val() != ini_description);
+                            });
+
+                            $('#cancelBtn').click(function() {
+                                if(data_changed){
+                                    event.preventDefault()
+                                    Swal.fire({
+                                        title: 'Confirmation',
+                                        text: 'Êtes-vous sûr de vouloir annuler ?',
+                                        icon: 'question',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Oui',
+                                        cancelButtonText: 'Non'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = "Tricount/yourTricounts";
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                });
 
         </script>
     </head>
 
     <body>
     <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD">   
-            <a href = "Tricount/yourTricounts/"  class="btn btn-outline-danger" >Cancel</a>
+            <a href = "Tricount/yourTricounts/" id="cancelBtn"  class="btn btn-outline-danger" >Cancel</a>
             Tricount &#8594; add    
        
             <button form="addTricount" class="btn btn-primary" type="submit">Save</button>

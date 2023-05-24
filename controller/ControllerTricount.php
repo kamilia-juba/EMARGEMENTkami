@@ -21,7 +21,8 @@ class ControllerTricount extends MyController{
         $user = $this->get_user_or_redirect();
         $title='';
         $description='';
-        
+        $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
         $created_at='55';
         $creator=$user->id;
         
@@ -51,7 +52,7 @@ class ControllerTricount extends MyController{
 
             }
         }
-        (new View("addtricount"))->show(["title"=>$title,"description"=>$description,"errorsTitle" => $errorsTitle, "errorsDescription" => $errorsDescription, "errors" => $errors]);
+        (new View("addtricount"))->show(["title"=>$title,"description"=>$description,"errorsTitle" => $errorsTitle, "errorsDescription" => $errorsDescription, "errors" => $errors,"justvalidate" => $justvalidate,"sweetalert" => $sweetalert]);
     }
 
     public function index() : void {
@@ -94,6 +95,7 @@ class ControllerTricount extends MyController{
         if ($this->validate_url()) {    //validation url
             $tricount = Tricount::get_tricount_by_id($_GET["param1"], $user->mail);// recup tricount depuis l'id
             $participants = $tricount->get_balances(); //recuperation de la balance de chacun
+            $participantsJson = $tricount->get_balances_as_json(); //recuperation des balances en JSON pour utiliser dans le script
             $maxUser=$participants[0];
             $sum=0;
             for($i=0;$i<sizeof($participants);++$i){
@@ -105,7 +107,7 @@ class ControllerTricount extends MyController{
                 }
 
             }
-            (new View("balance"))->show(["participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser,"sum"=>$sum/100,"total"=>$sum,"user"=>$user]);
+            (new View("balance"))->show(["participantsJson"=>$participantsJson,"participants"=>$participants,"tricount"=>$tricount,"maxUser"=>$maxUser,"sum"=>$sum/100,"total"=>$sum,"user"=>$user]);
             $participants=[];
         }else{
             $this->redirect("Main");
@@ -116,6 +118,7 @@ class ControllerTricount extends MyController{
     public function edit_tricount(): void{
         
         $user = $this->get_user_or_redirect();
+        $justvalidate = $this->get_justvalidate_conf();
         $errors = [];
         $success = "";
         $participants = [];
@@ -163,6 +166,7 @@ class ControllerTricount extends MyController{
                                             "errorsTitle"=>$errorsTitle,
                                             "subs_json"=>$subs_json,
                                             "not_subs_json"=>$not_subs_json,
+                                            "justvalidate" => $justvalidate
                                         ]);
         }
         else{
@@ -350,6 +354,9 @@ class ControllerTricount extends MyController{
          }
         echo $res;
     }
+
+
+    
 
     public function add_subscriber_service(){
         $user = $this->get_user_or_redirect();

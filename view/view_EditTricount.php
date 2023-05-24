@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
     <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+    <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
+    <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     <script>
         let title ;
         let errorTitle;
@@ -24,7 +26,11 @@
         let tricountId= <?=$tricount->id?>;
         let userId= <?=$user->id?>;
         let listOfSubs;
+        
         let selectNotSubs;
+
+        var justvalidate = "<?= $justvalidate?>";
+        let titleAvailable;
 
 
         function checkTitle(){
@@ -279,7 +285,7 @@
             });
         }
 
-        $(function(){
+      /*  $(function(){
             $("#erreurphp").hide();
             listOfSubs = $('#subscription');
 
@@ -308,6 +314,95 @@
             $('#saveButton').attr('onclick', 'saveAll()');
 
         });
+*/
+        $(function(){
+                $("#erreurphp").hide();
+                hideTitles();
+
+                if (justvalidate == "off") {
+                    listOfSubs = $('#subscription');
+
+                    title = $("#title");
+                    originalTitle=title.val();
+                    errorTitle = $("#errorTitle");
+                    description = $("#description");
+                    errorDescription = $("#errorDescription");
+
+
+                    if(title.val()!=""){
+                            checkTitle();
+                    }
+                   
+
+
+                    title.bind("input", checkTitle);
+                    title.bind("input", checkTitleExists);
+                    description.bind("input", checkDescription);
+                    displaySubs();
+                    displayNotSubs();
+                    hideSelectNotSubsIfNonSubJsonIsEmty();
+                    $("input:text:first").focus();
+
+                    $('#saveButton').attr('onclick', 'saveAll()');
+                } else {
+                    const validation = new JustValidate('#editTricountForm', {
+                        validateBeforeSubmitting: true,
+                        lockForm: true,
+                        focusInvalidField: false,
+                        successLabelCssClass: 'valid-feedback',
+                        errorLabelCssClass: 'invalid-feedback',
+                        errorFieldCssClass: 'is-invalid',
+                        successFieldCssClass: 'is-valid',
+                    });
+
+                    validation
+                        .addField('#title', [
+                            {
+                                rule: 'required',
+                                errorMessage: 'Field is required'
+                            },
+                            {
+                                rule: 'minLength',
+                                value: 3,
+                                errorMessage: 'Minimum 3 characters'
+                            },
+                            {
+                                rule: 'maxLength',
+                                value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                            },
+                           
+                        ], { successMessage: 'Looks good !' })
+
+                        .addField('#description', [
+                            {
+                                rule: 'minLength',
+                                value: 3,
+                                errorMessage: 'Minimum 3 characters'
+                            },
+                            {
+                                rule: 'maxLength',
+                                value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                            },
+                        ], { successMessage: 'Looks good !' })
+
+                        .onValidate(async function(event) {
+                            titleAvailable = await $.post("tricount/tricount_exists_service/", {newTitle: $("#title").val()},null,"json");
+                            if (titleAvailable){
+                                this.showErrors({ '#title': 'Title already exists' });
+                            }   
+                        })
+                        
+                        .onSuccess(function(event) {
+                           
+                                event.target.submit(); //par défaut le form n'est pas soumis
+                        })
+
+                    $("input:text:first").focus();
+                }
+            });
+
     </script>
 </head>
 
