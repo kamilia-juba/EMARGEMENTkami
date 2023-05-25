@@ -34,10 +34,37 @@
                                 errorMessage: "This field can't be empty"
                             },
                         ], {successMessage: "Looks good"})
+                        .addField("#password", [
+                            {
+                                rule: "required",
+                                errorMessage: "This field can't be empty"
+                            },
+                            {
+                                rule: 'minLength',
+                                value: 8,
+                                errorMessage: 'Minimum 8 characters'
+                            },
+                            {
+                                rule: 'maxLength',
+                                value: 16,
+                                errorMessage: 'Maximum 16 characters'
+                            },
+                            {
+                                rule: 'customRegexp',
+                                value : /^(?=.*[A-Z])(?=.*\d)(?=.*['\";:,.\/?!\\-]).+$/,
+                                errorMessage: 'Password must contain at least one capital letter, one special character and one number' 
+                            },
+                        ], {successMessage: "Looks good"})
                         .onValidate(async function(){
                             var correctPassword = await $.post("User/check_correct_password_service", {actualPassword: $("#actual_password").val()}, null, "json");
                             if (correctPassword){
                                 this.showErrors({"#actual_password" : "Wrong password"});
+                            }
+                        })
+                        .onValidate(async function(){
+                            var correctPassword = await $.post("User/check_correct_password_service", {actualPassword: $("#password").val()}, null, "json");
+                            if(!correctPassword){
+                                this.showErrors({"#password" : "New password can't be the same as the old one"});
                             }
                         })
                 }
