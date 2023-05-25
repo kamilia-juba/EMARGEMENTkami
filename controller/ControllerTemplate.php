@@ -198,16 +198,16 @@ class ControllerTemplate extends Mycontroller{
     }
 
     public function template_title_other_exists_service(){
-        if($this->validate_url()){
+        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+            $this->redirect();
+        }else{
             $res = "false";
             $template = Template::get_template_by_id($_POST["templateId"]);
     
-            if($template->template_name_exists($_POST["newTitle"])){
+            if($template->template_name_exists($_POST["newTitle"]) && $template->title != $_POST["newTitle"]){
                 $res = "true";
             }
             echo $res;
-        }else{
-            $this->redirect();
         }
         
     }
