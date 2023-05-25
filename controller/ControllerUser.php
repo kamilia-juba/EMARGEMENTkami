@@ -115,10 +115,11 @@ class ControllerUser extends MyController {
        
 
         if(isset($_POST["newMail"]) && $_POST["newMail"] !== ""){
+            $userCurrent = $this->get_user_or_redirect();
             $user = User::get_user_by_mail($_POST["newMail"]);
-            if($user!=null){
-             $res = "true";
-             }
+            if($user!=null && $_POST["newMail"] != $userCurrent->mail){
+                $res = "true";
+            }
          }
         echo $res;
     }
