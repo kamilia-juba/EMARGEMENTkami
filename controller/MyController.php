@@ -73,7 +73,7 @@ abstract class Mycontroller extends Controller{
     
         // Vérifier si la date est dans le futur
         if ($inputDate > $currentDate) {
-            $errors[] = "La date ne doit pas être dans le futur.";
+            $errors[] = "The date must not be in the future.";
         }
     
         return $errors;
