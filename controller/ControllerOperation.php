@@ -183,6 +183,29 @@ class ControllerOperation extends Mycontroller{
         return $checkbox_checked;
     }
 
+    private function initialize_checkboxes_from_db(array $participants, Operation $operation){
+        $res = [];
+        $repartitions = Repartition::get_repartition_by_operation($operation);
+
+        foreach($participants as $participant){
+            $found = false;
+
+            foreach($repartitions as $repartition){
+                if($participant == $repartition->user){
+                    $res[] = "checked";
+                    $found = true;
+                    break;
+                }
+            }
+
+            if(!$found){
+                $res[] = "";
+            }
+        }
+
+        return $res;
+    }
+
     private function initialize_weights(array $participants, Operation $operation): array {
         $res = [];
         $repartitions = Repartition::get_repartition_by_operation($operation);
@@ -301,7 +324,7 @@ class ControllerOperation extends Mycontroller{
             $errorsCheckboxes= [];
             $errorsSaveTemplate = [];
             $participants = $tricount->get_participants();
-            $checkbox_checked = $this->initialize_checkboxes_checked_value($participants);
+            $checkbox_checked = $this->initialize_checkboxes_from_db($participants, $operation);
             $templates_json = $tricount->get_templates_json();
             $templates = $tricount->get_repartition_templates();
             $template_items = $this->get_template_items($templates);
