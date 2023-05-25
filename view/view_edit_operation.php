@@ -644,7 +644,7 @@
             <div class="input-group mb-2 pt-2 pb-2">
                 <span class="form-control" style="background-color: #E9ECEF"><input type="checkbox" name="saveTemplateCheck" id="saveTemplateCheck" <?=$save_template_checked?>></span>
                 <span class="input-group-text" style="background-color: #E9ECEF">Save this template</span>
-                <input class="form-control w-50" id="newTemplateName" name="newTemplateName">
+                <input class="form-control w-50" id="newTemplateName" name="newTemplateName" value="<?=$newTemplateName?>">
             </div>
         </form>
         <?php if (count($errorsSaveTemplate) != 0): ?>
