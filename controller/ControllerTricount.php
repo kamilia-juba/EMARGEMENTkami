@@ -144,11 +144,11 @@ class ControllerTricount extends MyController{
                 $errorsTitle = $this->validate_title($title);
                 $errorsDescription = $this->validate_description($description);
 
-                if(Tricount::tricount_title_already_exists($title, $user)){
+                if(Tricount::tricount_title_already_exists($title, $creator) && $title != $tricount->title){
                     $errorsTitle[] = "You already have a tricount with this title. Choose another title";
                 }
               
-                if (count($errorsTitle) == 0 && count($errorsDescription) == 0) { 
+                if (count($errorsTitle) == 0 && count($errorsDescription) == 0 ) { 
                     $tricount->title = $title;
                     $tricount->description = $description;
                     $tricount->persist_update();
