@@ -34,7 +34,6 @@
         let ini_description = "<?= $description ?>";
         
         var justvalidate = "<?= $justvalidate?>";
-        let titleAvailable;
 
 
         function checkTitle(){
@@ -75,13 +74,14 @@
                 changeDescriptionView();
                 return verification ;
             }
+
             async function checkTitleExists(){
                
                const data = await $.post("tricount/tricount_exists_service/", {newTitle : title.val()},null, "json");
                if(data && originalTitle.trim()!=title.val().trim()){
                    errorTitle.append("<p>Title already exists. please choice another</p>");
                }
-               changeTitleView();
+               changeTitleView();  
 
            }
 
@@ -367,11 +367,11 @@
                             },
                         ], { successMessage: 'Looks good !' })
 
-                        .onValidate(async function(event) {
-                            titleAvailable = await $.post("tricount/tricount_exists_service/", {newTitle: $("#title").val()},null,"json");
-                            if (titleAvailable){
-                                this.showErrors({ '#title': 'Title already exists' });
-                            }   
+                        .onValidate(async function(event){
+                            var titleAvailable = await $.post("Tricount/tricount_title_other_exists_service", {newTitle : $("#title").val(), tricountId : tricountId}, null, "json");
+                            if(titleAvailable){
+                                this.showErrors({"#title" : "You already have a tricount with this title"});
+                            }
                         })
                         
                         .onSuccess(function(event) {

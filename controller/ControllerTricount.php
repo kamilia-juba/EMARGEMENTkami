@@ -362,6 +362,21 @@ class ControllerTricount extends MyController{
         echo $res;
     }
 
+    public function tricount_title_other_exists_service(){
+        $user = $this->get_user_or_redirect();
+        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+            $this->redirect();
+        }else{
+            $res = "false";
+            $tricount = Tricount::get_tricount_by_id($_POST["tricountId"]);
+    
+            if($tricount->tricount_title_exists($_POST["newTitle"], $user) && $tricount->title != trim($_POST["newTitle"])){
+                $res = "true";
+            }
+            echo $res;
+        }
+        
+    }
 
 
     

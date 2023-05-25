@@ -252,10 +252,16 @@ class Tricount extends Model{
         $query = self::execute("SELECT * FROM tricounts WHERE title=:title and creator=:user", ["title" => $title, "user" => $user->id]);
         $data = $query->fetch();
         return !empty($data);
+    }    
+    
+    public static function tricount_title_exists(string $title, User $user){
+        $query = self::execute("SELECT * FROM tricounts WHERE tricounts.id in (select tricount from subscriptions where subscriptions.user=:user) AND tricounts.title=:title", ["title" => $title, "user" => $user->id]);
+        $data = $query->fetch();
+        return !empty($data);
     }
 
     public static function get_Tricount_By_Title(string $title, User $user){
-        $query = self::execute("SELECT * FROM tricounts WHERE title=:title and creator=:user", ["title" => $title, "user" => $user->id]);
+        $query = self::execute("SELECT * FROM tricounts JOIN subscriptions on tricounts.id = subscriptions.tricount WHERE tricounts.title=:title and subscriptions.user=:user", ["title" => $title, "user" => $user->id]);
         $data = $query->fetch();
         if ($query->rowCount() == 0) {
             return false;
