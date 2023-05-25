@@ -45,28 +45,13 @@
 
 
                         validation
-                        .addField('#password',[
+                            .addField('#password',[
                                 {
                                     rule: 'required',
                                     errorMessage: 'Password is required'
                                 },
-                                {
-                                    rule: 'minLength',
-                                    value: 8,
-                                    errorMessage: 'Minimum 8 characters'
-                                },
-                                {
-                                    rule: 'maxLength',
-                                    value: 16,
-                                errorMessage: 'Maximum 16 characters'
-                                },
-                                {
-                                    rule: 'customRegexp',
-                                    value : /^(?=.*[A-Z])(?=.*\d)(?=.*['\";:,.\/?!\\-]).+$/,
-                                    errorMessage: 'Le mot de passe doit contenir au moins une lettre majuscule, un chiffre et un caractère spécial ' 
-                                }
                                 
-                            ],{ successMessage: 'Looks good !' })  
+                            ]) 
                             
                         .onValidate(async function(event) {
                             mailAvailable = await $.post("User/Mail_exists_service/", {newEmail: $("#mail").val()},null,"json");
