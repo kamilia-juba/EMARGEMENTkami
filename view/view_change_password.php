@@ -14,8 +14,22 @@
         <script>
             let justvalidate = "<?= $justvalidate ?>";
             let sweetalert = "<?=$sweetalert?>";
+            let data_changed = false;
+            let actual_password, password, password_confirm;
+            let ini_actual_password = "<?=$actual_password?>";
+            let ini_password = "<?=$password?>";
+            let ini_password_confirm = "<?=$password_confirm?>";
+
+            function updateDataStatus(actual_password, password, password_confirm){
+                data_changed =  actual_password != ini_actual_password 
+                                || password != ini_password
+                                || password_confirm != ini_password_confirm;
+            }
 
             $(function(){
+                actual_password = $("#actual_password");
+                password = $("#password");
+                password_confirm = $("#password_confirm");
                 if(justvalidate == "on"){
                     const validation = new JustValidate('#changeMotdepasseForm', {
                         validateBeforeSubmitting: true,
@@ -79,13 +93,44 @@
                             event.target.submit();
                         });
                 }
+                if(sweetalert == "on"){
+                    actual_password.on("input", function(){
+                        updateDataStatus(actual_password.val(),password.val(),password_confirm.val());
+                    })
+
+                    password.on("input", function(){
+                        updateDataStatus(actual_password.val(),password.val(),password_confirm.val());
+                    })
+
+                    password_confirm.on("input", function(){
+                        updateDataStatus(actual_password.val(),password.val(),password_confirm.val());
+                    })
+
+                    $("#btnCancel").click(function(event){
+                        if(data_changed){
+                            event.preventDefault();
+                            Swal.fire({
+                                title: 'Unsaved changes !',
+                                text: 'Are you sure you want to leave this form ? Changes you made will not be saved.',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: "#d33",
+                                confirmButtonText: "Leave page"
+                            }).then((result) => {
+                                if(result.isConfirmed){
+                                    window.location.href="user/settings";
+                                }
+                            })
+                        }
+                    })
+                }
             })
 
         </script>
     </head>
     <body>
         <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD "> 
-            <a href= "user/settings" class= "btn btn-outline-danger">Back</a>
+            <a href= "user/settings" class= "btn btn-outline-danger" id="btnCancel">Back</a>
             Change password
             <button form="changeMotdepasseForm" class="btn btn-outline-primary" type="submit">Save</button>
         </div>
