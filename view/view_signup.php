@@ -8,16 +8,24 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css” />
-        <link rel="stylesheet" href="https://kit.fontawesome.com/991f3da7c3.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://kit.fontawesome.com/991f3da7c3.js" crossorigin="anonymous">
         <script src="https://kit.fontawesome.com/fd46891f37.js" crossorigin="anonymous"></script>
         <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
         <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/sweetalert2@11.js"></script>
         <script>
            
 
+           let mail, fullName, iban, password,passwordConfirm;
              var justvalidate = "<?= $justvalidate?>";
-
+             
+             let sweetalert = "<?= $sweetalert?>";
+             let ini_mail = "<?= $mail?>";
+             let ini_fullName = "<?= $full_name?>";
+             let ini_iban = "<?= $IBAN?>";
+             let ini_password = "<?= $password?>";
+             let ini_passwordConfirm = "<?= $password_confirm?>";
              function hide_php_errors(){
                  $("#errorEmail").hide();
                  $("#ErrorName").hide();
@@ -25,8 +33,26 @@
                  $("#ErrorPasswordConfirme").hide();
                 
              }
-             $(function(){
+             function updateDataStatus(mail, fullName, iban, password,passwordConfirm){
+                data_changed =  
+                                 (mail != ini_mail) 
+                                || (fullName != ini_fullName) 
+                                || (iban != ini_iban) 
+                                || (password != ini_password) 
+                                || (passwordConfirm != ini_passwordConfirm) 
+
+            }
+
+
+            
+            $(function(){
+
                 hide_php_errors();
+                mail = $("#mail");
+                fullName = $("#full_name");
+                iban = $("#IBAN");
+                password=$("#password");
+                passwordConfirm=$("#passwordConfirm");
 
                 if(justvalidate =="on"){
                     const validation = new JustValidate('#signupForm', {
@@ -104,23 +130,81 @@
                                 
                             ],{ successMessage: 'Looks good !' })  
                             
-                            validation
-                            .addField('#confirm_password', [
+                            .addField("#passwordConfirm", [
                                 {
-                                    rule: 'required',
-                                    errorMessage: 'Confirm Password is required'
+                                    rule: "required",
+                                    errorMessage: "This field can't be empty"
                                 },
-                                {
-                                    rule: 'equals',
-                                    value: document.querySelector('#password').value,
-                                    errorMessage: 'Confirm Password must match Password'
-                                }
-                            ], { successMessage: 'Looks good !' });
+                            ], {successMessage: "Looks good"})
 
+                            
+                            .onValidate(async function(){
+                                var mailAvailable = await $.post("user/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
+                                    if(mailAvailable){
+                                            this.showErrors({"#mail" : "Mail not available" });
+                                    }
+
+                                var passwords_dont_match = await $.post("User/passwords_matches_service", {password: $("#password").val(), password_confirm: $("#passwordConfirm").val()}, null, "json");
+                                if(passwords_dont_match){
+                                    this.showErrors({"#passwordConfirm" : "Passwords must match"});
+                                }
+                            })
+                             .onSuccess(function(event) {
+                           
+                                event.target.submit(); //par défaut le form n'est pas soumis
+                             })
+                             $("input:text:first").focus();
+                     }
+
+                     if(sweetalert =="on"){
+                        mail.on("input", function() {
+                             updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                         fullName.on("input", function(){
+                            updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                        iban.on("input", function(){
+                            updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                        password.on("input", function(){
+                            updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                        passwordConfirm.on("input", function(){
+                            updateDataStatus(mail.val(), fullName.val(), iban.val(),password.val(),passwordConfirm.val());
+                        });
+
+                        
+                    $("#btnCancel").click(function(event){
+                        if(data_changed){
+                            event.preventDefault();
+                            Swal.fire({
+                                title: 'Unsaved changes !',
+                                text: 'Are you sure you want to leave this form ? Changes you made will not be saved.',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'Leave page'
+                            }).then((result) => {
+                                if(result.isConfirmed){
+                                    window.location.href="Main/index/" ;
+                                }
+                            })
+                        }
+                    });
+                     }
+
+
+                
                             $("input:text:first").focus();
-                    }
-                });
-          </script>
+
+
+                    
+            });
+        </script>
     </head>
     <body>
         <div class="bg-primary p-3 fs-5 text-light">
@@ -179,7 +263,7 @@
                 </div>
                 <div class="input-group mb-3 mt-3">
                     <span class="input-group-text" ><i class="fa-solid fa-lock"></i></span>
-                    <input class="form-control" id="password_confirm" name="password_confirm" type="password"  value="<?= $password_confirm ?>" placeholder="Confirm your password" >
+                    <input class="form-control" id="passwordConfirm" name="password_confirm" type="password"  value="<?= $password_confirm ?>" placeholder="Confirm your password" >
                 </div>
                 <?php if (count($errorsPasswordConfirm) != 0): ?>
                     <div id="ErrorPasswordConfirme" class='text-danger'>      
@@ -192,7 +276,7 @@
                 <?php endif; ?>
                 
                 <input type="submit" class="btn btn-primary w-100 mb-3" value="Sign Up" form="signupForm"><br>
-                <a href="" class="btn btn-outline-danger w-100 mb-3">Back</a>
+                <a href="" id="btnCancel" class="btn btn-outline-danger w-100 mb-3">Back</a>
                    
                 
             </form>

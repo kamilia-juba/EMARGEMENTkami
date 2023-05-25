@@ -9,6 +9,7 @@
         <script src="lib/jquery-3.6.4.js" type="text/javascript"></script>
         <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
         <script src="lib/sweetalert2@11.js"></script>
+        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
         <script>
             var templateId = <?= $template->id ?>;
             let title,errTitle,okTitle,errWeights,okWeights;
@@ -47,7 +48,7 @@
                 if(data){
                     errTitle.html("<p>There's already an existing template with this title. Choose another title</p>");
                 }
-                changeTitleView();
+                changeTitleView(); 
             }
 
             function changeTitleView(){
@@ -132,8 +133,6 @@
 
             function updateDataStatus(title) {
                 data_changed =  title != ini_title;
-                console.log(title);
-                console.log(ini_title);
             }
 
 
@@ -218,11 +217,17 @@
                                 errorMessage: "Title can't have more than 256 characters"
                             },
                         ],{ successMessage: 'Looks good'})
+
+                        .onValidate(async function(event){
+                            var titleAvailable = await $.post("Template/template_title_other_exists_service/", {newTitle : $("#title").val(), templateId : templateId}, null, "json");
+                            if(titleAvailable){
+                                this.showErrors({"#title" : "You already have a template with this name"});
+                            }
+                        })
                         
-                        .addRequiredGroup('#checkboxes', 'You must select at least 1 participant');
+                        .addRequiredGroup('#checkboxes', 'You must select at least 1 participant')
                         
-                        
-                    validation
+
                         .onSuccess(function(event) {
                             event.target.submit();
                         });
@@ -236,7 +241,6 @@
                 if(sweetalert == "on"){
                     title.on("input", function() {
                         updateDataStatus(title.val());
-                        console.log("je change en " + data_changed);
                     });
                     $(".checkboxParticipant").change(function() {
                         updateDataStatusCheckboxes();
@@ -261,7 +265,6 @@
                     });
 
                     $("#btnDelete").click(function(event){
-                        console.log(data_changed);
                     event.preventDefault();
                     Swal.fire({
                         title: "Are you sure ?",
@@ -297,20 +300,22 @@
             <input type="submit" class="btn btn-primary" form="applyTemplateForm" value="Save">
         </div>
         <div class="container min-vh-100 pt-2">
-            <form id="applyTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post" onsubmit="return checkAll();">
+            <form id="applyTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post">
                 Title : 
-                <input class="form-control mb-2" id="title" name="title" type="text" value="<?=$title?>" placeholder="Title">
-                <div class='text-danger' id='errTitle'></div>
-                <div class='text-success' id='okTitle'></div>
-                <?php if (count($errorsTitle) != 0): ?>
-                    <div class='text-danger' id="errTitlePhp">
-                        <ul>
-                            <?php foreach ($errorsTitle as $errors): ?>
-                                <li><?= $errors ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
+                <div>
+                    <input class="form-control mb-2" id="title" name="title" type="text" value="<?=$title?>" placeholder="Title">
+                    <div class='text-danger' id='errTitle'></div>
+                    <div class='text-success' id='okTitle'></div>
+                    <?php if (count($errorsTitle) != 0): ?>
+                        <div class='text-danger' id="errTitlePhp">
+                            <ul>
+                                <?php foreach ($errorsTitle as $errors): ?>
+                                    <li><?= $errors ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+                </div>
                 Template items :
                 <div id="checkboxes">
                 <?php for($i = 0; $i<sizeof($participants);++$i){  ?>

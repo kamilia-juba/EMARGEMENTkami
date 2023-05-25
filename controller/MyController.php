@@ -182,7 +182,7 @@ abstract class Mycontroller extends Controller{
     }
 
     public function passwords_matches_service(){
-        $user = $this->get_user_or_redirect();
+        
         $res = "false";
         
         if(isset($_GET["param1"]) && $_GET["param1"] != null){

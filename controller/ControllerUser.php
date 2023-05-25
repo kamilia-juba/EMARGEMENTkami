@@ -24,56 +24,49 @@ class ControllerUser extends MyController {
         //gestion de l'édition du profil
     public function edit_profile() : void {
         $user = $this->get_user_or_redirect();
+        $mail = '';
+        $full_name='';
+        $iban='';
         $errors = [];
-        $errorsMail = [];
+        $errorsEmail = [];
         $errorsName = [];
         $errorsIban = [];
-
-        $success = "";
 
         $full_name=$user->full_name;
         $iban=$user->iban;
         $mail=$user->mail;
         
+        $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
 
 
-        if (isset($_POST['full_name']) || isset($_POST['IBAN']) || isset($POST['mail'] )) {
+        if (isset($_POST['full_name']) || isset($_POST['iban']) || isset($POST['mail'] )) {
             $full_name = Tools::sanitize($_POST['full_name']);
             $iban = Tools::sanitize($_POST['iban']);
             $mail = Tools::sanitize($_POST['mail']);
-        
-            $errorsIban = User::validate_IBAN($iban);
-            $errorsName = User::validate_full_name($full_name);
-            if($user->mail!=$mail){
-                $errorsMail = User::validate_mail($mail);
-            }
 
-            $errors = array_merge($errors, $errorsName);
-            $errors = array_merge($errors, $errorsIban);
-            $errors = array_merge($errors, $errorsMail);
-
-
-            if (count($errors) == 0) { 
+            $errorsEmail = array_merge($errorsEmail,User::validate_unicity($mail));
+            $errorsEmail = array_merge($errorsEmail, User::validate_mail($mail));
+            $errorsName = array_merge($errorsName,User::validate_full_name($full_name));
+            
+            $errors = array_merge($errorsEmail, $errorsName, $errorsIban);
+            if (count($errorsEmail) == 0 && count($errorsName) == 0 && count($errorsIban) == 0) {
                 $user->full_name = $full_name;
                 $user->iban = $iban;
                 $user->mail=$mail;
                 $user->persist();
-                $this->redirect("user","settings");
-                    
+                $this->redirect("user","settings"); 
             }
         }
-            
-        // si on est en POST et sans erreurs, on redirige avec un paramètre 'ok'
-        if (count($_POST) > 0 && count($errors) == 0){
-        $this->redirect("user", "edit_profile", "ok");
-        }
 
-        // si param 'ok' dans l'url, on affiche le message de succès
-        if (isset($_GET['param1']) && $_GET['param1'] === "ok"){
-        $success = "Your profile has been successfully updated.";
-        }
-
-        (new View("edit_profile"))->show(["iban" => $iban, "full_name" => $full_name,"mail"=>$mail , "errorsMail" => $errorsMail,"errorsName" => $errorsName, "errorsIban" => $errorsIban, "success" => $success]);
+        (new View("edit_profile"))->show(["iban" => $iban, 
+                                        "full_name" => $full_name,
+                                        "mail"=>$mail , 
+                                        "errorsMail" => $errorsEmail,
+                                        "errorsName" => $errorsName, 
+                                        "errorsIban" => $errorsIban, 
+                                        "justvalidate" => $justvalidate,
+                                        "sweetalert" => $sweetalert]);
     }
 
     public function change_password() : void {
@@ -111,5 +104,19 @@ class ControllerUser extends MyController {
     public function passwords_matches_service(){
         parent::passwords_matches_service();
     }
+    public function Mail_exists_service(){
+        $res = "false";
+       
+
+        if(isset($_POST["newMail"]) && $_POST["newMail"] !== ""){
+            $user = User::get_user_by_mail($_POST["newMail"]);
+            if($user!=null){
+             $res = "true";
+             }
+         }
+        echo $res;
+    }
+
+
 }
 ?>

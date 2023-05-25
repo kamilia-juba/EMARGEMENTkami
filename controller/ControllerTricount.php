@@ -119,6 +119,7 @@ class ControllerTricount extends MyController{
         
         $user = $this->get_user_or_redirect();
         $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
         $errors = [];
         $success = "";
         $participants = [];
@@ -143,11 +144,11 @@ class ControllerTricount extends MyController{
                 $errorsTitle = $this->validate_title($title);
                 $errorsDescription = $this->validate_description($description);
 
-                if(Tricount::tricount_title_already_exists($title, $user)){
+                if(Tricount::tricount_title_already_exists($title, $creator) && $title != $tricount->title){
                     $errorsTitle[] = "You already have a tricount with this title. Choose another title";
                 }
               
-                if (count($errorsTitle) == 0 && count($errorsDescription) == 0) { 
+                if (count($errorsTitle) == 0 && count($errorsDescription) == 0 ) { 
                     $tricount->title = $title;
                     $tricount->description = $description;
                     $tricount->persist_update();
@@ -166,7 +167,8 @@ class ControllerTricount extends MyController{
                                             "errorsTitle"=>$errorsTitle,
                                             "subs_json"=>$subs_json,
                                             "not_subs_json"=>$not_subs_json,
-                                            "justvalidate" => $justvalidate
+                                            "justvalidate" => $justvalidate,
+                                            "sweetalert" => $sweetalert
                                         ]);
         }
         else{
@@ -263,6 +265,10 @@ class ControllerTricount extends MyController{
         $user = $this->get_user_or_redirect(); //si l'utilisateur n'est pas connecter redirection vers la page d'acceuille
         $title = "";
         $weights = [];
+        $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
+
+
         if(isset($_GET["param1"]) && $_GET["param1"] !== "" && is_numeric($_GET["param1"]) && $user->is_subscribed_to_tricount($_GET["param1"])){
             $errors = [];
             $errorsTitle = [];
@@ -314,8 +320,6 @@ class ControllerTricount extends MyController{
                     $checkboxes = $_POST["checkboxParticipants"];
                     $template = Template::add_repartition_template($title,$tricount);
                     $weight = $_POST["weight"];
-                    var_dump($checkboxes);
-                    var_dump($weight);
                     for($i=0; $i<sizeof($participants); ++$i){
                         for($j = 0; $j<sizeof($checkboxes);++$j){
                             if($participants[$i]->id==$checkboxes[$j]){
@@ -335,7 +339,10 @@ class ControllerTricount extends MyController{
                                             "errorsTitle" => $errorsTitle,
                                             "errorsCheckboxes" => $errorsCheckBoxes,
                                             "weights" => $weights,
-                                            "checkbox_checked" => $checkbox_checked]
+                                            "checkbox_checked" => $checkbox_checked,
+                                            "justvalidate" => $justvalidate,
+                                            "sweetalert" => $sweetalert,
+                                            "tricountId" => $tricount->id]
             );
         }else{
             $this->redirect("Main");
@@ -353,6 +360,22 @@ class ControllerTricount extends MyController{
              }
          }
         echo $res;
+    }
+
+    public function tricount_title_other_exists_service(){
+        $user = $this->get_user_or_redirect();
+        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+            $this->redirect();
+        }else{
+            $res = "false";
+            $tricount = Tricount::get_tricount_by_id($_POST["tricountId"]);
+    
+            if($tricount->tricount_title_exists($_POST["newTitle"], $user) && $tricount->title != trim($_POST["newTitle"])){
+                $res = "true";
+            }
+            echo $res;
+        }
+        
     }
 
 
@@ -395,6 +418,16 @@ class ControllerTricount extends MyController{
                 $this->redirect();
             }
         } else {
+            $this->redirect();
+        }
+    }
+
+    public function delete_tricount_service(){
+        $user = $this->get_user_or_redirect();
+        if($this->validate_url()){
+            $tricount = Tricount::get_tricount_by_id($_GET["param1"]);
+            $tricount -> delete_tricount($user);
+        }else{
             $this->redirect();
         }
     }
