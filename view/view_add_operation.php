@@ -109,7 +109,7 @@
                             errWeights.html("<p>Weights cannot be empty</p>");
                             ok = false;
                             okWeights.html("");
-                            okWeights.html("");
+                            
                         }
                     }
                 })
