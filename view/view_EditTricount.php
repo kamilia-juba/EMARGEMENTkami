@@ -138,7 +138,7 @@
                     }
                     else{
                         html += "<li class='list-group-item d-flex justify-content-between'><p>" + sub.full_name + " </p>"
-                        html += "<p><a style='float:right'><i onclick='removeParticipant(" + sub.id + ",\"" + sub.full_name + "\")' class='fa-regular fa-trash-can fa-xl'></i></a></p></li>";
+                        html += "<p><a id='btnDeleteParticipant' style='float:right'><i onclick='removeParticipant(" + sub.id + ",\"" + sub.full_name + "\")' class='fa-regular fa-trash-can fa-xl'></i></a></p></li>";
                     }
                 }
             }
@@ -167,7 +167,7 @@
                 html += '</select>';
             
 
-            html+='<input class="me-3 btn btn-primary" type="button" onclick="addParticipant()"  value="Add"></div>';
+            html+='<input id="btnAddParticipant" class="me-3 btn btn-primary" type="button" onclick="addParticipant()"  value="Add"></div>';
 
             selectNotSubs.html(html);
 
@@ -302,12 +302,20 @@
                 errorTitle = $("#errorTitle");
                 description = $("#description");
                 errorDescription = $("#errorDescription");
+                btnDeleteParticipant = $("#btnDeleteParticipant");
+                btnAddParticipant = $("#btnAddParticipant");
+
+
+                listOfSubs = $('#subscription');
+
+                displaySubs();
+                displayNotSubs();
+                hideSelectNotSubsIfNonSubJsonIsEmty();
+                $('#saveButton').attr('onclick', 'saveAll()');
+
              
                 if (justvalidate == "off") {
                     listOfSubs = $('#subscription');
-
-
-
 
                     if(title.val()!=""){
                             checkTitle();
@@ -318,12 +326,9 @@
                     title.bind("input", checkTitle);
                     title.bind("input", checkTitleExists);
                     description.bind("input", checkDescription);
-                    displaySubs();
-                    displayNotSubs();
-                    hideSelectNotSubsIfNonSubJsonIsEmty();
+
                     $("input:text:first").focus();
 
-                    $('#saveButton').attr('onclick', 'saveAll()');
                 } else {
                     const validation = new JustValidate('#editTricountForm', {
                         validateBeforeSubmitting: true,
@@ -384,6 +389,14 @@
                 if(sweetalert == "on"){
                             title.on("input", function() {
                                 data_changed = (title.val() != ini_title) || (description.val() != ini_description);
+                            });                           
+
+                            btnDeleteParticipant.on("click", function() {
+                                data_changed = true;
+                            });                            
+                            
+                            btnAddParticipant.on("click", function() {
+                                data_changed = true;
                             });
 
                         $('#cancelBtn').click(function() {
