@@ -297,6 +297,10 @@ class ControllerTricount extends MyController{
                     }
                 }
             }
+
+            if(isset($_POST["title"]) ){
+                $errorsTitle = $this->validate_title($title);
+            }
             if(isset($_POST["title"]) && $_POST["title"] != ""){
                 $title = trim($_POST["title"]);
                 $errorsTitle = $this->validate_title($title);
@@ -313,6 +317,7 @@ class ControllerTricount extends MyController{
                 if($tricount->template_name_exists($_POST["title"])){
                     $errorsTitle[] = "You already have a template with this title. Choose another title";
                 }
+                
                 $errors = array_merge($errors, $errorsTitle);
                 $errors = array_merge($errors, $errorsCheckBoxes);
                 // verifie si y a pas d'erreurs rajoute le template et rederige vers la page suivante
@@ -333,6 +338,7 @@ class ControllerTricount extends MyController{
                     $this->redirect("Tricount","show_templates",$tricount->id);
                 }
             }
+            
             (new View("add_template"))->show(["title" => $title,
                                             "tricount" => $tricount,
                                             "participants" => $participants,
