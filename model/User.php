@@ -89,7 +89,7 @@ class User extends Model {
         return $errors;
     }
 
-    private static function check_password(string $clear_password, string $hash) : bool {
+    public static function check_password(string $clear_password, string $hash) : bool {
         return $hash === Tools::my_hash($clear_password);
     }
     // recupere les utilisateurs participant a un tricount

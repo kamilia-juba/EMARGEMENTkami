@@ -76,6 +76,8 @@ class ControllerUser extends MyController {
         
         $password = '';
         $password_confirm = '';
+        $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
 
         if (isset($_POST['password']) && isset($_POST['password_confirm']) && isset($_POST['actual_password'])) {
            
@@ -92,9 +94,15 @@ class ControllerUser extends MyController {
                 $this->redirect("User","settings");
             }
         }
-        (new View("change_password"))->show([ "errors" => $errors, "success" => $success]);
+        (new View("change_password"))->show([ "errors" => $errors, "success" => $success, "justvalidate" => $justvalidate, "sweetalert" => $sweetalert]);
+    }
 
+    public function check_correct_password_service(){
+        parent::check_correct_password_service();
+    }
 
+    public function passwords_matches_service(){
+        parent::passwords_matches_service();
     }
     public function Mail_exists_service(){
         $res = "false";
