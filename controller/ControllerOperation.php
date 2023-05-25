@@ -327,6 +327,7 @@ class ControllerOperation extends Mycontroller{
             $errorsDate = [];
             $participants = $tricount->get_participants();
             $checkbox_checked = $this->initialize_checkboxes_from_db($participants, $operation);
+            $save_template_checked = "";
             $templates_json = $tricount->get_templates_json();
             $templates = $tricount->get_repartition_templates();
             $template_items = $this->get_template_items($templates);
@@ -338,6 +339,12 @@ class ControllerOperation extends Mycontroller{
             if(isset($_POST["weight"])){
                 $checkbox_checked = $this->update_checkbox_checked($participants);
                 $weights = $this->update_weights($participants);
+            }
+
+            if(isset($_POST["saveTemplateCheck"])){
+                $save_template_checked = "checked";
+            }else{
+                $save_template_checked = "";
             }
 
             if(isset($_POST["repartitionTemplates"]) && $_POST["repartitionTemplates"] != "customRepartition"){ //si un template est appliqué, il execute ce code qui réinistialise la page avec les données du template
@@ -429,7 +436,8 @@ class ControllerOperation extends Mycontroller{
                                                  "weights" => $weights,
                                                  "templates" => $templates,
                                                  "justvalidate" => $justvalidate,
-                                                 "sweetalert" => $sweetalert
+                                                 "sweetalert" => $sweetalert,
+                                                 "save_template_checked" => $save_template_checked
                                                  ]
             );
             var_dump($date);
