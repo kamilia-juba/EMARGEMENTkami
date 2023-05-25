@@ -166,11 +166,13 @@ abstract class Mycontroller extends Controller{
                     $errorsCheckboxes[] = "You must select at least 1 participant";
                 }
             }
-            
 
-            if(!$this->weights_are_greaterThanZero($_POST["weight"],$_POST["checkboxParticipants"],$participants)){
-                $errorsCheckboxes[] = "Weights must be greater than 0";
-            }
+            if(isset($_POST["checkboxParticipants"]) && sizeof($_POST["checkboxParticipants"])!=0 ){
+                if(!$this->weights_are_greaterThanZero($_POST["weight"],$_POST["checkboxParticipants"],$participants)){
+                    $errorsCheckboxes[] = "Weights must be greater than 0";
+                }
+            }            
+
 
             $array = array("errorsTitle" => $errorsTitle, "errorsAmount" => $errorsAmount, "errorsCheckboxes" => $errorsCheckboxes,"errorsSaveTemplate" => $errorsSaveTemplate, "errorsDate" => $errorsDate);
                      
