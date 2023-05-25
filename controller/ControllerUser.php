@@ -45,7 +45,7 @@ class ControllerUser extends MyController {
             $iban = Tools::sanitize($_POST['iban']);
             $mail = Tools::sanitize($_POST['mail']);
 
-            $errorsEmail = array_merge($errorsEmail,User::validate_unicity($mail));
+            
             $errorsEmail = array_merge($errorsEmail, User::validate_mail($mail));
             $errorsName = array_merge($errorsName,User::validate_full_name($full_name));
             
