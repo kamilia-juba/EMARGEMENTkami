@@ -55,18 +55,29 @@
                                 errorMessage: 'Password must contain at least one capital letter, one special character and one number' 
                             },
                         ], {successMessage: "Looks good"})
+                        .addField("#password_confirm", [
+                            {
+                                rule: "required",
+                                errorMessage: "This field can't be empty"
+                            },
+                        ], {successMessage: "Looks good"})
                         .onValidate(async function(){
                             var correctPassword = await $.post("User/check_correct_password_service", {actualPassword: $("#actual_password").val()}, null, "json");
                             if (correctPassword){
                                 this.showErrors({"#actual_password" : "Wrong password"});
                             }
-                        })
-                        .onValidate(async function(){
                             var correctPassword = await $.post("User/check_correct_password_service", {actualPassword: $("#password").val()}, null, "json");
                             if(!correctPassword){
                                 this.showErrors({"#password" : "New password can't be the same as the old one"});
                             }
+                            var passwords_dont_match = await $.post("User/passwords_matches_service", {password: $("#password").val(), password_confirm: $("#password_confirm").val()}, null, "json");
+                            if(passwords_dont_match){
+                                this.showErrors({"#password_confirm" : "Passwords must match"});
+                            }
                         })
+                        .onSuccess(function(event){
+                            event.target.submit();
+                        });
                 }
             })
 

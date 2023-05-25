@@ -167,6 +167,34 @@ abstract class Mycontroller extends Controller{
 
     }
 
+    public function check_correct_password_service(){
+        $user = $this->get_user_or_redirect();
+        $res = "false";
+
+        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+            $this->redirect();
+        }else{
+            if(!User::check_password($_POST["actualPassword"],$user->hashed_password)){
+                $res = "true";
+            }
+            echo $res;
+        }
+    }
+
+    public function passwords_matches_service(){
+        $user = $this->get_user_or_redirect();
+        $res = "false";
+        
+        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+            $this->redirect();
+        }else{
+            if($_POST["password"] != $_POST["password_confirm"]){
+                $res = "true";
+            }
+            echo $res;
+        }
+    }
+
 }
 
 

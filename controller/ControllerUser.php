@@ -105,17 +105,11 @@ class ControllerUser extends MyController {
     }
 
     public function check_correct_password_service(){
-        $user = $this->get_user_or_redirect();
-        $res = "false";
+        parent::check_correct_password_service();
+    }
 
-        if(isset($_GET["param1"]) && $_GET["param1"] != null){
-            $this->redirect();
-        }else{
-            if(!User::check_password($_POST["actualPassword"],$user->hashed_password)){
-                $res = "true";
-            }
-            echo $res;
-        }
+    public function passwords_matches_service(){
+        parent::passwords_matches_service();
     }
 }
 ?>
