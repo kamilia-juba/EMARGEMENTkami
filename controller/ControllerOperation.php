@@ -378,7 +378,7 @@ class ControllerOperation extends Mycontroller{
                             }
                         }
                     }
-                    $this->redirect("Tricount", "showTricount", $tricount->id);
+                    $this->redirect("Operation", "showOperation", $tricount->id, $operation->id);
                 }
                 
             
