@@ -61,6 +61,7 @@ class ControllerOperation extends Mycontroller{
             $errors = [];
             $errorsTitle = [];
             $errorsAmount = [];
+            $errorsDate = [];
             $errorsCheckboxes= [];
             $errorsSaveTemplate = [];
             $participants = $tricount->get_participants();
@@ -95,11 +96,12 @@ class ControllerOperation extends Mycontroller{
                 $errors=$this->get_add_operation_errors($tricount);                                            //recupération du reste des erreurs
                 $errorsTitle = $errors["errorsTitle"];
                 $errorsAmount =$errors["errorsAmount"];
+                $errorsDate =$errors["errorsDate"];
                 $errorsCheckboxes= $errors["errorsCheckboxes"];
                 $errorsSaveTemplate = $errors["errorsSaveTemplate"];
                 
 
-                if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
+                if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]+$errors["errorsDate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
                 
                     if(isset($_POST["saveTemplateCheck"])){
                         $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
@@ -142,6 +144,7 @@ class ControllerOperation extends Mycontroller{
                                             'date'=> $date, 
                                             "errorsTitle" => $errorsTitle,
                                             "errorsAmount" => $errorsAmount, 
+                                            "errorsDate" => $errorsDate,
                                             "errorsCheckboxes" => $errorsCheckboxes,
                                             "errorsSaveTemplate" => $errorsSaveTemplate,
                                             "tricount"=> $tricount, 
