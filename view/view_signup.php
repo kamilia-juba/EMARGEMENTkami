@@ -19,7 +19,7 @@
 
            let mail, fullName, iban, password,passwordConfirm;
              var justvalidate = "<?= $justvalidate?>";
-             let mailAvailable ;
+             
              let sweetalert = "<?= $sweetalert?>";
              let ini_mail = "<?= $mail?>";
              let ini_fullName = "<?= $full_name?>";
@@ -130,17 +130,25 @@
                                 
                             ],{ successMessage: 'Looks good !' })  
                             
+                            .addField("#passwordConfirm", [
+                                {
+                                    rule: "required",
+                                    errorMessage: "This field can't be empty"
+                                },
+                            ], {successMessage: "Looks good"})
+
                             
-
-                            .onValidate(async function(event) {
-
-                               
-                             titleAvailable = await $.post("user/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
-                                    if(titleAvailable){
-                                        this.showErrors({"#mail" : "Mail not available" });
+                            .onValidate(async function(){
+                                var mailAvailable = await $.post("user/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
+                                    if(mailAvailable){
+                                            this.showErrors({"#mail" : "Mail not available" });
                                     }
+
+                                var passwords_dont_match = await $.post("User/passwords_matches_service", {password: $("#password").val(), password_confirm: $("#passwordConfirm").val()}, null, "json");
+                                if(passwords_dont_match){
+                                    this.showErrors({"#passwordConfirm" : "Passwords must match"});
                                 }
-                            )
+                            })
                              .onSuccess(function(event) {
                            
                                 event.target.submit(); //par défaut le form n'est pas soumis

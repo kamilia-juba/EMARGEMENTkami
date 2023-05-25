@@ -97,4 +97,8 @@ class ControllerMain extends MyController {
         
     }
 
+    public function passwords_matches_service(){
+        parent::passwords_matches_service();
+    }
+
 }
