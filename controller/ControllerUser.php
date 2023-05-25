@@ -73,7 +73,7 @@ class ControllerUser extends MyController {
         $user = $this->get_user_or_redirect();
         $errors = [];
         $success = "";
-        
+        $actual_password = "";
         $password = '';
         $password_confirm = '';
         $justvalidate = $this->get_justvalidate_conf();
@@ -94,7 +94,13 @@ class ControllerUser extends MyController {
                 $this->redirect("User","settings");
             }
         }
-        (new View("change_password"))->show([ "errors" => $errors, "success" => $success, "justvalidate" => $justvalidate, "sweetalert" => $sweetalert]);
+        (new View("change_password"))->show([ "errors" => $errors, 
+                                            "success" => $success, 
+                                            "justvalidate" => $justvalidate, 
+                                            "sweetalert" => $sweetalert,
+                                            "actual_password" => $actual_password,
+                                            "password" => $password,
+                                            "password_confirm" => $password_confirm]);
     }
 
     public function check_correct_password_service(){
