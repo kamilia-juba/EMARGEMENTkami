@@ -181,7 +181,7 @@
                 sortByName(subsJson);
                 displaySubs();
                 displayNotSubs();
-
+                data_changed=true;
                 hideSelectNotSubsIfNonSubJsonIsEmty();
             }
             
@@ -206,7 +206,7 @@
             sortByName(notSubJson);
             displaySubs();
             displayNotSubs();
-
+            data_changed=true;
             selectNotSubs.show();
 
   
