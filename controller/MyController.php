@@ -63,6 +63,21 @@ abstract class Mycontroller extends Controller{
         }
         return $errors;
     }
+
+    function validate_date(string $date): array {
+        $errors = [];
+    
+        // Convertir la date en objet DateTime
+        $currentDate = new DateTime();
+        $inputDate = DateTime::createFromFormat('Y-m-d', $date);
+    
+        // Vérifier si la date est dans le futur
+        if ($inputDate > $currentDate) {
+            $errors[] = "La date ne doit pas être dans le futur.";
+        }
+    
+        return $errors;
+    }
     
     //méthode qui fait la vérification liées aux URL. Renvoie false si les conditions ne sont pas respectées
     public function validate_url() :bool{
@@ -115,10 +130,12 @@ abstract class Mycontroller extends Controller{
 
         $title = trim($_POST['title']);
         $amount = floatval(trim($_POST['amount']));
+        $date = $_POST['date'];
         $errorsTitle = [];
         $errorsAmount = [];
         $errorsCheckboxes= [];
         $errorsSaveTemplate = [];
+        $errorsDate = [];
         $participants = $tricount->get_participants();
 
         $array = array("errorsTitle" => $errorsTitle, "errorsAmount" => $errorsAmount, "errorsCheckboxes" => $errorsCheckboxes,"errorsSaveTemplate" => $errorsSaveTemplate);
@@ -135,6 +152,7 @@ abstract class Mycontroller extends Controller{
             }
         }  
 
+            $errorsDate=array_merge($errorsDate, $this->validate_date($date));
             $errorsTitle = array_merge($errorsTitle, $this->validate_title($title));
             $errorsAmount = array_merge($errorsAmount, $this->validate_amount($amount));
             !is_numeric($amount) ? $errorsAmount[] = "Amount should be numeric" : "";
@@ -148,12 +166,13 @@ abstract class Mycontroller extends Controller{
                     $errorsCheckboxes[] = "You must select at least 1 participant";
                 }
             }
+            
 
             if(!$this->weights_are_greaterThanZero($_POST["weight"],$_POST["checkboxParticipants"],$participants)){
                 $errorsCheckboxes[] = "Weights must be greater than 0";
             }
 
-            $array = array("errorsTitle" => $errorsTitle, "errorsAmount" => $errorsAmount, "errorsCheckboxes" => $errorsCheckboxes,"errorsSaveTemplate" => $errorsSaveTemplate);
+            $array = array("errorsTitle" => $errorsTitle, "errorsAmount" => $errorsAmount, "errorsCheckboxes" => $errorsCheckboxes,"errorsSaveTemplate" => $errorsSaveTemplate, "errorsDate" => $errorsDate);
                      
         return $array;
     }

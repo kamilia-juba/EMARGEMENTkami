@@ -287,6 +287,7 @@ class ControllerOperation extends Mycontroller{
         $operation=null;
         $justvalidate = $this->get_justvalidate_conf();
         $sweetalert = $this->get_sweetalert_conf();
+        
 
 
         if ($this->validate_url()) {                                                // validation url si true exectue le code sinon redirect vers l'index
@@ -300,6 +301,7 @@ class ControllerOperation extends Mycontroller{
             $errorsAmount = [];
             $errorsCheckboxes= [];
             $errorsSaveTemplate = [];
+            $errorsDate = [];
             $participants = $tricount->get_participants();
             $checkbox_checked = $this->initialize_checkboxes_checked_value($participants);
             $templates_json = $tricount->get_templates_json();
@@ -338,10 +340,11 @@ class ControllerOperation extends Mycontroller{
                 $errors=$this->get_add_operation_errors($tricount);                                            //recupération du reste des erreurs
                 $errorsTitle = $errors["errorsTitle"];
                 $errorsAmount =$errors["errorsAmount"];
+                $errorsDate =$errors["errorsDate"];
                 $errorsCheckboxes= $errors["errorsCheckboxes"];
                 $errorsSaveTemplate = $errors["errorsSaveTemplate"];
 
-                if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
+                if (count($errors["errorsTitle"]+$errors["errorsAmount"]+$errors["errorsCheckboxes"]+$errors["errorsSaveTemplate"]+$errors["errorsDate"]) == 0) { //si pas d'erreurs alors peut exécuter la sauvegarde
                 
                     if(isset($_POST["saveTemplateCheck"])){
                         $newTemplateName = Tools::sanitize($_POST["newTemplateName"]);
@@ -391,6 +394,7 @@ class ControllerOperation extends Mycontroller{
                                                  "participants" => $participants,
                                                  "errorsTitle" => $errorsTitle,
                                                  "errorsAmount" => $errorsAmount, 
+                                                 "errorsDate" => $errorsDate, 
                                                  "errorsCheckboxes" => $errorsCheckboxes,
                                                  "templates_json" => $templates_json,
                                                  "errorsSaveTemplate" => $errorsSaveTemplate,
@@ -405,6 +409,8 @@ class ControllerOperation extends Mycontroller{
                                                  "sweetalert" => $sweetalert
                                                  ]
             );
+            var_dump($date);
+            var_dump($errorsDate);
 
         }else{
             $this->redirect("main");

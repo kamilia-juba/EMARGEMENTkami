@@ -581,6 +581,15 @@
             Date
             <div>
                 <input class="form-control mb-2" id="date" name="date" type="date" value="<?=$operation->operation_date?>">
+                <?php if (count($errorsDate) != 0): ?>
+                    <div class='text-danger' id="errDatesPhp">
+                                <ul>
+                                <?php foreach ($errorsDate as $errors): ?>
+                                    <li><?= $errors ?></li>
+                                <?php endforeach; ?>
+                                </ul>
+                            </div>
+                <?php endif; ?>
             </div>
             Paid by
             <select class="form-select" name="paidBy">
