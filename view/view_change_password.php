@@ -6,6 +6,44 @@
         <base href="<?= $web_root ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <script src="lib/just-validate-4.2.0.production.min.js" type="text/javascript"></script>
+        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/just-validate-plugin-date-1.2.0.production.min.js"></script>
+        <script src="lib/sweetalert2@11.js"></script>
+        <script src="lib/jquery-3.6.3.min.js" type="text/javascript"></script>
+        <script>
+            let justvalidate = "<?= $justvalidate ?>";
+            let sweetalert = "<?=$sweetalert?>";
+
+            $(function(){
+                if(justvalidate == "on"){
+                    const validation = new JustValidate('#changeMotdepasseForm', {
+                        validateBeforeSubmitting: true,
+                        lockForm: true,
+                        focusInvalidField: false,
+                        successLabelCssClass: 'valid-feedback',
+                        errorLabelCssClass: 'invalid-feedback',
+                        errorFieldCssClass: 'is-invalid',
+                        successFieldCssClass: 'is-valid',
+                    });
+
+                    validation
+                        .addField("#actual_password", [
+                            {
+                                rule: "required",
+                                errorMessage: "This field can't be empty"
+                            },
+                        ], {successMessage: "Looks good"})
+                        .onValidate(async function(){
+                            var correctPassword = await $.post("User/check_correct_password_service", {actualPassword: $("#actual_password").val()}, null, "json");
+                            if (correctPassword){
+                                this.showErrors({"#actual_password" : "Wrong password"});
+                            }
+                        })
+                }
+            })
+
+        </script>
     </head>
     <body>
         <div class="pt-3 ps-3 pe-3 pb-3 text-secondary d-flex justify-content-between" style="background-color: #E3F3FD "> 

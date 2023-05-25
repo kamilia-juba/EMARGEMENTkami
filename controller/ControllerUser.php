@@ -83,6 +83,8 @@ class ControllerUser extends MyController {
         
         $password = '';
         $password_confirm = '';
+        $justvalidate = $this->get_justvalidate_conf();
+        $sweetalert = $this->get_sweetalert_conf();
 
         if (isset($_POST['password']) && isset($_POST['password_confirm']) && isset($_POST['actual_password'])) {
            
@@ -99,9 +101,21 @@ class ControllerUser extends MyController {
                 $this->redirect("User","settings");
             }
         }
-        (new View("change_password"))->show([ "errors" => $errors, "success" => $success]);
+        (new View("change_password"))->show([ "errors" => $errors, "success" => $success, "justvalidate" => $justvalidate, "sweetalert" => $sweetalert]);
+    }
 
+    public function check_correct_password_service(){
+        $user = $this->get_user_or_redirect();
+        $res = "false";
 
+        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+            $this->redirect();
+        }else{
+            if(!User::check_password($_POST["actualPassword"],$user->hashed_password)){
+                $res = "true";
+            }
+            echo $res;
+        }
     }
 }
 ?>
