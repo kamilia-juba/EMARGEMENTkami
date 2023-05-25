@@ -386,6 +386,10 @@
                                 data_changed = (title.val() != ini_title) || (description.val() != ini_description);
                             });
 
+                            description.on("input", function(){
+                                data_changed = (title.val() != ini_title) || (description.val() != ini_description);
+                            })
+
                         $('#cancelBtn').click(function() {
                             if(data_changed){
                                 event.preventDefault()
