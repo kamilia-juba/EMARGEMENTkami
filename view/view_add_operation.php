@@ -565,7 +565,6 @@
                     <div class="input-group mb-2 mt-2">
                         <span class="form-control" style="background-color: #E9ECEF">
                             <input type="checkbox" 
-                            id="checkboxParticipants"
                             class = "checkboxParticipant"
                                 name="checkboxParticipants[]" 
                                 id="<?=$participants[$i]->id?>"
