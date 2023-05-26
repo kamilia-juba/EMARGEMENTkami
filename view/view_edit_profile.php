@@ -20,7 +20,6 @@
 
             function updateDataStatus(mail, fullname, iban){
                 data_changed = (mail != ini_mail) || (fullname != ini_fullname) || (iban != ini_iban) ;
-                console.log(data_changed);
             }
 
 

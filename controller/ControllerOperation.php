@@ -461,8 +461,6 @@ class ControllerOperation extends Mycontroller{
                                                  "newTemplateName" => $newTemplateName
                                                  ]
             );
-            var_dump($date);
-            var_dump($errorsDate);
 
         }else{
             $this->redirect("main");
