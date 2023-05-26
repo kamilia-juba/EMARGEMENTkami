@@ -139,7 +139,7 @@
 
                             
                             .onValidate(async function(){
-                                var mailAvailable = await $.post("user/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
+                                var mailAvailable = await $.post("Main/Mail_exists_service/", {newMail: $("#mail").val()},null,"json");
                                     if(mailAvailable){
                                             this.showErrors({"#mail" : "Mail not available" });
                                     }
