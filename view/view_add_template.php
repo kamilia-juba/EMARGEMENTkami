@@ -228,7 +228,7 @@
                             },
                             {
                                 rule: 'minLength',
-                                value: 3,
+                                value: /^[^\s]{3,16}$/,
                                 errorMessage: 'Title must be at least 3 characters'
                             },
                             {
