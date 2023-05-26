@@ -237,6 +237,13 @@
                                 errorMessage: "Title can't have more than 256 characters"
                             },
                         ],{ successMessage: 'Looks good'})
+
+                        .onValidate(async function(event){
+                            var titleAvailable = await $.post("Template/template_title_other_exists_service_add_template/", {newTitle : $("#title").val(), tricountId : tricountId}, null, "json");
+                            if(titleAvailable){
+                                this.showErrors({"#title" : "You already have a template with this name"});
+                            }
+                        })
                         
                         .addRequiredGroup('#checkboxes', 'You must select at least 1 participant');
 

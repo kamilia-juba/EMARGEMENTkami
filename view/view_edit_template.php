@@ -44,7 +44,7 @@
             }
 
             async function checkTitleExists(){
-                const data = await $.post("template/template_title_other_exists_service", {newTitle : title.val(), templateId : templateId }, null, "json");
+                const data = await $.post("template/template_title_other_exists_service_edit_template", {newTitle : title.val(), templateId : templateId }, null, "json");
                 if(data){
                     errTitle.html("<p>There's already an existing template with this title. Choose another title</p>");
                 }
@@ -223,7 +223,7 @@
                         ],{ successMessage: 'Looks good'})
 
                         .onValidate(async function(event){
-                            var titleAvailable = await $.post("Template/template_title_other_exists_service/", {newTitle : $("#title").val(), templateId : templateId}, null, "json");
+                            var titleAvailable = await $.post("Template/template_title_other_exists_service_edit_template/", {newTitle : $("#title").val(), templateId : templateId}, null, "json");
                             if(titleAvailable){
                                 this.showErrors({"#title" : "You already have a template with this name"});
                             }

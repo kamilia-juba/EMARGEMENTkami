@@ -197,7 +197,7 @@ class ControllerTemplate extends Mycontroller{
         
     }
 
-    public function template_title_other_exists_service(){
+    public function template_title_other_exists_service_edit_template(){
         if(isset($_GET["param1"]) && $_GET["param1"] != null){
             $this->redirect();
         }else{
@@ -205,6 +205,21 @@ class ControllerTemplate extends Mycontroller{
             $template = Template::get_template_by_id($_POST["templateId"]);
     
             if($template->template_name_exists($_POST["newTitle"]) && $template->title != $_POST["newTitle"]){
+                $res = "true";
+            }
+            echo $res;
+        }
+        
+    }    
+    
+    public function template_title_other_exists_service_add_template(){
+        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+            $this->redirect();
+        }else{
+            $res = "false";
+            $tricount = Tricount::get_tricount_by_id($_POST["tricountId"]);
+    
+            if($tricount->template_name_exists($_POST["newTitle"])){
                 $res = "true";
             }
             echo $res;
