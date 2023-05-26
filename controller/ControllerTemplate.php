@@ -184,80 +184,129 @@ class ControllerTemplate extends Mycontroller{
     }
 
     public function template_exists_service(){
-        if($this->validate_url()){
-            $res = "false";
-            $template = Template::get_template_by_name_and_tricountId($_POST["newTitle"], $_POST["tricountId"]);
-            if($template){
-                $res = "true";
-            }
-            echo $res;
-        }else {
+        $res = "false";
+        $this->get_user_or_redirect();
+        if(isset($_GET["param1"])){
             $this->redirect();
+        }else {
+            if(isset($_POST["newTitle"]) && $_POST["newTitle"] != null && isset($_POST["tricountId"]) && $_POST["tricountId"] != null){
+                $template = Template::get_template_by_name_and_tricountId($_POST["newTitle"], $_POST["tricountId"]);
+                if($template){
+                    $res = "true";
+                }
+                echo $res;
+            }else{
+                if(!isset($_POST["newTitle"]) && !isset($_POST["tricountId"])){
+                    $this->redirect();
+                }else {
+                    echo $res;
+                }
+            }
+            
         }
         
     }
 
     public function template_title_other_exists_service_edit_template(){
-        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+        $res = "false";
+        $this->get_user_or_redirect();
+        if(isset($_GET["param1"])){
             $this->redirect();
         }else{
-            $res = "false";
-            $template = Template::get_template_by_id($_POST["templateId"]);
-    
-            if($template->template_name_exists($_POST["newTitle"]) && $template->title != $_POST["newTitle"]){
-                $res = "true";
+            if(isset($_POST["newTitle"]) && $_POST["newTitle"] != null && isset($_POST["templateId"]) && $_POST["templateId"] != null){
+                $template = Template::get_template_by_id($_POST["templateId"]);
+        
+                if($template->template_name_exists($_POST["newTitle"]) && $template->title != $_POST["newTitle"]){
+                    $res = "true";
+                }
+                echo $res;
+            }else{
+                if(!isset($_POST["newTitle"]) && !isset($_POST["templateId"])){
+                    $this->redirect();
+                }else {
+                    echo $res;
+                }
             }
-            echo $res;
         }
         
     }    
     
     public function template_title_other_exists_service_add_template(){
-        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+        $res = "false";
+        $this->get_user_or_redirect();
+        if(isset($_GET["param1"])){
             $this->redirect();
         }else{
-            $res = "false";
-            $tricount = Tricount::get_tricount_by_id($_POST["tricountId"]);
-    
-            if($tricount->template_name_exists($_POST["newTitle"])){
-                $res = "true";
+            if(isset($_POST["newTitle"]) && $_POST["newTitle"] != null && isset($_POST["tricountId"]) && $_POST["tricountId"] != null){
+
+                $tricount = Tricount::get_tricount_by_id($_POST["tricountId"]);
+        
+                if($tricount->template_name_exists($_POST["newTitle"])){
+                    $res = "true";
+                }
+                echo $res;
+            }else{
+                if(!isset($_POST["newTitle"]) && !isset($_POST["tricountId"])){
+                    $this->redirect();
+                }else {
+                    echo $res;
+                }
             }
-            echo $res;
         }
         
     }
 
     public function user_participates_service(){
-        if($this->validate_url()){
-            $res = "false";
-            $template = Template::get_template_by_id($_POST["templateId"]);
-            $user = User::get_user_by_id($_POST["userId"]);
-    
-            if($template->user_participates($user)){
-                $res = "true";
-            }
-            echo $res;
-        }else{
+        $res = "false";
+        $this->get_user_or_redirect();
+        if(isset($_GET["param1"])){
             $this->redirect();
+        }else {
+            if(isset($_POST["templateId"]) && $_POST["templateId"] != null && isset($_POST["userId"]) && $_POST["userId"] != null){
+
+                $template = Template::get_template_by_id($_POST["templateId"]);
+                $user = User::get_user_by_id($_POST["userId"]);
+        
+                if($template->user_participates($user)){
+                    $res = "true";
+                }
+                echo $res;
+            }else{
+                if(!isset($_POST["templateId"]) && !isset($_POST["userId"])){
+                    $this->redirect();
+                }else {
+                    echo $res;
+                }
+            }
         }
         
     }
 
     public function get_user_weight_service(){
-        if($this->validate_url()){
-            $res = 0;
-            $template = Template::get_template_by_id($_POST["templateId"]);
-            $user = User::get_user_by_id($_POST["userId"]);
-    
-            $res += $template->get_weight_from_template($user);
-            
-            echo $res;
-        }else {
+        $res = 0;
+        $this->get_user_or_redirect();
+        if(isset($_GET["param1"])){
             $this->redirect();
+        }else {
+            if(isset($_POST["templateId"]) && $_POST["templateId"] != null && isset($_POST["userId"]) && $_POST["userId"] != null){
+                $template = Template::get_template_by_id($_POST["templateId"]);
+                $user = User::get_user_by_id($_POST["userId"]);
+        
+                $res += $template->get_weight_from_template($user);
+                
+                echo $res;
+            }else{
+                if(!isset($_POST["userId"]) && !isset($_POST["templateId"])){
+                    $this->redirect();
+                }else {
+                    echo $res;
+                }
+            }
         }
     }
 
     public function delete_template_service(){
+        $this->get_user_or_redirect();
         if($this->validate_url()){
             $template = Template::get_template_by_id($_GET["param2"]);
             $template->remove_template();

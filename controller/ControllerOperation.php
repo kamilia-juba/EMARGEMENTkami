@@ -493,39 +493,57 @@ class ControllerOperation extends Mycontroller{
 
 
     public function user_participates_service(){
-        if($this->validate_url()){
-            $res = "false";
-            $operation = Operation::get_operation_by_id($_POST["operationId"]);
-            $user = User::get_user_by_id($_POST["userId"]);
-    
-            if($operation->user_participates($user)){
-                $res = "true";
-            }
-            echo $res;
-        }else{
+        $res = "false";
+        $this->get_user_or_redirect();
+        if(isset($_GET["param1"])){
             $this->redirect();
-        }
+        }else{
+            if(isset($_POST["operationId"]) && $_POST["operationId"] != null  && isset($_POST["userId"]) && $_POST["userId"] != null){
+                $operation = Operation::get_operation_by_id($_POST["operationId"]);
+                $user = User::get_user_by_id($_POST["userId"]);
         
+                if($operation->user_participates($user)){
+                    $res = "true";
+                }
+                echo $res;
+            }else{
+                if(!isset($_POST["operationId"]) && !isset($_POST["userId"])){
+                    $this->redirect();
+                }else {
+                    echo $res;
+                }
+            }
+        }
     }
 
    
 
     public function get_user_weight_service(){
-        if($this->validate_url()){
-            $res = 0;
-            $operation= Operation::get_operation_by_id($_POST["operationId"]);
-            $user=User::get_user_by_id($_POST["userId"]);
-    
-            $res += $operation->get_weight($user);
-    
-            echo $res;
-        }else {
+        $res = 0;
+        $this->get_user_or_redirect();
+        if(isset($_GET["param1"])){
             $this->redirect();
+        }else {
+            if(isset($_POST["operationId"]) && $_POST["operationId"] != null && isset($_POST["userId"]) && $_POST["userId"] != null){
+                $operation= Operation::get_operation_by_id($_POST["operationId"]);
+                $user=User::get_user_by_id($_POST["userId"]);
+        
+                $res += $operation->get_weight($user);
+        
+                echo $res;
+            }else{
+                if(!isset($_POST["operationId"]) && !isset($_POST["userId"])){
+                    $this->redirect();
+                }else {
+                    echo $res;
+                }
+            }
         }
         
     }
 
     public function delete_operation_service(){
+        $this->get_user_or_redirect();
         if($this->validate_url()){
             $operation = Operation::get_operation_by_id($_GET["param2"]);
             $operation->delete_operation();
@@ -533,7 +551,5 @@ class ControllerOperation extends Mycontroller{
             $this->redirect();
         }
     }
-
-   
 }
 ?>
