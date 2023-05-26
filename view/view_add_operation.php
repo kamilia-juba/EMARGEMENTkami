@@ -438,7 +438,9 @@
 
                     validation
                         .onSuccess(function(event) {
-                            event.target.submit();
+                            if(!template_name_exists){
+                                event.target.submit();
+                            }
                         });
                         $("input[name='weight[]']").on('input change', function(){
                             setTimeout(function() {

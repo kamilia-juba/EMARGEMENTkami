@@ -181,8 +181,9 @@
                         })
                         
                         .onSuccess(function(event) {
-                           
+                            if(!titleAvailable){
                                 event.target.submit(); //par défaut le form n'est pas soumis
+                            }
                         })
 
 
