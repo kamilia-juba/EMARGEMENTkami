@@ -101,4 +101,18 @@ class ControllerMain extends MyController {
         parent::passwords_matches_service();
     }
 
+    public function Mail_exists_service(){
+        $res = "false";
+       
+
+        if(isset($_POST["newMail"]) && $_POST["newMail"] !== ""){
+           
+            $user = User::get_user_by_mail($_POST["newMail"]);
+            if($user!=null && $_POST["newMail"] != $user->mail){
+                $res = "true";
+            }
+         }
+        echo $res;
+    }
+
 }
