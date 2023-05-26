@@ -62,4 +62,27 @@
 
 ## Notes de version itération 3 
 
+### Liste des utilisateurs et mots de passes
+
+  * boverhaegen@epfc.eu, password "Password1,", utilisateur
+  * bepenelle@epfc.eu, password "Password1,", utilisateur
+  * xapigeolet@epfc.eu, password "Password1,", utilisateur
+  * mamichel@epfc.eu, password "Password1,", utilisateur
+  * amine@hotmail.com, password "Passwordtest1,", utilisateur
+  * yacine@hotmail.com, password "Passwordtest1,", utilisateur
+  * mustafa@hotmail.com, password "Passwordtest1,", utilisateur
+  * 
+
+### Liste des bugs connus
+
+  * Quand on ajoute ou supprime un participant, perd l'encodage des champs sur add et delete participant
+  * Sur add et edit tricount et add et edit template -> Quand on met les poids manuellement à 0  et qu'on en remet 1 à "1" , garde les champs en rouge jusqu'à ce qu'il y a un autre changement autre part  - Quand on met plusieurs "0" dans un seul input met les cases en vert et checke la checkbox
+
+
+
+### Liste des fonctionnalités supplémentaires
+    
+### Divers
+
+  * Bouton "log out" collé au bas de page
 ...
