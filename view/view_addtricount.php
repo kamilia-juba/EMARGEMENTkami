@@ -159,18 +159,12 @@
                             },
                            
                         ], { successMessage: 'Looks good !' })
-
                         .addField('#description', [
                             {
-                                rule: 'minLength',
-                                value: 3,
-                                errorMessage: 'Minimum 3 characters'
-                            },
-                            {
-                                rule: 'maxLength',
-                                value: 16,
-                                errorMessage: 'Maximum 16 characters'
-                            },
+                                rule: 'customRegexp',
+                                value: /^[^\s]{3,16}$/,
+                                errorMessage: 'description length must be between 3 and 16'
+                            }
                         ], { successMessage: 'Looks good !' })
 
                         .onValidate(async function(event) {
