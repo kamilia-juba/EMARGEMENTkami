@@ -227,7 +227,7 @@
                                 errorMessage: 'Title cannot be empty'
                             },
                             {
-                                rule: 'minLength',
+                                rule: 'customRegexp',
                                 value: /^[^\s]{3,16}$/,
                                 errorMessage: 'Title must be at least 3 characters'
                             },
