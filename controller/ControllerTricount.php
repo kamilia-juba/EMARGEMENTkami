@@ -359,27 +359,46 @@ class ControllerTricount extends MyController{
         $res = "false";
         $user = $this->get_user_or_redirect();
 
-        if(isset($_POST["newTitle"]) && $_POST["newTitle"] !== ""){
-            $tricount = Tricount::tricount_title_already_exists($_POST["newTitle"],$user);
-            if($tricount){
-             $res = "true";
-             }
-         }
-        echo $res;
+        if(isset($_GET["param1"])){
+            $this->redirect();
+        }else {
+            if(isset($_POST["newTitle"]) && $_POST["newTitle"] !== ""){
+                $tricount = Tricount::tricount_title_already_exists($_POST["newTitle"],$user);
+                if($tricount){
+                    $res = "true";
+                }
+                echo $res;
+            }else{
+                if(!isset($_POST["newTitle"])){
+                    $this->redirect();
+                }else {
+                    echo $res;
+                }
+            }
+        }
     }
 
     public function tricount_title_other_exists_service(){
+        $res = "false";
         $user = $this->get_user_or_redirect();
-        if(isset($_GET["param1"]) && $_GET["param1"] != null){
+        if(isset($_GET["param1"])){
             $this->redirect();
         }else{
-            $res = "false";
-            $tricount = Tricount::get_tricount_by_id($_POST["tricountId"]);
-    
-            if($tricount->tricount_title_exists($_POST["newTitle"], $user) && $tricount->title != trim($_POST["newTitle"])){
-                $res = "true";
+            if(isset($_POST["newTitle"]) && $_POST["newTitle"] != null && isset($_POST["tricountId"]) && $_POST["tricountId"] != null){
+
+                $tricount = Tricount::get_tricount_by_id($_POST["tricountId"]);
+        
+                if($tricount->tricount_title_exists($_POST["newTitle"], $user) && $tricount->title != trim($_POST["newTitle"])){
+                    $res = "true";
+                }
+                echo $res;
+            }else{
+                if(!isset($_POST["newTitle"]) && !isset($_POST["tricountId"])){
+                    $this->redirect();
+                }else {
+                    echo $res;
+                }
             }
-            echo $res;
         }
         
     }
