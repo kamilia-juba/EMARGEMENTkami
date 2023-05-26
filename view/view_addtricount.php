@@ -116,6 +116,7 @@
                 errorTitle = $("#errorTitle");
                 description = $("#description");
                 errorDescription = $("#errorDescription");
+                let titleAvailable=true;
 
                 if (justvalidate == "off") {
 

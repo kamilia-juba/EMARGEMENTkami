@@ -304,6 +304,7 @@
                 errorDescription = $("#errorDescription");
                 btnDeleteParticipant = $("#btnDeleteParticipant");
                 btnAddParticipant = $("#btnAddParticipant");
+                let titleAvailable = false;
 
 
                 listOfSubs = $('#subscription');
@@ -377,15 +378,16 @@
                         ], { successMessage: 'Looks good !' })
 
                         .onValidate(async function(event){
-                            var titleAvailable = await $.post("Tricount/tricount_title_other_exists_service", {newTitle : $("#title").val(), tricountId : tricountId}, null, "json");
+                            titleAvailable = await $.post("Tricount/tricount_title_other_exists_service", {newTitle : $("#title").val(), tricountId : tricountId}, null, "json");
                             if(titleAvailable){
                                 this.showErrors({"#title" : "You already have a tricount with this title"});
                             }
                         })
                         
                         .onSuccess(function(event) {
-                           
-                                event.target.submit(); //par défaut le form n'est pas soumis
+                                if(!titleAvailable){
+                                    event.target.submit(); //par défaut le form n'est pas soumis
+                                }
                         })
 
                     $("input:text:first").focus();

@@ -24,6 +24,7 @@ class ControllerMain extends MyController {
         }else {
             $password = ''; 
             $mail = "";
+            $justvalidate = $this->get_justvalidate_conf();
             $errors = [];
             if (isset($_POST['mail']) && isset($_POST['password'])) { 
                 $mail = Tools::sanitize($_POST['mail']);
@@ -34,7 +35,7 @@ class ControllerMain extends MyController {
                     $this->log_user(User::get_user_by_mail($mail));
                 }
             }
-            (new View("login"))->show(["mail" => $mail, "password" => $password, "errors" => $errors]);
+            (new View("login"))->show(["mail" => $mail, "password" => $password, "errors" => $errors, "justvalidate" => $justvalidate]);
         }
     }
     //gestion de l'inscription d'un nouvel utilisateur

@@ -30,6 +30,10 @@
                 actual_password = $("#actual_password");
                 password = $("#password");
                 password_confirm = $("#password_confirm");
+                let correctPassword = true;
+                let passwords_dont_match = false;
+
+
                 if(justvalidate == "on"){
                     const validation = new JustValidate('#changeMotdepasseForm', {
                         validateBeforeSubmitting: true,
@@ -76,21 +80,23 @@
                             },
                         ], {successMessage: "Looks good"})
                         .onValidate(async function(){
-                            var correctPassword = await $.post("User/check_correct_password_service", {actualPassword: $("#actual_password").val()}, null, "json");
+                            correctPassword = await $.post("User/check_correct_password_service", {actualPassword: $("#actual_password").val()}, null, "json");
                             if (correctPassword){
                                 this.showErrors({"#actual_password" : "Wrong password"});
                             }
-                            var correctPassword = await $.post("User/check_correct_password_service", {actualPassword: $("#password").val()}, null, "json");
+                            correctPassword = await $.post("User/check_correct_password_service", {actualPassword: $("#password").val()}, null, "json");
                             if(!correctPassword){
                                 this.showErrors({"#password" : "New password can't be the same as the old one"});
                             }
-                            var passwords_dont_match = await $.post("User/passwords_matches_service", {password: $("#password").val(), password_confirm: $("#password_confirm").val()}, null, "json");
+                            passwords_dont_match = await $.post("User/passwords_matches_service", {password: $("#password").val(), password_confirm: $("#password_confirm").val()}, null, "json");
                             if(passwords_dont_match){
                                 this.showErrors({"#password_confirm" : "Passwords must match"});
                             }
                         })
                         .onSuccess(function(event){
-                            event.target.submit();
+                            if(correctPassword && !passwords_dont_match){
+                                event.target.submit();
+                            }
                         });
                 }
                 if(sweetalert == "on"){

@@ -174,6 +174,7 @@
                 errWeights = $("#errWeights");
                 okWeights = $("#okWeights");
                 data_changed=false;
+                let titleAvailable=true;
 
                 handleCheckbox();
                 checkWeight();
@@ -227,19 +228,19 @@
                                 errorMessage: 'Title cannot be empty'
                             },
                             {
-                                rule: 'customRegexp',
-                                value: /^[^\s]{3,16}$/,
-                                errorMessage: 'Title must be at least 3 characters'
-                            },
-                            {
                                 rule:'maxLength',
                                 value: 256,
                                 errorMessage: "Title can't have more than 256 characters"
                             },
+                            {
+                                rule:'minLength',
+                                value: 3,
+                                errorMessage: "Title must be at least 3 characters"
+                            },
                         ],{ successMessage: 'Looks good'})
 
                         .onValidate(async function(event){
-                            var titleAvailable = await $.post("Template/template_title_other_exists_service_add_template/", {newTitle : $("#title").val(), tricountId : tricountId}, null, "json");
+                            titleAvailable = await $.post("Template/template_title_other_exists_service_add_template/", {newTitle : $("#title").val(), tricountId : tricountId}, null, "json");
                             if(titleAvailable){
                                 this.showErrors({"#title" : "You already have a template with this name"});
                             }
@@ -251,7 +252,9 @@
                         
                     validation
                         .onSuccess(function(event) {
-                            event.target.submit();
+                            if(!titleAvailable){
+                                event.target.submit();
+                            }
                         });
                         $("input[name='weight[]']").on('input change', function(){
                             setTimeout(function() {

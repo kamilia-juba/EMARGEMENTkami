@@ -331,6 +331,7 @@
             errWeights = $("#errWeights");
             okWeights = $("#okWeights");
             date = $("#date");
+            let template_name_exists=false;
 
             
             $("#applyTemplateBtn").hide();
@@ -461,7 +462,9 @@
 
                     validation
                         .onSuccess(function(event) {
-                            event.target.submit();
+                            if(!template_name_exists){
+                                event.target.submit();
+                            }
                         });
                         $("input[name='weight[]']").on('input change', function(){
                             setTimeout(function() {

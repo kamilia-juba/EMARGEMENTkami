@@ -306,6 +306,7 @@
                 errWeights = $("#errWeights");
                 okWeights = $("#okWeights");
                 date = $("#date");
+                let template_name_exists=false;
 
                 totalAmount=$("#amount");
                 handleAmounts();   

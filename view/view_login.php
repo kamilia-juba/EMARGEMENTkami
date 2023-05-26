@@ -14,8 +14,7 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
         <script src="lib/sweetalert2@11.js"></script>
         <script>
-            console.log("<?= $justvalidate?>");
-            var justvalidate = "<?= $justvalidate?>";
+             var justvalidate = "<?= $justvalidate?>";
              let mailAvailable ;
 
              $(function(){
