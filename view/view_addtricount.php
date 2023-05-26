@@ -124,6 +124,11 @@
                     title.bind("input", checkTitleExists);
                     description.bind("input", checkDescription);
 
+                    $("#addTricount").submit(function(){
+
+                        return checkAll();            
+                    });
+
                     $("input:text:first").focus();
                 } else {
                     const validation = new JustValidate('#addTricount', {
@@ -225,7 +230,7 @@
        
             <button form="addTricount" class="btn btn-primary" type="submit">Save</button>
     </div> 
-    <form id="addTricount" action="Tricount/addtricount" method="post" onsubmit="return checkAll();">
+    <form id="addTricount" action="Tricount/addtricount" method="post">
         <div class="form-group pt-3 ps-3 pe-3 pb-3">
              <label class="pb-3">Title :</label>
              <input class="form-control" id="title" name="title" type="text" size="16" value="<?= $title ?>" placeholder="Enter a title">

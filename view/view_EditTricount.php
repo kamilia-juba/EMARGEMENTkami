@@ -327,6 +327,10 @@
                     title.bind("input", checkTitleExists);
                     description.bind("input", checkDescription);
 
+                    $("#editTricountForm").submit(function(){
+                        return checkAll();            
+                    });
+
                     $("input:text:first").focus();
 
                 } else {

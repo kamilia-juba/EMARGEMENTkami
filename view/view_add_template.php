@@ -205,6 +205,10 @@
                     })
 
                     checkWeight();
+
+                    $("#addTemplateForm").submit(function(){
+                        return checkAll();            
+                    });
                 }else {
                     const validation = new JustValidate('#addtemplateForm', {
                         validateBeforeSubmitting: true,

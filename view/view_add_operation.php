@@ -345,6 +345,10 @@
                         checkCheckboxesCount();
                         checkWeight();
                     })
+
+                    $("#addOperationForm").submit(function(){
+                        return checkAll();            
+                    });
                 }else {
                     const validation = new JustValidate('#addOperationForm', {
                         validateBeforeSubmitting: true,

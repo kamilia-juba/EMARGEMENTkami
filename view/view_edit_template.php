@@ -189,8 +189,12 @@
                     })
 
                     checkWeight();
+
+                    $("#editTemplateForm").submit(function(){
+                        return checkAll();            
+                    });
                 }else {
-                    const validation = new JustValidate('#applyTemplateForm', {
+                    const validation = new JustValidate('#editTemplateForm', {
                         validateBeforeSubmitting: true,
                         lockForm: true,
                         focusInvalidField: false,
@@ -300,7 +304,7 @@
             <input type="submit" class="btn btn-primary" form="applyTemplateForm" value="Save">
         </div>
         <div class="container min-vh-100 pt-2">
-            <form id="applyTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post">
+            <form id="editTemplateForm" action="Template/edit_template/<?=$tricount->id?>/<?=$template->id?>" method="post">
                 Title : 
                 <div>
                     <input class="form-control mb-2" id="title" name="title" type="text" value="<?=$title?>" placeholder="Title">
