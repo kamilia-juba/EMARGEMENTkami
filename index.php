@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('Europe/Brussels');
+date_default_timezone_set('Europe/Paris');
 
 error_reporting( E_ALL );
 ini_set( 'display_errors', 1 );
